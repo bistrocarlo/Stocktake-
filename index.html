@@ -11,7 +11,6 @@
         .category-header { background: linear-gradient(to right, #111827, #1f2937); }
         .product-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         .product-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
-        /* Sticky positioning */
         .sticky-toolbar {
             position: sticky;
             top: 0;
@@ -23,12 +22,12 @@
         }
         .sticky-nav {
             position: sticky;
-            top: 80px; /* Height of toolbar approx */
+            top: 80px;
             z-index: 40;
             background: white;
         }
         .category-section {
-            scroll-margin-top: 140px; /* Enough to clear both sticky bars */
+            scroll-margin-top: 140px;
         }
         @media print {
             .no-print { display: none !important; }
@@ -51,7 +50,7 @@
             </div>
         </div>
 
-        <!-- Info Bar (date & staff) - also sticky but below toolbar? We'll keep it in normal flow but with a background -->
+        <!-- Info Bar -->
         <div class="bg-white rounded-3xl shadow-sm p-8 mb-8 no-print">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
@@ -78,7 +77,7 @@
             </div>
         </div>
 
-        <!-- STICKY TOOLBAR (buttons) -->
+        <!-- STICKY TOOLBAR (no alerts on auto-save) -->
         <div class="sticky-toolbar no-print">
             <div class="flex flex-wrap gap-3 mb-3">
                 <button onclick="resetAll()" class="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
@@ -101,7 +100,7 @@
             </div>
         </div>
 
-        <!-- Live Counter + Search (below sticky toolbar) -->
+        <!-- Live Counter + Search -->
         <div class="mb-8 no-print flex flex-col sm:flex-row gap-4 items-center mt-4">
             <div id="liveCounter" class="bg-white px-6 py-3 rounded-3xl font-semibold text-lg border border-gray-200 flex-1 text-center sm:text-left">
                 0 items with stock > 0
@@ -124,8 +123,7 @@
         <div id="categoriesContainer" class="space-y-10"></div>
 
         <div class="text-center text-gray-500 text-sm mt-16 no-print">
-            Auto-saves every change • Search is now smoother (debounced)<br>
-            Green Beans included • "buckets" unit available
+            Auto-saves silently • Green Beans included • "buckets" unit available
         </div>
     </div>
 
@@ -156,10 +154,17 @@ let searchTimeout = null;
 // ==================== LOCALSTORAGE ====================
 const STORAGE_KEY = "tml_stocktake_data";
 
+// Silent save – no alert
 function saveToLocal() {
     const data = { stockData, miscProducts, date: document.getElementById("stockDate").value, staff: document.getElementById("staffName").value };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    alert("✅ Stock saved");
+    // No alert
+}
+
+// Manual save with alert
+function manualSave() {
+    saveToLocal();
+    alert("✅ Stock data saved to browser");
 }
 
 function loadFromLocal() {
@@ -181,9 +186,10 @@ function clearAllData() {
     location.reload();
 }
 
+// Auto-save (silent) called on every change
 function autoSave() {
     saveToLocal();
-    updateLiveCounter();
+    updateLiveCounter(); // just refresh counter, no alert
 }
 
 // ==================== RENDER ====================
@@ -288,19 +294,21 @@ function setQuantity(product, value) {
     const max = product === "Sausages" ? 500 : 50;
     if (!stockData[product]) stockData[product] = { qty: 0, unit: "each" };
     stockData[product].qty = Math.max(0, Math.min(max, val));
-    autoSave();
+    autoSave(); // silent
     updateLiveCounter();
 }
 
 function changeUnit(product, unit) {
     if (!stockData[product]) stockData[product] = { qty: 0, unit: "each" };
     stockData[product].unit = unit;
-    autoSave();
+    autoSave(); // silent
 }
 
 function updateLiveCounter() {
     let count = 0;
-    Object.values(stockData).forEach(item => { if (item.qty > 0) count++; });
+    for (let prod in stockData) {
+        if (stockData[prod] && stockData[prod].qty > 0) count++;
+    }
     document.getElementById("liveCounter").textContent = `${count} items with stock > 0`;
 }
 
@@ -332,7 +340,9 @@ function deleteMiscProduct(name) {
 
 function resetAll() {
     if (!confirm("Reset ALL quantities to zero?")) return;
-    Object.keys(stockData).forEach(k => { if (stockData[k]) stockData[k].qty = 0; });
+    for (let prod in stockData) {
+        if (stockData[prod]) stockData[prod].qty = 0;
+    }
     render();
     autoSave();
 }
@@ -417,11 +427,37 @@ baseCategories.forEach(cat => {
 
 render();
 
-if (localStorage.getItem(STORAGE_KEY)) {
-    setTimeout(() => {
-        if (confirm("Previous stock take data found. Load it now?")) loadFromLocal();
-    }, 600);
+// Load saved data silently (no confirm popup on load)
+const savedData = localStorage.getItem(STORAGE_KEY);
+if (savedData) {
+    try {
+        const data = JSON.parse(savedData);
+        stockData = data.stockData || {};
+        miscProducts = data.miscProducts || [];
+        if (data.date) document.getElementById("stockDate").value = data.date;
+        if (data.staff) document.getElementById("staffName").value = data.staff;
+        render();
+        updateLiveCounter();
+        // No alert on auto-load
+    } catch(e) {}
 }
+
+// Override manual save button
+document.querySelector("button[onclick='saveToLocal()']")?.setAttribute("onclick", "manualSave()");
+window.manualSave = manualSave;
+window.saveToLocal = saveToLocal;
+window.loadFromLocal = loadFromLocal;
+window.clearAllData = clearAllData;
+window.resetAll = resetAll;
+window.showPreview = showPreview;
+window.printPDF = printPDF;
+window.exportCSV = exportCSV;
+window.addMiscProduct = addMiscProduct;
+window.deleteMiscProduct = deleteMiscProduct;
+window.changeSausages = changeSausages;
+window.setQuantity = setQuantity;
+window.changeUnit = changeUnit;
+window.debouncedFilter = debouncedFilter;
 </script>
 </body>
 </html>
