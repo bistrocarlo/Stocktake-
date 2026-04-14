@@ -395,7 +395,8 @@
     <div class="footer-note">
         ✅ Sausages quantity up to 500 (stepper) · all others 0–50 dropdown<br>
         ✅ Click category tabs to jump · Add missing items in "➕ Miscellaneous"<br>
-        ✅ Select your name & date, then click "Preview Summary" to see report, then Print PDF to save/send
+        ✅ Select your name & date, then click "Preview Summary" to see report, then Print PDF to save/send<br>
+        ✅ Only products with quantity > 0 appear in the report
     </div>
 </div>
 
@@ -730,26 +731,39 @@
         };
     }
 
+    // NEW: Only include products with qty > 0
     function getFullStockTakeReport(info) {
         let report = `THE MEMBERS LOUNGE – STOCK TAKE REPORT\n`;
         report += `Date: ${info.date}\n`;
         report += `Stocktake performed by: ${info.staff}\n`;
         report += `=========================================\n\n`;
         for (let cat of baseCategories) {
-            report += `📁 ${cat.name}\n`;
+            let hasItems = false;
+            let categoryReport = `📁 ${cat.name}\n`;
             for (let prod of cat.products) {
                 const data = stockData[prod];
-                report += `   • ${prod}: ${data.qty} ${data.unit}\n`;
+                if (data && data.qty > 0) {
+                    categoryReport += `   • ${prod}: ${data.qty} ${data.unit}\n`;
+                    hasItems = true;
+                }
             }
-            report += "\n";
+            if (hasItems) {
+                report += categoryReport + "\n";
+            }
         }
         if (miscProducts.length > 0) {
-            report += `📁 Miscellaneous (added items)\n`;
+            let hasMisc = false;
+            let miscReport = `📁 Miscellaneous (added items)\n`;
             for (let prod of miscProducts) {
                 const data = stockData[prod];
-                report += `   • ${prod}: ${data.qty} ${data.unit}\n`;
+                if (data && data.qty > 0) {
+                    miscReport += `   • ${prod}: ${data.qty} ${data.unit}\n`;
+                    hasMisc = true;
+                }
             }
-            report += "\n";
+            if (hasMisc) {
+                report += miscReport + "\n";
+            }
         }
         report += `Report generated: ${new Date().toLocaleString()}\n`;
         return report;
