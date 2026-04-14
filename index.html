@@ -18,7 +18,6 @@
             max-width: 1400px;
             margin: 0 auto;
         }
-        /* Logo & header area – black/white/red */
         .logo-header {
             background: #111;
             border-radius: 28px 28px 0 0;
@@ -64,7 +63,6 @@
         .date-bar {
             background: white;
             padding: 16px 24px;
-            margin-top: 0;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -103,9 +101,6 @@
             cursor: pointer;
             transition: 0.2s;
             font-size: 0.9rem;
-        }
-        button.secondary {
-            background: #444;
         }
         button.warning {
             background: #cc0000;
@@ -205,7 +200,6 @@
             border-top: 1px solid #d4dfcc;
             padding-top: 1.5rem;
         }
-        /* Print styles – keep branding */
         @media print {
             body {
                 background: white;
@@ -254,7 +248,6 @@
 </head>
 <body>
 <div class="container">
-    <!-- Logo header – black/white/red -->
     <div class="logo-header">
         <div class="logo">
             <div class="logo-icon">TML</div>
@@ -263,20 +256,15 @@
                 <div class="tagline">Stock Take & Inventory</div>
             </div>
         </div>
-        <div style="color: #cc0000; font-weight: bold;">🍷 Sunday Night Service</div>
     </div>
 
-    <!-- Date picker - mandatory -->
     <div class="date-bar">
         <label>📅 Stock take date:</label>
         <input type="date" id="stockDate" value="">
-        <button id="validateDateBtn" class="secondary">✅ Set date</button>
         <span id="dateWarning" style="color: #cc0000; font-size: 0.8rem;"></span>
     </div>
 
     <div class="toolbar">
-        <button id="saveBtn">💾 Save to browser</button>
-        <button id="loadBtn">📂 Load last session</button>
         <button id="resetBtn" class="warning">🗑️ Reset all to zero</button>
         <button id="printPdfBtn" class="print-btn">🖨️ Print Stock Take (PDF)</button>
     </div>
@@ -284,14 +272,13 @@
     <div id="categoriesContainer"></div>
     <div class="footer-note">
         ✅ Sausages quantity up to 500 (stepper) · all others 0–50 dropdown<br>
-        ✅ Set the date first, then print PDF – full stock take report with date
+        ✅ Gluten‑free bread is in Bakery · Fruit & Vegetables separate category<br>
+        ✅ Set the date, then print PDF – full stock take report
     </div>
 </div>
 
 <script>
-    // --------------------------------------------------------------
-    // PRODUCT DATABASE (categories, no suppliers)
-    // --------------------------------------------------------------
+    // ========== CATEGORIES ==========
     const categories = [
         { name: "🥩 Meats", products: [
             "Sausages", "Ragu Meatballs", "Chicken", "Veal", "Steak", "Ragu Meat",
@@ -305,7 +292,14 @@
             "Coles Milk (3L)", "Cannoli Cream (2.5kg)"
         ] },
         { name: "🥖 Bakery", products: [
-            "Bread Rolls", "Sliced Bread", "Bruschetta Bread", "Panini", "Tsoureki Easter Loaf"
+            "Bread Rolls", "Sliced Bread", "Bruschetta Bread", "Panini", "Tsoureki Easter Loaf",
+            "Gluten‑free bread"
+        ] },
+        { name: "🍎 Fruit & Vegetables", products: [
+            "Watermelon", "Pineapple", "Strawberries", "Salad Mix", "Eggplant", "Lemon", "Garlic",
+            "Potatoes", "Pumpkin", "Broccoli", "Tomatoes", "Basil", "Oregano (fresh)", "Onion",
+            "Carrots", "Parsley", "Celery", "Rocket", "Rosemary", "Capsicums Pizza", "Oranges",
+            "Porcini Mushrooms", "Peas", "Chick Peas", "Polenta", "Avocado", "Zucchini"
         ] },
         { name: "📦 Dry Goods", products: [
             "Napoli Cut Tray 2kg", "Pasta (15kg box)", "Olives (bucket)", "Napoli Sauce (box of 6)",
@@ -313,11 +307,7 @@
             "Breadcrumbs (5kg bag)", "Artichokes", "Capsicums (tin)", "Beans", "Salt", "Ragu Red Wine",
             "Flour (12.5kg)", "Yeast", "Soppressata (hot)", "Breadcrumb Panko (7kg)",
             "Cannerozzetti (500g)", "Tomato Sauce squeezy", "Peeled tomatoes Pelati", "Rice Flour (25kg)",
-            "Signetti", "Watermelon", "Pineapple", "Strawberries", "Salad Mix", "Eggplant", "Lemon",
-            "Garlic", "Potatoes", "Pumpkin", "Broccoli", "Tomatoes", "Basil", "Oregano (fresh)",
-            "Onion", "Carrots", "Parsley", "Celery", "Rocket", "Rosemary", "Capsicums Pizza",
-            "Oranges", "Porcini Mushrooms", "Peas", "Chick Peas", "Polenta", "Avocado", "Zucchini",
-            "Arancini", "Potato Croquettes", "Mini Pizza", "Meat Pies", "Sausage Rolls",
+            "Signetti", "Arancini", "Potato Croquettes", "Mini Pizza", "Meat Pies", "Sausage Rolls",
             "Mixed Sandwiches", "Gluten Gnocchi (400g)", "Gluten Chips (2.5kg)", "Fructose",
             "No seafood (dietary)", "Dairy Free", "Vegan", "FOD", "Chicken Nuggets (50/pack)",
             "Chips (makes 30 kids)", "Baby Pizza", "Dixie Cups", "Cannoli shells (box of 150)",
@@ -374,13 +364,9 @@
         "jars", "tins", "drums", "loaves", "punnets", "bunches", "litres"
     ];
 
-    // Data structures: each product has { qty, unit }
+    // Data structure: each product has { qty, unit }
     let stockData = {};
 
-    // Storage key
-    const STORAGE_KEY = "members_lounge_stock_take";
-
-    // Initialize data
     function initData() {
         for (let cat of categories) {
             for (let prod of cat.products) {
@@ -391,7 +377,6 @@
         }
     }
 
-    // Helper: set quantity for normal products (0-50) and special for sausages (0-500)
     function setQuantity(product, newVal) {
         let val = parseInt(newVal, 10);
         if (isNaN(val)) val = 0;
@@ -406,7 +391,6 @@
         render();
     }
 
-    // Special quantity control for Sausages (stepper up to 500)
     function createQuantityControl(product, currentQty) {
         if (product === "Sausages") {
             const container = document.createElement("div");
@@ -444,7 +428,6 @@
         }
     }
 
-    // Render full UI
     function render() {
         const container = document.getElementById("categoriesContainer");
         if (!container) return;
@@ -471,10 +454,8 @@
                 const controlDiv = document.createElement("div");
                 controlDiv.className = "stock-control";
                 
-                // Quantity control (special for sausages)
                 const qtyControl = createQuantityControl(prod, data.qty);
                 
-                // Unit select
                 const unitSelect = document.createElement("select");
                 unitOptions.forEach(unit => {
                     const opt = document.createElement("option");
@@ -498,30 +479,6 @@
         }
     }
 
-    // Save to localStorage
-    function saveToLocal() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(stockData));
-        alert("Stock take saved to browser!");
-    }
-
-    function loadFromLocal() {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                for (let prod in parsed) {
-                    if (stockData[prod]) {
-                        stockData[prod] = parsed[prod];
-                    }
-                }
-                render();
-                alert("Previous stock take loaded.");
-            } catch(e) { alert("Error loading data"); }
-        } else {
-            alert("No saved session found.");
-        }
-    }
-
     function resetAll() {
         for (let prod in stockData) {
             stockData[prod].qty = 0;
@@ -530,7 +487,6 @@
         alert("All quantities set to zero.");
     }
 
-    // Get selected date, validate
     let selectedDate = "";
     function getSelectedDate() {
         const dateInput = document.getElementById("stockDate");
@@ -541,17 +497,7 @@
         document.getElementById("dateWarning").innerText = "";
         return dateInput.value;
     }
-    function setDate() {
-        const dateInput = document.getElementById("stockDate");
-        if (dateInput.value) {
-            selectedDate = dateInput.value;
-            document.getElementById("dateWarning").innerHTML = "✅ Date set: " + selectedDate;
-        } else {
-            document.getElementById("dateWarning").innerHTML = "❌ Please pick a date";
-        }
-    }
 
-    // Full stock take report (all products with qty and unit)
     function getFullStockTakeReport() {
         const dateStr = selectedDate || "DATE NOT SET";
         let report = `THE MEMBERS LOUNGE – STOCK TAKE REPORT\n`;
@@ -569,13 +515,13 @@
         return report;
     }
 
-    // Print PDF using browser's print dialog (with print styles)
     function printPDF() {
         const dateOk = getSelectedDate();
         if (!dateOk) {
             alert("Please set the stock take date before printing.");
             return;
         }
+        selectedDate = dateOk;
         const reportText = getFullStockTakeReport();
         const printWindow = window.open('', '_blank');
         printWindow.document.write(`
@@ -586,14 +532,11 @@
                     body { font-family: system-ui, 'Segoe UI', Roboto, sans-serif; margin: 40px; }
                     h1 { color: #111; border-left: 6px solid #cc0000; padding-left: 20px; }
                     pre { font-family: monospace; white-space: pre-wrap; font-size: 11pt; background: #f9f9f9; padding: 20px; border-radius: 12px; }
-                    .header { margin-bottom: 30px; }
                     .footer { margin-top: 40px; font-size: 9pt; color: #666; }
                 </style>
             </head>
             <body>
-                <div class="header">
-                    <h1>The Members Lounge – Stock Take</h1>
-                </div>
+                <h1>The Members Lounge – Stock Take</h1>
                 <pre>${reportText}</pre>
                 <div class="footer">Printed from The Members Lounge stock take system</div>
             </body>
@@ -603,19 +546,15 @@
         printWindow.print();
     }
 
-    // Initialization
-    initData();
-    render();
-
-    // Set default date to today
+    // Set today's date as default
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("stockDate").value = today;
     selectedDate = today;
-    document.getElementById("dateWarning").innerHTML = "✅ Date set: " + today;
+    document.getElementById("dateWarning").innerHTML = "";
 
-    document.getElementById("validateDateBtn").addEventListener("click", setDate);
-    document.getElementById("saveBtn").addEventListener("click", saveToLocal);
-    document.getElementById("loadBtn").addEventListener("click", loadFromLocal);
+    initData();
+    render();
+
     document.getElementById("resetBtn").addEventListener("click", resetAll);
     document.getElementById("printPdfBtn").addEventListener("click", printPDF);
 </script>
