@@ -7,10 +7,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', system_ui, sans-serif; }
+        body { font-family: 'Inter', system-ui, sans-serif; }
         .category-header { background: linear-gradient(to right, #111827, #1f2937); }
         .product-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         .product-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
+        /* Sticky positioning */
+        .sticky-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: white;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            margin-top: -0.5rem;
+        }
+        .sticky-nav {
+            position: sticky;
+            top: 80px; /* Height of toolbar approx */
+            z-index: 40;
+            background: white;
+        }
+        .category-section {
+            scroll-margin-top: 140px; /* Enough to clear both sticky bars */
+        }
         @media print {
             .no-print { display: none !important; }
             .category-header { background: #111827 !important; color: white !important; -webkit-print-color-adjust: exact; }
@@ -22,7 +41,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <!-- Header -->
-        <div class="bg-white rounded-3xl shadow-sm overflow-hidden mb-8">
+        <div class="bg-white rounded-3xl shadow-sm overflow-hidden mb-8 no-print">
             <div class="bg-zinc-950 text-white px-8 py-10 flex items-center gap-6">
                 <div class="w-16 h-16 bg-white text-zinc-950 rounded-2xl flex items-center justify-center text-4xl font-bold">TML</div>
                 <div>
@@ -32,7 +51,7 @@
             </div>
         </div>
 
-        <!-- Info Bar -->
+        <!-- Info Bar (date & staff) - also sticky but below toolbar? We'll keep it in normal flow but with a background -->
         <div class="bg-white rounded-3xl shadow-sm p-8 mb-8 no-print">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
@@ -59,30 +78,31 @@
             </div>
         </div>
 
-        <!-- Toolbar -->
-        <div class="flex flex-wrap gap-3 mb-6 no-print">
-            <button onclick="resetAll()" class="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
-                🗑️ Reset All
-            </button>
-            <button onclick="showPreview()" class="flex-1 sm:flex-none bg-zinc-800 hover:bg-black text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
-                📄 Preview
-            </button>
-            <button onclick="printPDF()" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
-                🖨️ Print PDF
-            </button>
-            <button onclick="exportCSV()" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
-                📊 Export CSV
-            </button>
+        <!-- STICKY TOOLBAR (buttons) -->
+        <div class="sticky-toolbar no-print">
+            <div class="flex flex-wrap gap-3 mb-3">
+                <button onclick="resetAll()" class="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
+                    🗑️ Reset All
+                </button>
+                <button onclick="showPreview()" class="flex-1 sm:flex-none bg-zinc-800 hover:bg-black text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
+                    📄 Preview
+                </button>
+                <button onclick="printPDF()" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
+                    🖨️ Print PDF
+                </button>
+                <button onclick="exportCSV()" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
+                    📊 Export CSV
+                </button>
+            </div>
+            <div class="flex flex-wrap gap-3 mb-3">
+                <button onclick="saveToLocal()" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-2xl font-medium">💾 Save Now</button>
+                <button onclick="loadFromLocal()" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-2xl font-medium">📂 Load Saved</button>
+                <button onclick="clearAllData()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-2xl font-medium">Clear All Data</button>
+            </div>
         </div>
 
-        <div class="flex flex-wrap gap-3 mb-8 no-print">
-            <button onclick="saveToLocal()" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-2xl font-medium">💾 Save Now</button>
-            <button onclick="loadFromLocal()" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-2xl font-medium">📂 Load Saved</button>
-            <button onclick="clearAllData()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-2xl font-medium">Clear All Data</button>
-        </div>
-
-        <!-- Live Counter + Search -->
-        <div class="mb-8 no-print flex flex-col sm:flex-row gap-4 items-center">
+        <!-- Live Counter + Search (below sticky toolbar) -->
+        <div class="mb-8 no-print flex flex-col sm:flex-row gap-4 items-center mt-4">
             <div id="liveCounter" class="bg-white px-6 py-3 rounded-3xl font-semibold text-lg border border-gray-200 flex-1 text-center sm:text-left">
                 0 items with stock > 0
             </div>
@@ -91,8 +111,8 @@
                    class="flex-1 px-6 py-4 bg-white border border-gray-200 rounded-3xl text-lg focus:outline-none focus:border-zinc-400">
         </div>
 
-        <!-- Category Navigation -->
-        <div id="categoryNav" class="flex flex-wrap gap-2 mb-10 no-print bg-white p-4 rounded-3xl shadow-sm"></div>
+        <!-- STICKY CATEGORY NAVIGATION -->
+        <div id="categoryNav" class="sticky-nav flex flex-wrap gap-2 mb-10 no-print bg-white p-4 rounded-3xl shadow-sm"></div>
 
         <!-- Summary Preview -->
         <div id="summaryPreview" class="hidden bg-white rounded-3xl shadow-sm p-8 mb-10">
@@ -103,7 +123,7 @@
         <!-- Categories Container -->
         <div id="categoriesContainer" class="space-y-10"></div>
 
-        <div class="text-center text-gray-500 text-sm mt-16">
+        <div class="text-center text-gray-500 text-sm mt-16 no-print">
             Auto-saves every change • Search is now smoother (debounced)<br>
             Green Beans included • "buckets" unit available
         </div>
@@ -111,7 +131,7 @@
 
 <script>
 // ==================== DATA ====================
-const baseCategories = [ /* same as before - unchanged */ 
+const baseCategories = [ 
     { name: "🥩 Meats", products: ["Sausages","Chicken","Lamb Shanks","Steak","Ragu Meat - Tray","Prosciutto","Mortadella","Ham","Salami"] },
     { name: "🐟 Seafood", products: ["Fish","Calamari","Prawns","Anchovies"] },
     { name: "🥛 Dairy", products: ["Butter block","Butter PC","Ricotta","Parmesan","Bocconcini","Mozzarella","Milk (3L)"] },
@@ -133,12 +153,13 @@ let stockData = {};
 let miscProducts = [];
 let searchTimeout = null;
 
-// ==================== LOCALSTORAGE (unchanged) ====================
+// ==================== LOCALSTORAGE ====================
 const STORAGE_KEY = "tml_stocktake_data";
 
 function saveToLocal() {
     const data = { stockData, miscProducts, date: document.getElementById("stockDate").value, staff: document.getElementById("staffName").value };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    alert("✅ Stock saved");
 }
 
 function loadFromLocal() {
@@ -165,7 +186,7 @@ function autoSave() {
     updateLiveCounter();
 }
 
-// ==================== RENDER (now more stable) ====================
+// ==================== RENDER ====================
 function render() {
     const container = document.getElementById("categoriesContainer");
     const nav = document.getElementById("categoryNav");
@@ -183,7 +204,11 @@ function render() {
         btn.href = `#${id}`;
         btn.className = "px-5 py-2.5 bg-white border border-gray-200 hover:border-zinc-300 rounded-2xl text-sm font-medium transition-colors";
         btn.textContent = cat.name;
-        btn.onclick = (e) => { e.preventDefault(); document.getElementById(id).scrollIntoView({ behavior: "smooth" }); };
+        btn.onclick = (e) => { 
+            e.preventDefault(); 
+            const target = document.getElementById(id);
+            if (target) target.scrollIntoView({ behavior: "smooth" }); 
+        };
         nav.appendChild(btn);
     });
 
@@ -193,7 +218,7 @@ function render() {
 
         const section = document.createElement("div");
         section.id = id;
-        section.className = "bg-white rounded-3xl shadow-sm overflow-hidden";
+        section.className = "bg-white rounded-3xl shadow-sm overflow-hidden category-section";
 
         const header = document.createElement("div");
         header.className = "category-header px-8 py-6 text-white text-2xl font-semibold";
@@ -258,14 +283,12 @@ function changeSausages(product, delta) {
     setQuantity(product, current + delta);
 }
 
-// ==================== ACTIONS ====================
 function setQuantity(product, value) {
     let val = parseInt(value) || 0;
     const max = product === "Sausages" ? 500 : 50;
     if (!stockData[product]) stockData[product] = { qty: 0, unit: "each" };
     stockData[product].qty = Math.max(0, Math.min(max, val));
     autoSave();
-    // No full render on every single change for stepper - only update counter
     updateLiveCounter();
 }
 
@@ -278,19 +301,15 @@ function changeUnit(product, unit) {
 function updateLiveCounter() {
     let count = 0;
     Object.values(stockData).forEach(item => { if (item.qty > 0) count++; });
-    miscProducts.forEach(p => { if (stockData[p] && stockData[p].qty > 0) count++; });
     document.getElementById("liveCounter").textContent = `${count} items with stock > 0`;
 }
 
-// Search with debounce to prevent interruption
 function debouncedFilter() {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
         render();
-    }, 180);   // 180ms delay - feels responsive but doesn't interrupt typing
+    }, 180);
 }
-
-// Rest of functions (addMiscProduct, deleteMiscProduct, resetAll, validateAndGetInfo, getFullStockTakeReport, showPreview, printPDF, exportCSV) remain the same as previous version
 
 function addMiscProduct() {
     const name = prompt("Enter new product name:");
@@ -318,8 +337,7 @@ function resetAll() {
     autoSave();
 }
 
-// Report functions (unchanged from previous gold version)
-function validateAndGetInfo() { /* ... same as before ... */ 
+function validateAndGetInfo() {
     const date = document.getElementById("stockDate").value;
     const staff = document.getElementById("staffName").value;
     const warning = document.getElementById("infoWarning");
@@ -331,7 +349,7 @@ function validateAndGetInfo() { /* ... same as before ... */
     return { date, staff };
 }
 
-function getFullStockTakeReport(info) { /* same as previous */ 
+function getFullStockTakeReport(info) {
     let report = `THE MEMBERS LOUNGE – STOCK TAKE REPORT\nDate: ${info.date}\nPerformed by: ${info.staff}\nGenerated: ${new Date().toLocaleString()}\n=========================================\n\n`;
     baseCategories.forEach(cat => {
         let has = false;
