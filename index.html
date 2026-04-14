@@ -11,9 +11,7 @@
         .category-header { background: linear-gradient(to right, #111827, #1f2937); }
         .product-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         .product-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
-        .category-section {
-            scroll-margin-top: 20px;
-        }
+        .category-section { scroll-margin-top: 20px; }
         /* Floating action panel */
         .floating-actions {
             position: fixed;
@@ -39,10 +37,7 @@
             border: none;
             cursor: pointer;
         }
-        .floating-actions button:hover {
-            transform: scale(1.08);
-            background: #111827;
-        }
+        .floating-actions button:hover { transform: scale(1.08); background: #111827; }
         .floating-actions .print { background: #059669; }
         .floating-actions .preview { background: #1f2937; }
         .floating-actions .reset { background: #dc2626; }
@@ -106,7 +101,7 @@
                    class="flex-1 px-6 py-4 bg-white border border-gray-200 rounded-3xl text-lg focus:outline-none focus:border-zinc-400">
         </div>
 
-        <!-- Category Navigation (static, no sticky) -->
+        <!-- Category Navigation -->
         <div id="categoryNav" class="flex flex-wrap gap-2 mb-10 no-print bg-white p-4 rounded-3xl shadow-sm"></div>
 
         <!-- Summary Preview -->
@@ -156,31 +151,12 @@ let stockData = {};
 let miscProducts = [];
 let searchTimeout = null;
 
-// ==================== LOCALSTORAGE ====================
+// ==================== LOCALSTORAGE (silent) ====================
 const STORAGE_KEY = "tml_stocktake_data";
 
 function saveToLocal() {
     const data = { stockData, miscProducts, date: document.getElementById("stockDate").value, staff: document.getElementById("staffName").value };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function loadFromLocal() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return alert("No saved data found");
-    const data = JSON.parse(saved);
-    stockData = data.stockData || {};
-    miscProducts = data.miscProducts || [];
-    if (data.date) document.getElementById("stockDate").value = data.date;
-    if (data.staff) document.getElementById("staffName").value = data.staff;
-    render();
-    updateLiveCounter();
-    alert("✅ Saved data loaded");
-}
-
-function clearAllData() {
-    if (!confirm("Delete ALL saved data?")) return;
-    localStorage.removeItem(STORAGE_KEY);
-    location.reload();
 }
 
 function autoSave() {
@@ -437,7 +413,7 @@ if (savedData) {
     } catch(e) {}
 }
 
-// Expose global functions
+// Expose global functions for buttons
 window.resetAll = resetAll;
 window.showPreview = showPreview;
 window.printPDF = printPDF;
@@ -448,9 +424,6 @@ window.changeUnit = changeUnit;
 window.debouncedFilter = debouncedFilter;
 window.deleteMiscProduct = deleteMiscProduct;
 window.addMiscProduct = addMiscProduct;
-window.loadFromLocal = loadFromLocal;
-window.clearAllData = clearAllData;
-window.saveToLocal = saveToLocal;
 </script>
 </body>
 </html>
