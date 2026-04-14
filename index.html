@@ -60,25 +60,31 @@
             font-size: 0.8rem;
             margin-top: 4px;
         }
-        .date-bar {
+        .info-bar {
             background: white;
             padding: 16px 24px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 20px;
+            gap: 30px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
             border-left: 4px solid #cc0000;
         }
-        .date-bar label {
+        .info-field {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .info-field label {
             font-weight: 600;
             color: #111;
         }
-        .date-bar input {
+        .info-field input {
             padding: 8px 12px;
             border-radius: 40px;
             border: 1px solid #ccc;
             font-size: 1rem;
+            min-width: 220px;
         }
         .toolbar {
             display: flex;
@@ -200,13 +206,18 @@
             border-top: 1px solid #d4dfcc;
             padding-top: 1.5rem;
         }
+        .warning-text {
+            color: #cc0000;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
         @media print {
             body {
                 background: white;
                 padding: 0;
                 margin: 0;
             }
-            .toolbar, .date-bar button, .footer-note, .stock-control select, .stock-control .qty-stepper button {
+            .toolbar, .info-bar button, .footer-note, .stock-control select, .stock-control .qty-stepper button {
                 display: none !important;
             }
             .product-card {
@@ -258,10 +269,16 @@
         </div>
     </div>
 
-    <div class="date-bar">
-        <label>📅 Stock take date:</label>
-        <input type="date" id="stockDate" value="">
-        <span id="dateWarning" style="color: #cc0000; font-size: 0.8rem;"></span>
+    <div class="info-bar">
+        <div class="info-field">
+            <label>📅 Stock take date:</label>
+            <input type="date" id="stockDate" value="">
+        </div>
+        <div class="info-field">
+            <label>👤 Stocktake performed by (full name):</label>
+            <input type="text" id="staffName" placeholder="e.g. John Smith" autocomplete="off">
+        </div>
+        <div id="infoWarning" class="warning-text"></div>
     </div>
 
     <div class="toolbar">
@@ -272,13 +289,14 @@
     <div id="categoriesContainer"></div>
     <div class="footer-note">
         ✅ Sausages quantity up to 500 (stepper) · all others 0–50 dropdown<br>
-        ✅ Set the date, then print PDF – full stock take report
+        ✅ Products are alphabetical within each category<br>
+        ✅ Set date & your full name, then print PDF
     </div>
 </div>
 
 <script>
-    // ========== PRODUCT LIST (as provided by user) ==========
-    const categories = [
+    // ========== PRODUCT LIST (alphabetical within each category) ==========
+    const categoriesRaw = [
         { name: "🥩 Meats", products: [
             "Sausages", "Chicken", "Lamb Shanks", "Steak", "Ragu Meat - Tray",
             "Prosciutto", "Mortadella", "Ham", "Salami"
@@ -348,6 +366,12 @@
         ] }
     ];
 
+    // Sort products alphabetically within each category
+    const categories = categoriesRaw.map(cat => ({
+        name: cat.name,
+        products: [...cat.products].sort((a,b) => a.localeCompare(b))
+    }));
+
     // Unit options
     const unitOptions = [
         "grams (g)", "kilograms (kg)", "boxes", "bottles", "packets", "bags", 
@@ -355,7 +379,6 @@
         "jars", "tins", "drums", "loaves", "punnets", "bunches", "litres"
     ];
 
-    // Data structure: each product has { qty, unit }
     let stockData = {};
 
     function initData() {
@@ -478,21 +501,35 @@
         alert("All quantities set to zero.");
     }
 
-    let selectedDate = "";
-    function getSelectedDate() {
+    function validateAndGetInfo() {
         const dateInput = document.getElementById("stockDate");
+        const staffInput = document.getElementById("staffName");
+        const warningSpan = document.getElementById("infoWarning");
+        let isValid = true;
+        let errors = [];
         if (!dateInput.value) {
-            document.getElementById("dateWarning").innerText = "⚠️ Please set the stock take date first!";
+            errors.push("Date");
+            isValid = false;
+        }
+        if (!staffInput.value.trim()) {
+            errors.push("Staff name");
+            isValid = false;
+        }
+        if (!isValid) {
+            warningSpan.innerHTML = `⚠️ Please fill in: ${errors.join(" & ")}`;
             return null;
         }
-        document.getElementById("dateWarning").innerText = "";
-        return dateInput.value;
+        warningSpan.innerHTML = "";
+        return {
+            date: dateInput.value,
+            staff: staffInput.value.trim()
+        };
     }
 
-    function getFullStockTakeReport() {
-        const dateStr = selectedDate || "DATE NOT SET";
+    function getFullStockTakeReport(info) {
         let report = `THE MEMBERS LOUNGE – STOCK TAKE REPORT\n`;
-        report += `Date: ${dateStr}\n`;
+        report += `Date: ${info.date}\n`;
+        report += `Stocktake performed by: ${info.staff}\n`;
         report += `=========================================\n\n`;
         for (let cat of categories) {
             report += `📁 ${cat.name}\n`;
@@ -507,18 +544,17 @@
     }
 
     function printPDF() {
-        const dateOk = getSelectedDate();
-        if (!dateOk) {
-            alert("Please set the stock take date before printing.");
+        const info = validateAndGetInfo();
+        if (!info) {
+            alert("Please set both the stock take date and your full name before printing.");
             return;
         }
-        selectedDate = dateOk;
-        const reportText = getFullStockTakeReport();
+        const reportText = getFullStockTakeReport(info);
         const printWindow = window.open('', '_blank');
         printWindow.document.write(`
             <html>
             <head>
-                <title>Members Lounge Stock Take - ${selectedDate}</title>
+                <title>Members Lounge Stock Take - ${info.date}</title>
                 <style>
                     body { font-family: system-ui, 'Segoe UI', Roboto, sans-serif; margin: 40px; }
                     h1 { color: #111; border-left: 6px solid #cc0000; padding-left: 20px; }
@@ -540,8 +576,6 @@
     // Set today's date as default
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("stockDate").value = today;
-    selectedDate = today;
-    document.getElementById("dateWarning").innerHTML = "";
 
     initData();
     render();
