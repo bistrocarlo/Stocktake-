@@ -149,42 +149,13 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        .qty-stepper {
-            display: flex;
-            align-items: center;
-            background: #f1f3f0;
-            border-radius: 40px;
-            border: 1px solid #cfd9cc;
-        }
-        .qty-stepper button {
-            background: #e0e6db;
-            border: none;
-            color: #1f3b22;
-            font-size: 1.2rem;
-            font-weight: bold;
-            width: 32px;
-            padding: 4px 0;
-            border-radius: 40px;
-            cursor: pointer;
-        }
-        .qty-stepper button:hover {
-            background: #cbdcc1;
-        }
-        .qty-stepper input {
-            width: 55px;
-            text-align: center;
-            border: none;
-            background: transparent;
-            font-size: 0.9rem;
-            padding: 8px 0;
-            font-weight: 500;
-        }
         .stock-control select {
             padding: 7px 10px;
             border-radius: 40px;
             border: 1px solid #ccc;
             background: white;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
+            min-width: 70px;
         }
         .footer-note {
             text-align: center;
@@ -221,7 +192,7 @@
     <div id="categoriesContainer"></div>
     <div id="exportArea" class="export-area"></div>
     <div class="footer-note">
-        ✅ Use + / - to set quantity (0–100) – each product also has unit dropdown<br>
+        ✅ Use dropdown to set quantity (0–50) – each product also has unit dropdown<br>
         ✅ Each category has a supplier dropdown → report groups items by supplier for easy reordering
     </div>
 </div>
@@ -314,7 +285,7 @@
         ] }
     ];
 
-    // ----- YOUR SUPPLIER LIST (updated) -----
+    // ----- YOUR SUPPLIER LIST -----
     const supplierList = [
         "Select supplier",
         "Nino & Joe's Meats Pty Ltd",
@@ -373,12 +344,14 @@
         }
     }
 
-    // Helper: update quantity with clamp 0-100
+    // Helper: set quantity (called from dropdown)
     function setQuantity(product, newVal) {
-        let val = parseFloat(newVal);
+        let val = parseInt(newVal, 10);
         if (isNaN(val)) val = 0;
-        val = Math.min(100, Math.max(0, val));
+        val = Math.min(50, Math.max(0, val));
         stockData[product].qty = val;
+        // No need to re-render the whole UI, but we can just update the dropdown value.
+        // For consistency, we'll re-render the whole product grid (simple and safe).
         render();
     }
 
@@ -390,6 +363,19 @@
     function changeCategorySupplier(catName, supplier) {
         categorySupplier[catName] = supplier;
         render();
+    }
+
+    // Generate dropdown options 0..50
+    function quantityDropdown(currentQty) {
+        const select = document.createElement("select");
+        for (let i = 0; i <= 50; i++) {
+            const opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = i;
+            if (currentQty === i) opt.selected = true;
+            select.appendChild(opt);
+        }
+        return select;
     }
 
     // Render full UI
@@ -409,18 +395,18 @@
             const supplierDiv = document.createElement("div");
             supplierDiv.className = "supplier-select";
             supplierDiv.innerHTML = `<label>📦 Supplier:</label>`;
-            const select = document.createElement("select");
+            const supSelect = document.createElement("select");
             supplierList.forEach(sup => {
                 const opt = document.createElement("option");
                 opt.value = sup;
                 opt.textContent = sup;
                 if (categorySupplier[cat.name] === sup) opt.selected = true;
-                select.appendChild(opt);
+                supSelect.appendChild(opt);
             });
-            select.addEventListener("change", (function(catName) {
+            supSelect.addEventListener("change", (function(catName) {
                 return function(e) { changeCategorySupplier(catName, e.target.value); };
             })(cat.name));
-            supplierDiv.appendChild(select);
+            supplierDiv.appendChild(supSelect);
             header.appendChild(h2);
             header.appendChild(supplierDiv);
             catDiv.appendChild(header);
@@ -439,27 +425,11 @@
                 const controlDiv = document.createElement("div");
                 controlDiv.className = "stock-control";
                 
-                // Stepper with +/-
-                const stepper = document.createElement("div");
-                stepper.className = "qty-stepper";
-                const minusBtn = document.createElement("button");
-                minusBtn.textContent = "−";
-                const qtyInput = document.createElement("input");
-                qtyInput.type = "number";
-                qtyInput.value = data.qty;
-                qtyInput.min = 0;
-                qtyInput.max = 100;
-                qtyInput.step = 1;
-                const plusBtn = document.createElement("button");
-                plusBtn.textContent = "+";
-                
-                minusBtn.onclick = () => setQuantity(prod, data.qty - 1);
-                plusBtn.onclick = () => setQuantity(prod, data.qty + 1);
-                qtyInput.onchange = (e) => setQuantity(prod, e.target.value);
-                
-                stepper.appendChild(minusBtn);
-                stepper.appendChild(qtyInput);
-                stepper.appendChild(plusBtn);
+                // Quantity dropdown (0-50)
+                const qtySelect = quantityDropdown(data.qty);
+                qtySelect.addEventListener("change", (function(p) {
+                    return function(e) { setQuantity(p, e.target.value); };
+                })(prod));
                 
                 // Unit select
                 const unitSelect = document.createElement("select");
@@ -470,9 +440,11 @@
                     if (data.unit === unit) opt.selected = true;
                     unitSelect.appendChild(opt);
                 });
-                unitSelect.onchange = (function(p) { return (e) => changeUnit(p, e.target.value); })(prod);
+                unitSelect.addEventListener("change", (function(p) {
+                    return function(e) { changeUnit(p, e.target.value); };
+                })(prod));
                 
-                controlDiv.appendChild(stepper);
+                controlDiv.appendChild(qtySelect);
                 controlDiv.appendChild(unitSelect);
                 card.appendChild(nameSpan);
                 card.appendChild(controlDiv);
@@ -488,7 +460,7 @@
         const saveObj = {
             stockData: stockData,
             categorySupplier: categorySupplier,
-            version: 2
+            version: 3
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(saveObj));
         alert("Stock & supplier assignments saved!");
