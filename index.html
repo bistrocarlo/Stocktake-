@@ -121,7 +121,7 @@
         <!-- Footer -->
         <div class="text-center text-gray-500 text-sm mt-16">
             Sausages: 10-step stepper (max 500) • Others: 0–50 dropdown<br>
-            Add missing items in the Miscellaneous section • Only items with quantity &gt; 0 appear in the report
+            Green Beans added to Fruit & Vegetables • "buckets" unit now available for all items
         </div>
     </div>
 
@@ -132,7 +132,11 @@ const baseCategories = [
     { name: "🐟 Seafood", products: ["Fish","Calamari","Prawns","Anchovies"] },
     { name: "🥛 Dairy", products: ["Butter block","Butter PC","Ricotta","Parmesan","Bocconcini","Mozzarella","Milk (3L)"] },
     { name: "🥖 Bakery", products: ["Bruschetta Bread","Gluten‑free bread"] },
-    { name: "🍎 Fruit & Vegetables", products: ["Avocado","Basil","Broccoli","Capsicums Pizza","Carrots","Cauliflower","Celery","Eggplant","Garlic","Lemon","Mushrooms","Onion","Oranges","Parsley","Pineapple","Potatoes","Pumpkin","Rocket","Rosemary","Salad Mix","Strawberries","Tomatoes","Watermelon","Zucchini"] },
+    { name: "🍎 Fruit & Vegetables", products: [
+        "Avocado","Basil","Broccoli","Capsicums Pizza","Carrots","Cauliflower","Celery","Eggplant","Garlic","Green Beans",
+        "Lemon","Mushrooms","Onion","Oranges","Parsley","Pineapple","Potatoes","Pumpkin","Rocket","Rosemary","Salad Mix",
+        "Strawberries","Tomatoes","Watermelon","Zucchini"
+    ] },
     { name: "📦 Dry Goods", products: ["Artichokes","Breadcrumbs - Panko","Capsicums (tin)","Chicken Nuggets (50/pack)","Chili Flakes","Coffee Espresso (1kg bag)","Frozen Chips","Gluten free Gnocchi (400g)","Olive Oil (10L box)","Olive Oil (20L drum)","Olives (Antipasto)","Olives (Pizza)","Oregano","Pasta Divella Elicoidali","Peeled Tomato's (box of 6)","Pizza Flour (12.5kg)","Red Wine Vinegar (5L)","Rice Flour (25kg)","Salt","Sugar","Sugar Sachet (2000x3g)","Tomato Sauce PC","Yeast"] },
     { name: "🧾 Paper Goods & Cleaning/Toiletries", products: ["5L Soap","25L Metho","Baking Paper roll","Bin Liners (72L)","Chux Roll","Dishwashing Liquid (25L)","Foil (3kg)","Gladwrap","Handtowels","Large Nitra Gloves","Mop Head & Handle","Ribbed Containers","Ribbed Lids","Scourer Sponge","Serviettes (1000/box)","Straws","Table Paper (100 sheets)","Thermal Printer Rolls","Thermal Rolls Eftpos","Toilet Rolls (jumbo)","Toilet Tablets","Wooden Stirrers"] },
     { name: "🍺 Beer & Cider", products: ["Carlton Draught","Cascade Light","Corona Extra","Peroni Red","VB"] },
@@ -141,10 +145,12 @@ const baseCategories = [
     { name: "🍰 Dessert", products: ["Cannoli Cream (2.5kg)","Cannoli shells Medium","Cannolis shells Small","Gelato","Strawberry Dixie Cups","Vanilla Choc coated Ice creams"] }
 ];
 
-// Sort products
-baseCategories.forEach(cat => cat.products.sort((a,b) => a.localeCompare(b)));
+// Sort products alphabetically in each category
+baseCategories.forEach(cat => {
+    cat.products.sort((a, b) => a.localeCompare(b));
+});
 
-const unitOptions = ["each","units","grams (g)","kilograms (kg)","litres","boxes","bottles","packets","bags","cartons","trays","jars","tins","drums","loaves","punnets","bunches","dozens"];
+const unitOptions = ["each","units","grams (g)","kilograms (kg)","litres","boxes","bottles","packets","bags","cartons","trays","jars","tins","drums","loaves","punnets","bunches","dozens","buckets"];
 
 let stockData = {};
 let miscProducts = [];
@@ -316,7 +322,7 @@ function resetAll() {
     render();
 }
 
-// ==================== REPORT ====================
+// ==================== REPORT & PRINT ====================
 function validateAndGetInfo() {
     const date = document.getElementById("stockDate").value;
     const staff = document.getElementById("staffName").value;
@@ -382,16 +388,30 @@ function printPDF() {
 
     const report = getFullStockTakeReport(info);
     const win = window.open('', '_blank');
+    
     win.document.write(`
-        <html><head><title>Stock Take - ${info.date}</title>
-        <style>body { font-family: monospace; margin: 40px; line-height: 1.6; }</style>
-        </head><body>
+        <html>
+        <head>
+            <title>Stock Take - ${info.date}</title>
+            <style>
+                body { font-family: monospace; margin: 40px; line-height: 1.6; }
+                h1 { border-bottom: 2px solid #000; padding-bottom: 10px; }
+                pre { white-space: pre-wrap; font-size: 11pt; }
+            </style>
+        </head>
+        <body>
             <h1>The Members Lounge – Stock Take</h1>
             <pre>${report}</pre>
-        </body></html>
+        </body>
+        </html>
     `);
+    
     win.document.close();
-    setTimeout(() => win.print(), 300);
+    
+    // Small delay to ensure content loads before print dialog
+    setTimeout(() => {
+        win.print();
+    }, 500);
 }
 
 // ==================== START ====================
