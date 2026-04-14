@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Members Lounge – Stock Take App</title>
+    <title>Members Lounge – Supplier Stock Take</title>
     <style>
         * {
             box-sizing: border-box;
@@ -57,6 +57,9 @@
         button.warning {
             background: #d9534f;
         }
+        button.supplier-report {
+            background: #2c6e2f;
+        }
         button:hover {
             opacity: 0.85;
             transform: scale(0.97);
@@ -81,18 +84,44 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             overflow: hidden;
         }
-        .category h2 {
+        .category-header {
             background: #e9f0e3;
-            margin: 0;
             padding: 14px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border-bottom: 1px solid #cddfc0;
+        }
+        .category-header h2 {
+            margin: 0;
             font-size: 1.3rem;
             font-weight: 600;
             color: #1f3b22;
-            border-bottom: 1px solid #cddfc0;
+        }
+        .supplier-select {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 5px 12px;
+            border-radius: 40px;
+        }
+        .supplier-select label {
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        .supplier-select select {
+            padding: 6px 12px;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+            background: white;
+            font-size: 0.8rem;
         }
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 12px;
             padding: 20px;
         }
@@ -101,7 +130,6 @@
             border: 1px solid #e2e6df;
             border-radius: 20px;
             padding: 12px 16px;
-            transition: 0.1s;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -110,9 +138,9 @@
         }
         .product-name {
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             flex: 2;
-            min-width: 130px;
+            min-width: 140px;
             color: #1e2a1c;
         }
         .stock-control {
@@ -120,23 +148,43 @@
             gap: 8px;
             align-items: center;
             flex-wrap: wrap;
-            justify-content: flex-end;
         }
-        .stock-control input {
-            width: 85px;
-            padding: 8px 8px;
-            border: 1px solid #ccc;
+        .qty-stepper {
+            display: flex;
+            align-items: center;
+            background: #f1f3f0;
             border-radius: 40px;
+            border: 1px solid #cfd9cc;
+        }
+        .qty-stepper button {
+            background: #e0e6db;
+            border: none;
+            color: #1f3b22;
+            font-size: 1.2rem;
+            font-weight: bold;
+            width: 32px;
+            padding: 4px 0;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+        .qty-stepper button:hover {
+            background: #cbdcc1;
+        }
+        .qty-stepper input {
+            width: 55px;
             text-align: center;
+            border: none;
+            background: transparent;
             font-size: 0.9rem;
+            padding: 8px 0;
+            font-weight: 500;
         }
         .stock-control select {
             padding: 7px 10px;
             border-radius: 40px;
             border: 1px solid #ccc;
             background: white;
-            font-size: 0.8rem;
-            cursor: pointer;
+            font-size: 0.75rem;
         }
         .footer-note {
             text-align: center;
@@ -152,39 +200,34 @@
                 align-items: stretch;
             }
             .stock-control {
-                justify-content: stretch;
-            }
-            .stock-control input, .stock-control select {
-                flex: 1;
+                justify-content: space-between;
             }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>🍽️ Members Lounge – Stock Take</h1>
-    <div class="sub">Sunday night after service · enter remaining stock · select unit per product</div>
+    <h1>🍽️ Members Lounge – Supplier Stock Take</h1>
+    <div class="sub">Sunday night after service · enter remaining stock · assign supplier per category</div>
 
     <div class="toolbar">
         <button id="saveBtn">💾 Save to browser</button>
         <button id="loadBtn">📂 Load last session</button>
         <button id="resetBtn" class="warning">🗑️ Reset all to zero</button>
-        <button id="exportBtn" class="secondary">📋 Generate report (copy text)</button>
+        <button id="exportBySupplierBtn" class="supplier-report">📋 Report grouped by supplier</button>
+        <button id="exportFullBtn" class="secondary">📄 Full inventory report</button>
     </div>
 
     <div id="categoriesContainer"></div>
     <div id="exportArea" class="export-area"></div>
     <div class="footer-note">
-        ✅ Use the unit dropdown for each item (grams, kilos, boxes, bottles, individual, etc.)<br>
-        ✅ Report will show product, quantity and unit. Save before closing.
+        ✅ Use + / - to set quantity (0–100) – each product also has unit dropdown<br>
+        ✅ Each category has a supplier dropdown → report groups items by supplier for easy reordering
     </div>
 </div>
 
 <script>
-    // --------------------------------------------------------------
-    // PRODUCT DATABASE – based on your PDF stock take list
-    // Categories and products exactly as extracted
-    // --------------------------------------------------------------
+    // ========== PRODUCT DATABASE (from your PDF) ==========
     const categories = [
         { name: "🐟 Seafood & Meat", products: [
             "Fish (5kg box)", "Calamari (5kg box)", "Oysters", "Prawns (bag)", "Lobster", "Salmon",
@@ -271,28 +314,67 @@
         ] }
     ];
 
-    // Predefined unit options (common for F&B)
+    // ----- SUPPLIER LIST (you can edit this array) -----
+    let supplierList = [
+        "Select supplier",
+        "PFD Food Services",
+        "Coles Wholesale",
+        "Harris Farm",
+        "Wine Collective",
+        "Bottlemart",
+        "Mario's Fine Meats",
+        "Gourmet Bakery Supply",
+        "Gelato Importers",
+        "Clean & Safe Supplies"
+    ];
+
+    // Unit options
     const unitOptions = [
         "grams (g)", "kilograms (kg)", "boxes", "bottles", "packets", "bags", 
         "each", "units", "dozens", "cartons", "cases", "trays", "buckets", 
         "jars", "tins", "drums", "loaves", "punnets", "bunches", "litres"
     ];
 
-    // Storage key
-    const STORAGE_KEY = "members_lounge_stock";
+    // Data structures
+    let stockData = {};        // { productName: { qty, unit } }
+    let categorySupplier = {}; // { categoryName: supplier }
 
-    // Helper: load initial stock data (all zero, default unit = first option)
-    function getDefaultStock() {
-        let stock = {};
+    // Storage key
+    const STORAGE_KEY = "members_lounge_stock_supplier";
+
+    // Initialize data
+    function initData() {
         for (let cat of categories) {
             for (let prod of cat.products) {
-                stock[prod] = { qty: 0, unit: "each" };  // sensible default
+                if (!stockData[prod]) {
+                    stockData[prod] = { qty: 0, unit: "each" };
+                }
+            }
+            if (!categorySupplier[cat.name]) {
+                categorySupplier[cat.name] = "Select supplier";
             }
         }
-        return stock;
     }
 
-    let stockData = getDefaultStock();
+    // Helper: update quantity with clamp 0-100
+    function setQuantity(product, newVal) {
+        let val = parseFloat(newVal);
+        if (isNaN(val)) val = 0;
+        val = Math.min(100, Math.max(0, val));
+        stockData[product].qty = val;
+        // re-render only that product's input? we'll just re-render whole UI for simplicity
+        render();
+    }
+
+    function changeUnit(product, newUnit) {
+        stockData[product].unit = newUnit;
+        render();
+    }
+
+    function changeCategorySupplier(catName, supplier) {
+        categorySupplier[catName] = supplier;
+        render(); // to update select display
+    }
 
     // Render full UI
     function render() {
@@ -302,28 +384,68 @@
         for (let cat of categories) {
             const catDiv = document.createElement("div");
             catDiv.className = "category";
+            
+            // Header with supplier dropdown
+            const header = document.createElement("div");
+            header.className = "category-header";
             const h2 = document.createElement("h2");
             h2.textContent = cat.name;
-            catDiv.appendChild(h2);
+            const supplierDiv = document.createElement("div");
+            supplierDiv.className = "supplier-select";
+            supplierDiv.innerHTML = `<label>📦 Supplier:</label>`;
+            const select = document.createElement("select");
+            supplierList.forEach(sup => {
+                const opt = document.createElement("option");
+                opt.value = sup;
+                opt.textContent = sup;
+                if (categorySupplier[cat.name] === sup) opt.selected = true;
+                select.appendChild(opt);
+            });
+            select.addEventListener("change", (function(catName) {
+                return function(e) { changeCategorySupplier(catName, e.target.value); };
+            })(cat.name));
+            supplierDiv.appendChild(select);
+            header.appendChild(h2);
+            header.appendChild(supplierDiv);
+            catDiv.appendChild(header);
+            
+            // Product grid
             const grid = document.createElement("div");
             grid.className = "product-grid";
             for (let prod of cat.products) {
-                const data = stockData[prod] || { qty: 0, unit: "each" };
+                const data = stockData[prod];
                 const card = document.createElement("div");
                 card.className = "product-card";
                 const nameSpan = document.createElement("div");
                 nameSpan.className = "product-name";
                 nameSpan.textContent = prod;
+                
                 const controlDiv = document.createElement("div");
                 controlDiv.className = "stock-control";
+                
+                // Stepper with +/-
+                const stepper = document.createElement("div");
+                stepper.className = "qty-stepper";
+                const minusBtn = document.createElement("button");
+                minusBtn.textContent = "−";
                 const qtyInput = document.createElement("input");
                 qtyInput.type = "number";
                 qtyInput.value = data.qty;
-                qtyInput.step = "any";
-                qtyInput.placeholder = "0";
-                qtyInput.addEventListener("change", (function(p) { return function(e) {
-                    stockData[p].qty = parseFloat(e.target.value) || 0;
-                }; })(prod));
+                qtyInput.min = 0;
+                qtyInput.max = 100;
+                qtyInput.step = 1;
+                const plusBtn = document.createElement("button");
+                plusBtn.textContent = "+";
+                
+                minusBtn.onclick = () => setQuantity(prod, data.qty - 1);
+                plusBtn.onclick = () => setQuantity(prod, data.qty + 1);
+                qtyInput.onchange = (e) => setQuantity(prod, e.target.value);
+                
+                stepper.appendChild(minusBtn);
+                stepper.appendChild(qtyInput);
+                stepper.appendChild(plusBtn);
+                
+                // Unit select
                 const unitSelect = document.createElement("select");
                 unitOptions.forEach(unit => {
                     const opt = document.createElement("option");
@@ -332,10 +454,9 @@
                     if (data.unit === unit) opt.selected = true;
                     unitSelect.appendChild(opt);
                 });
-                unitSelect.addEventListener("change", (function(p) { return function(e) {
-                    stockData[p].unit = e.target.value;
-                }; })(prod));
-                controlDiv.appendChild(qtyInput);
+                unitSelect.onchange = (function(p) { return (e) => changeUnit(p, e.target.value); })(prod);
+                
+                controlDiv.appendChild(stepper);
                 controlDiv.appendChild(unitSelect);
                 card.appendChild(nameSpan);
                 card.appendChild(controlDiv);
@@ -348,31 +469,43 @@
 
     // Save to localStorage
     function saveToLocal() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(stockData));
-        alert("Stock saved to browser! You can reload later.");
+        const saveObj = {
+            stockData: stockData,
+            categorySupplier: categorySupplier,
+            version: 2
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(saveObj));
+        alert("Stock & supplier assignments saved!");
     }
 
-    // Load from localStorage
     function loadFromLocal() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
             try {
-                const parsed = JSON.parse(saved);
-                // merge with defaults to keep structure
-                for (let key in parsed) {
-                    if (stockData[key]) {
-                        stockData[key] = parsed[key];
+                const obj = JSON.parse(saved);
+                if (obj.stockData) {
+                    // merge into existing structure
+                    for (let prod in obj.stockData) {
+                        if (stockData[prod]) {
+                            stockData[prod] = obj.stockData[prod];
+                        }
+                    }
+                }
+                if (obj.categorySupplier) {
+                    for (let cat in obj.categorySupplier) {
+                        if (categorySupplier[cat] !== undefined) {
+                            categorySupplier[cat] = obj.categorySupplier[cat];
+                        }
                     }
                 }
                 render();
-                alert("Previous stock data loaded.");
+                alert("Previous session loaded.");
             } catch(e) { alert("Error loading data"); }
         } else {
             alert("No saved session found.");
         }
     }
 
-    // Reset all quantities to 0 (keep units)
     function resetAll() {
         for (let prod in stockData) {
             stockData[prod].qty = 0;
@@ -381,49 +514,116 @@
         alert("All quantities set to zero.");
     }
 
-    // Generate human-readable report
-    function generateReport() {
-        let report = "STOCK TAKE REPORT – Members Lounge\n";
-        report += "-------------------------------------\n";
+    // Generate report grouped by supplier
+    function getSupplierGroupedReport() {
+        // Build map: supplier -> array of { category, product, qty, unit }
+        let supplierMap = new Map(); // key = supplier name, value = array
         for (let cat of categories) {
-            report += `\n📁 ${cat.name}\n`;
+            const supplier = categorySupplier[cat.name];
+            if (!supplier || supplier === "Select supplier") continue;
+            if (!supplierMap.has(supplier)) supplierMap.set(supplier, []);
+            const items = supplierMap.get(supplier);
             for (let prod of cat.products) {
                 const data = stockData[prod];
-                if (data && data.qty !== 0) {  // show only non-zero? but better show all? show all for full overview
-                    report += `   • ${prod}: ${data.qty} ${data.unit}\n`;
-                } else {
-                    report += `   • ${prod}: 0 ${data?.unit || 'each'}\n`;
+                if (data && data.qty > 0) {
+                    items.push({
+                        category: cat.name,
+                        product: prod,
+                        qty: data.qty,
+                        unit: data.unit
+                    });
                 }
             }
         }
-        report += "\n-------------------------------------\n";
+        // Also include items where supplier is "Select supplier" as "Unassigned"
+        let unassigned = [];
+        for (let cat of categories) {
+            const supplier = categorySupplier[cat.name];
+            if (!supplier || supplier === "Select supplier") {
+                for (let prod of cat.products) {
+                    const data = stockData[prod];
+                    if (data && data.qty > 0) {
+                        unassigned.push({
+                            category: cat.name,
+                            product: prod,
+                            qty: data.qty,
+                            unit: data.unit
+                        });
+                    }
+                }
+            }
+        }
+        let report = "📦 MEMBERS LOUNGE – ORDER BY SUPPLIER\n";
+        report += "=====================================\n\n";
+        for (let [supplier, items] of supplierMap.entries()) {
+            report += `🔹 SUPPLIER: ${supplier}\n`;
+            for (let it of items) {
+                report += `   • ${it.product} : ${it.qty} ${it.unit}\n`;
+            }
+            report += "\n";
+        }
+        if (unassigned.length > 0) {
+            report += `⚠️ UNASSIGNED (no supplier selected for category)\n`;
+            for (let it of unassigned) {
+                report += `   • ${it.product} (${it.category}) : ${it.qty} ${it.unit}\n`;
+            }
+            report += "\n";
+        }
         report += `Generated: ${new Date().toLocaleString()}\n`;
         return report;
     }
 
-    function showExport() {
-        const report = generateReport();
+    function getFullInventoryReport() {
+        let report = "📋 MEMBERS LOUNGE – FULL STOCK TAKE\n";
+        report += "==================================\n\n";
+        for (let cat of categories) {
+            const supplier = categorySupplier[cat.name];
+            report += `📁 ${cat.name}  [Supplier: ${supplier}]\n`;
+            for (let prod of cat.products) {
+                const data = stockData[prod];
+                report += `   • ${prod}: ${data.qty} ${data.unit}\n`;
+            }
+            report += "\n";
+        }
+        report += `Generated: ${new Date().toLocaleString()}\n`;
+        return report;
+    }
+
+    function showExportBySupplier() {
+        const report = getSupplierGroupedReport();
         const exportDiv = document.getElementById("exportArea");
         exportDiv.textContent = report;
         exportDiv.classList.add("show");
-        // also copy to clipboard automatically? optional
         navigator.clipboard.writeText(report).then(() => {
-            // brief visual feedback
-            const btn = document.getElementById("exportBtn");
-            const original = btn.textContent;
+            const btn = document.getElementById("exportBySupplierBtn");
+            const orig = btn.textContent;
             btn.textContent = "✅ Copied!";
-            setTimeout(() => btn.textContent = original, 1500);
-        }).catch(() => alert("Report ready – you can manually copy it."));
+            setTimeout(() => btn.textContent = orig, 1500);
+        }).catch(() => alert("Report ready – copy manually"));
     }
 
-    // initial render and attach events
-    window.addEventListener("DOMContentLoaded", () => {
-        render();
-        document.getElementById("saveBtn").addEventListener("click", saveToLocal);
-        document.getElementById("loadBtn").addEventListener("click", loadFromLocal);
-        document.getElementById("resetBtn").addEventListener("click", resetAll);
-        document.getElementById("exportBtn").addEventListener("click", showExport);
-    });
+    function showFullExport() {
+        const report = getFullInventoryReport();
+        const exportDiv = document.getElementById("exportArea");
+        exportDiv.textContent = report;
+        exportDiv.classList.add("show");
+        navigator.clipboard.writeText(report).then(() => {
+            const btn = document.getElementById("exportFullBtn");
+            const orig = btn.textContent;
+            btn.textContent = "✅ Copied!";
+            setTimeout(() => btn.textContent = orig, 1500);
+        }).catch(() => alert("Report ready – copy manually"));
+    }
+
+    // Initialization
+    initData();
+    render();
+
+    document.getElementById("saveBtn").addEventListener("click", saveToLocal);
+    document.getElementById("loadBtn").addEventListener("click", loadFromLocal);
+    document.getElementById("resetBtn").addEventListener("click", resetAll);
+    document.getElementById("exportBySupplierBtn").addEventListener("click", showExportBySupplier);
+    document.getElementById("exportFullBtn").addEventListener("click", showFullExport);
 </script>
 </body>
 </html>
