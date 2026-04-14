@@ -2,391 +2,154 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Members Lounge – Stock Take</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
         body {
-            background: #f5f5f5;
-            margin: 0;
-            padding: 16px;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .logo-header {
-            background: #000;
-            color: white;
-            border-radius: 28px 28px 0 0;
-            padding: 20px 28px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .logo-icon {
-            background: #fff;
-            color: #000;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            font-weight: bold;
-        }
-        .logo-text {
-            font-size: 1.75rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        .logo-text span {
-            color: #aaa;
-        }
-        .tagline {
-            color: #aaa;
-            font-size: 0.85rem;
-            margin-top: 2px;
-        }
-
-        .info-bar {
-            background: #fff;
-            padding: 18px 24px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border-left: 5px solid #000;
-            border-radius: 0 0 12px 12px;
-            margin-bottom: 16px;
-        }
-        .info-field {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .info-field label {
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .info-field input, .info-field select {
-            padding: 10px 14px;
-            border-radius: 9999px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-        }
-        .warning-text {
-            color: #d32f2f;
-            font-weight: 500;
-        }
-
-        .toolbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: #fff;
-            padding: 16px 24px;
-            border-radius: 9999px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        button {
-            background: #000;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 9999px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        button:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-        button.warning { background: #555; }
-        button.print-btn { background: #000; }
-
-        .category-nav {
-            position: sticky;
-            top: 70px;
-            z-index: 99;
-            background: #fff;
-            padding: 12px 20px;
-            border-radius: 9999px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border: 1px solid #eee;
-        }
-        .category-nav a {
-            padding: 8px 16px;
-            background: #f8f8f8;
-            border-radius: 9999px;
-            text-decoration: none;
-            color: #333;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-        .category-nav a:hover {
-            background: #000;
-            color: white;
-        }
-
-        .category {
-            background: #fff;
-            border-radius: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            overflow: hidden;
-            border: 1px solid #eee;
+            font-family: 'Inter', system_ui, sans-serif;
         }
         .category-header {
-            background: #000;
-            color: white;
-            padding: 16px 24px;
-            font-size: 1.35rem;
-            font-weight: 600;
-        }
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-            gap: 12px;
-            padding: 20px;
+            background: linear-gradient(to right, #111827, #1f2937);
         }
         .product-card {
-            background: #fafafa;
-            border: 1px solid #e5e5e5;
-            border-radius: 18px;
-            padding: 14px 18px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 12px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .product-name {
-            font-weight: 600;
-            flex: 1;
-            min-width: 140px;
-        }
-        .stock-control {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .qty-stepper {
-            display: flex;
-            align-items: center;
-            background: #f0f2ed;
-            border: 1px solid #d0d6c8;
-            border-radius: 9999px;
-        }
-        .qty-stepper button {
-            background: #e0e6db;
-            border: none;
-            width: 36px;
-            height: 36px;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #1f3b22;
-            cursor: pointer;
+        .product-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
         .qty-stepper input {
-            width: 70px;
-            text-align: center;
-            border: none;
-            background: transparent;
-            font-size: 1rem;
+            -moz-appearance: textfield;
         }
-        select {
-            padding: 8px 12px;
-            border-radius: 9999px;
-            border: 1px solid #ccc;
+        .qty-stepper input::-webkit-outer-spin-button,
+        .qty-stepper input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
-        .delete-item {
-            background: #666;
-            color: white;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .add-item-area {
-            padding: 18px 24px;
-            background: #f9f9f9;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .summary-preview {
-            background: #fff;
-            border-radius: 20px;
-            padding: 24px;
-            margin: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: none;
-        }
-        .summary-preview.show { display: block; }
-        .summary-preview pre {
-            background: #f8f8f8;
-            padding: 20px;
-            border-radius: 16px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            white-space: pre-wrap;
-            overflow-x: auto;
-        }
-
-        .footer-note {
-            text-align: center;
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-        }
-
         @media print {
-            body { background: white; padding: 20px; }
-            .toolbar, .info-bar button, .category-nav, .add-item-area, .delete-item, .summary-preview { display: none !important; }
-            .category-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .product-card { break-inside: avoid; page-break-inside: avoid; }
+            .no-print { display: none !important; }
+            .category-header { 
+                background: #111827 !important; 
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+            }
+            .product-card {
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+            }
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <div class="logo-header">
-        <div class="logo">
-            <div class="logo-icon">TML</div>
-            <div>
-                <div class="logo-text">The Members <span>Lounge</span></div>
-                <div class="tagline">Stock Take & Inventory System</div>
+<body class="bg-gray-100 min-h-screen pb-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Header -->
+        <div class="bg-white rounded-3xl shadow-sm overflow-hidden mb-8">
+            <div class="bg-zinc-950 text-white px-8 py-10 flex items-center gap-6">
+                <div class="w-16 h-16 bg-white text-zinc-950 rounded-2xl flex items-center justify-center text-4xl font-bold flex-shrink-0">
+                    TML
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight">The Members Lounge</h1>
+                    <p class="text-zinc-400 mt-1">Stock Take & Inventory</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="info-bar">
-        <div class="info-field">
-            <label>📅 Stock take date:</label>
-            <input type="date" id="stockDate">
+        <!-- Info Bar -->
+        <div class="bg-white rounded-3xl shadow-sm p-8 mb-8 no-print">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">📅 Stock Take Date</label>
+                    <input type="date" id="stockDate" 
+                           class="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-zinc-400 text-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">👤 Performed By</label>
+                    <select id="staffName" 
+                            class="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-zinc-400 text-lg">
+                        <option value="">-- Select your name --</option>
+                        <option value="Carlo P">Carlo P</option>
+                        <option value="Peter H">Peter H</option>
+                        <option value="Rohitha PR">Rohitha PR</option>
+                        <option value="Nam L">Nam L</option>
+                        <option value="Michelle P">Michelle P</option>
+                        <option value="Remzi A">Remzi A</option>
+                        <option value="Ralph M">Ralph M</option>
+                        <option value="Laura P">Laura P</option>
+                        <option value="Stevan B">Stevan B</option>
+                        <option value="Tony B">Tony B</option>
+                    </select>
+                </div>
+                <div id="infoWarning" class="text-red-600 text-sm font-medium self-end mb-1"></div>
+            </div>
         </div>
-        <div class="info-field">
-            <label>👤 Performed by:</label>
-            <select id="staffName">
-                <option value="">-- Select your name --</option>
-                <option value="Carlo P">Carlo P</option>
-                <option value="Peter H">Peter H</option>
-                <option value="Rohitha PR">Rohitha PR</option>
-                <option value="Nam L">Nam L</option>
-                <option value="Michelle P">Michelle P</option>
-                <option value="Remzi A">Remzi A</option>
-                <option value="Ralph M">Ralph M</option>
-                <option value="Laura P">Laura P</option>
-                <option value="Stevan B">Stevan B</option>
-                <option value="Tony B">Tony B</option>
-            </select>
+
+        <!-- Toolbar -->
+        <div class="flex flex-wrap gap-3 mb-8 no-print">
+            <button onclick="resetAll()" 
+                    class="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition">
+                🗑️ Reset All to Zero
+            </button>
+            <button onclick="showPreview()" 
+                    class="flex-1 sm:flex-none bg-zinc-800 hover:bg-black text-white px-8 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition">
+                📄 Preview Summary
+            </button>
+            <button onclick="printPDF()" 
+                    class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition">
+                🖨️ Print / Save PDF
+            </button>
         </div>
-        <div id="infoWarning" class="warning-text"></div>
-    </div>
 
-    <div class="toolbar">
-        <button id="resetBtn" class="warning">🗑️ Reset all to zero</button>
-        <button id="previewBtn">📄 Preview Summary</button>
-        <button id="printPdfBtn" class="print-btn">🖨️ Print / Save as PDF</button>
-    </div>
+        <!-- Category Navigation -->
+        <div id="categoryNav" class="flex flex-wrap gap-2 mb-10 no-print bg-white p-4 rounded-3xl shadow-sm"></div>
 
-    <div id="categoryNav" class="category-nav"></div>
-    <div id="summaryPreview" class="summary-preview"></div>
-    <div id="categoriesContainer"></div>
+        <!-- Summary Preview -->
+        <div id="summaryPreview" class="hidden bg-white rounded-3xl shadow-sm p-8 mb-10">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+                📋 Stock Take Summary
+            </h2>
+            <pre id="reportContent" class="bg-gray-50 p-8 rounded-2xl text-sm leading-relaxed overflow-auto max-h-[60vh] font-mono whitespace-pre-wrap"></pre>
+        </div>
 
-    <div class="footer-note">
-        Sausages use 10-step stepper (max 500) • All other items 0–50 dropdown<br>
-        Use “Miscellaneous” to add any missing products • Only items with quantity > 0 appear in the final report
+        <!-- Categories Container -->
+        <div id="categoriesContainer" class="space-y-10"></div>
+
+        <!-- Footer -->
+        <div class="text-center text-gray-500 text-sm mt-16">
+            Sausages: 10-step stepper (max 500) • Others: 0–50 dropdown<br>
+            Add missing items in the Miscellaneous section • Only items with quantity &gt; 0 appear in the report
+        </div>
     </div>
-</div>
 
 <script>
-// ==================== DATA & LOGIC ====================
+// ==================== DATA ====================
 const baseCategories = [
     { name: "🥩 Meats", products: ["Sausages","Chicken","Lamb Shanks","Steak","Ragu Meat - Tray","Prosciutto","Mortadella","Ham","Salami"] },
     { name: "🐟 Seafood", products: ["Fish","Calamari","Prawns","Anchovies"] },
     { name: "🥛 Dairy", products: ["Butter block","Butter PC","Ricotta","Parmesan","Bocconcini","Mozzarella","Milk (3L)"] },
     { name: "🥖 Bakery", products: ["Bruschetta Bread","Gluten‑free bread"] },
-    { name: "🍎 Fruit & Vegetables", products: [
-        "Avocado","Basil","Broccoli","Capsicums Pizza","Carrots","Cauliflower","Celery","Eggplant","Garlic","Lemon",
-        "Mushrooms","Onion","Oranges","Parsley","Pineapple","Potatoes","Pumpkin","Rocket","Rosemary","Salad Mix",
-        "Strawberries","Tomatoes","Watermelon","Zucchini"
-    ] },
-    { name: "📦 Dry Goods", products: [
-        "Artichokes","Breadcrumbs - Panko","Capsicums (tin)","Chicken Nuggets (50/pack)","Chili Flakes",
-        "Coffee Espresso (1kg bag)","Frozen Chips","Gluten free Gnocchi (400g)","Olive Oil (10L box)",
-        "Olive Oil (20L drum)","Olives (Antipasto)","Olives (Pizza)","Oregano","Pasta Divella Elicoidali",
-        "Peeled Tomato's (box of 6)","Pizza Flour (12.5kg)","Red Wine Vinegar (5L)","Rice Flour (25kg)",
-        "Salt","Sugar","Sugar Sachet (2000x3g)","Tomato Sauce PC","Yeast"
-    ] },
-    { name: "🧾 Paper Goods & Cleaning/Toiletries", products: [
-        "5L Soap","25L Metho","Baking Paper roll","Bin Liners (72L)","Chux Roll","Dishwashing Liquid (25L)",
-        "Foil (3kg)","Gladwrap","Handtowels","Large Nitra Gloves","Mop Head & Handle","Ribbed Containers",
-        "Ribbed Lids","Scourer Sponge","Serviettes (1000/box)","Straws","Table Paper (100 sheets)",
-        "Thermal Printer Rolls","Thermal Rolls Eftpos","Toilet Rolls (jumbo)","Toilet Tablets","Wooden Stirrers"
-    ] },
+    { name: "🍎 Fruit & Vegetables", products: ["Avocado","Basil","Broccoli","Capsicums Pizza","Carrots","Cauliflower","Celery","Eggplant","Garlic","Lemon","Mushrooms","Onion","Oranges","Parsley","Pineapple","Potatoes","Pumpkin","Rocket","Rosemary","Salad Mix","Strawberries","Tomatoes","Watermelon","Zucchini"] },
+    { name: "📦 Dry Goods", products: ["Artichokes","Breadcrumbs - Panko","Capsicums (tin)","Chicken Nuggets (50/pack)","Chili Flakes","Coffee Espresso (1kg bag)","Frozen Chips","Gluten free Gnocchi (400g)","Olive Oil (10L box)","Olive Oil (20L drum)","Olives (Antipasto)","Olives (Pizza)","Oregano","Pasta Divella Elicoidali","Peeled Tomato's (box of 6)","Pizza Flour (12.5kg)","Red Wine Vinegar (5L)","Rice Flour (25kg)","Salt","Sugar","Sugar Sachet (2000x3g)","Tomato Sauce PC","Yeast"] },
+    { name: "🧾 Paper Goods & Cleaning/Toiletries", products: ["5L Soap","25L Metho","Baking Paper roll","Bin Liners (72L)","Chux Roll","Dishwashing Liquid (25L)","Foil (3kg)","Gladwrap","Handtowels","Large Nitra Gloves","Mop Head & Handle","Ribbed Containers","Ribbed Lids","Scourer Sponge","Serviettes (1000/box)","Straws","Table Paper (100 sheets)","Thermal Printer Rolls","Thermal Rolls Eftpos","Toilet Rolls (jumbo)","Toilet Tablets","Wooden Stirrers"] },
     { name: "🍺 Beer & Cider", products: ["Carlton Draught","Cascade Light","Corona Extra","Peroni Red","VB"] },
-    { name: "🍷 Wines", products: [
-        "Brown Brothers Prosecco (200ml)","Brown Brothers Prosecco (750ml)","La Gioiosa Prosecco",
-        "Warburn Cabernet Sauvignon","Warburn Chardonnay","Warburn Merlot","Warburn Moscato",
-        "Warburn Pinot Grigio","Warburn Pinot Noir","Warburn Rosé","Warburn Sauvignon Blanc","Warburn Shiraz"
-    ] },
-    { name: "🥃 Spirits & Liqueurs", products: [
-        "Angostura Bitters","Aperol Aperitivo","Aperol Spritz (175ml pack)","Apple cider Sommersby",
-        "Apple juice","Aranciatta Rosa","Baileys Irish Cream","Bacardi Rum","Bundaberg Rum","Campari",
-        "Canadian Club Whiskey","Captain Morgan Black Rum","Chinotto","Chivas Regal","Cinzano Extra Dry Vermouth",
-        "Cinzano Sweet Vermouth","Cognac Remy VSOP","Cointreau","Frangelico","Gordons Dry Gin","Grapa Piave",
-        "Jack Daniels","Jim Bean White","Johny Walker Black","Johny Walker Red","Jose Cuervo Tequila","Kahlua",
-        "Lime cordial","Limoncello Strega","Malibu","Montenegro","Orange juice","Penfolds Club Tawny Port",
-        "Pineapple juice","Raspberry cordial","Sambuca Molinaro","Smirnoff Red Vodka","Southern Comfort",
-        "Suntory Midori","Vecchio Amaro del Capo"
-    ] },
-    { name: "🍰 Dessert", products: [
-        "Cannoli Cream (2.5kg)","Cannoli shells Medium","Cannolis shells Small","Gelato",
-        "Strawberry Dixie Cups","Vanilla Choc coated Ice creams"
-    ] }
+    { name: "🍷 Wines", products: ["Brown Brothers Prosecco (200ml)","Brown Brothers Prosecco (750ml)","La Gioiosa Prosecco","Warburn Cabernet Sauvignon","Warburn Chardonnay","Warburn Merlot","Warburn Moscato","Warburn Pinot Grigio","Warburn Pinot Noir","Warburn Rosé","Warburn Sauvignon Blanc","Warburn Shiraz"] },
+    { name: "🥃 Spirits & Liqueurs", products: ["Angostura Bitters","Aperol Aperitivo","Aperol Spritz (175ml pack)","Apple cider Sommersby","Apple juice","Aranciatta Rosa","Baileys Irish Cream","Bacardi Rum","Bundaberg Rum","Campari","Canadian Club Whiskey","Captain Morgan Black Rum","Chinotto","Chivas Regal","Cinzano Extra Dry Vermouth","Cinzano Sweet Vermouth","Cognac Remy VSOP","Cointreau","Frangelico","Gordons Dry Gin","Grapa Piave","Jack Daniels","Jim Bean White","Johny Walker Black","Johny Walker Red","Jose Cuervo Tequila","Kahlua","Lime cordial","Limoncello Strega","Malibu","Montenegro","Orange juice","Penfolds Club Tawny Port","Pineapple juice","Raspberry cordial","Sambuca Molinaro","Smirnoff Red Vodka","Southern Comfort","Suntory Midori","Vecchio Amaro del Capo"] },
+    { name: "🍰 Dessert", products: ["Cannoli Cream (2.5kg)","Cannoli shells Medium","Cannolis shells Small","Gelato","Strawberry Dixie Cups","Vanilla Choc coated Ice creams"] }
 ];
 
-// Sort products alphabetically in each category
-baseCategories.forEach(cat => {
-    cat.products.sort((a, b) => a.localeCompare(b));
-});
+// Sort products
+baseCategories.forEach(cat => cat.products.sort((a,b) => a.localeCompare(b)));
 
 const unitOptions = ["each","units","grams (g)","kilograms (kg)","litres","boxes","bottles","packets","bags","cartons","trays","jars","tins","drums","loaves","punnets","bunches","dozens"];
 
 let stockData = {};
 let miscProducts = [];
 
+// ==================== INIT ====================
 function initBaseData() {
     baseCategories.forEach(cat => {
         cat.products.forEach(prod => {
@@ -395,204 +158,172 @@ function initBaseData() {
     });
 }
 
-function addMiscProduct(name) {
-    name = name.trim();
-    if (!name || miscProducts.includes(name)) {
-        alert("Product already exists or name is empty.");
-        return;
-    }
-    miscProducts.push(name);
-    stockData[name] = { qty: 0, unit: "each" };
-    render();
-}
-
-function deleteMiscProduct(name) {
-    miscProducts = miscProducts.filter(p => p !== name);
-    delete stockData[name];
-    render();
-}
-
-function setQuantity(product, newVal) {
-    let val = parseInt(newVal) || 0;
-    const max = product === "Sausages" ? 500 : 50;
-    val = Math.max(0, Math.min(max, val));
-    stockData[product].qty = val;
-    render();   // re-render to update stepper display
-}
-
-function changeUnit(product, newUnit) {
-    stockData[product].unit = newUnit;
-    render();
-}
-
-// ==================== RENDERING ====================
+// ==================== RENDER ====================
 function render() {
     const container = document.getElementById("categoriesContainer");
     const nav = document.getElementById("categoryNav");
     container.innerHTML = "";
     nav.innerHTML = "";
 
-    // Category navigation
-    [...baseCategories.map(c => c.name), "➕ Miscellaneous"].forEach(catName => {
-        const link = document.createElement("a");
-        link.href = `#${catName.replace(/[^a-zA-Z0-9]/g, '')}`;
-        link.textContent = catName;
-        link.onclick = (e) => {
+    // Navigation
+    [...baseCategories.map(c => c.name), "➕ Miscellaneous"].forEach(name => {
+        const id = name.replace(/[^a-zA-Z0-9]/g, '');
+        const btn = document.createElement("a");
+        btn.href = `#${id}`;
+        btn.className = "px-5 py-2.5 bg-white border border-gray-200 hover:border-zinc-300 rounded-2xl text-sm font-medium transition-colors";
+        btn.textContent = name;
+        btn.onclick = (e) => {
             e.preventDefault();
-            document.getElementById(catName.replace(/[^a-zA-Z0-9]/g, '')).scrollIntoView({ behavior: 'smooth' });
+            document.getElementById(id).scrollIntoView({ behavior: "smooth" });
         };
-        nav.appendChild(link);
+        nav.appendChild(btn);
     });
 
-    // Main categories
+    // Main Categories
     baseCategories.forEach(cat => {
-        const catId = cat.name.replace(/[^a-zA-Z0-9]/g, '');
-        const catDiv = document.createElement("div");
-        catDiv.className = "category";
-        catDiv.id = catId;
+        const id = cat.name.replace(/[^a-zA-Z0-9]/g, '');
+        const section = document.createElement("div");
+        section.id = id;
+        section.className = "bg-white rounded-3xl shadow-sm overflow-hidden";
 
         const header = document.createElement("div");
-        header.className = "category-header";
+        header.className = "category-header px-8 py-6 text-white text-2xl font-semibold";
         header.textContent = cat.name;
-        catDiv.appendChild(header);
+        section.appendChild(header);
 
         const grid = document.createElement("div");
-        grid.className = "product-grid";
+        grid.className = "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 p-8";
 
         cat.products.forEach(prod => {
-            const data = stockData[prod];
-            const card = createProductCard(prod, data);
-            grid.appendChild(card);
+            grid.appendChild(createProductCard(prod, false));
         });
 
-        catDiv.appendChild(grid);
-        container.appendChild(catDiv);
+        section.appendChild(grid);
+        container.appendChild(section);
     });
 
     // Miscellaneous
-    const miscDiv = document.createElement("div");
-    miscDiv.className = "category";
-    miscDiv.id = "Miscellaneous";
+    const miscSection = document.createElement("div");
+    miscSection.id = "Miscellaneous";
+    miscSection.className = "bg-white rounded-3xl shadow-sm overflow-hidden";
 
     const miscHeader = document.createElement("div");
-    miscHeader.className = "category-header";
-    miscHeader.textContent = "➕ Miscellaneous (add missing items)";
-    miscDiv.appendChild(miscHeader);
+    miscHeader.className = "category-header px-8 py-6 text-white text-2xl font-semibold";
+    miscHeader.textContent = "➕ Miscellaneous";
+    miscSection.appendChild(miscHeader);
 
     const miscGrid = document.createElement("div");
-    miscGrid.className = "product-grid";
+    miscGrid.className = "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 p-8";
+    miscProducts.forEach(prod => miscGrid.appendChild(createProductCard(prod, true)));
+    miscSection.appendChild(miscGrid);
 
-    miscProducts.forEach(prod => {
-        const card = createProductCard(prod, stockData[prod], true);
-        miscGrid.appendChild(card);
-    });
-    miscDiv.appendChild(miscGrid);
-
-    // Add new item area
+    // Add new item
     const addArea = document.createElement("div");
-    addArea.className = "add-item-area";
-    const input = document.createElement("input");
-    input.type = "text";
-    input.placeholder = "Enter missing product name...";
-    const addBtn = document.createElement("button");
-    addBtn.textContent = "+ Add";
-    addBtn.onclick = () => {
-        if (input.value.trim()) {
-            addMiscProduct(input.value);
-            input.value = "";
-        }
-    };
-    addArea.append(input, addBtn);
-    miscDiv.appendChild(addArea);
-
-    container.appendChild(miscDiv);
+    addArea.className = "px-8 py-6 bg-gray-50 border-t flex gap-3";
+    addArea.innerHTML = `
+        <input id="newItemInput" type="text" placeholder="Add missing product..." 
+               class="flex-1 px-5 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:border-zinc-400">
+        <button onclick="addMiscProduct()" 
+                class="bg-zinc-800 hover:bg-black text-white px-8 rounded-2xl font-medium">Add</button>
+    `;
+    miscSection.appendChild(addArea);
+    container.appendChild(miscSection);
 }
 
-function createProductCard(product, data, isMisc = false) {
+function createProductCard(product, isMisc) {
+    const data = stockData[product];
     const card = document.createElement("div");
-    card.className = "product-card";
+    card.className = "product-card bg-gray-50 border border-gray-100 rounded-2xl p-6";
 
-    const nameDiv = document.createElement("div");
-    nameDiv.className = "product-name";
-    nameDiv.textContent = product;
-
-    const controlDiv = document.createElement("div");
-    controlDiv.className = "stock-control";
-
-    // Quantity control
+    let qtyHTML = '';
     if (product === "Sausages") {
-        const stepper = document.createElement("div");
-        stepper.className = "qty-stepper";
-
-        const minus = document.createElement("button");
-        minus.textContent = "−";
-        minus.onclick = () => setQuantity(product, data.qty - 10);
-
-        const input = document.createElement("input");
-        input.type = "number";
-        input.value = data.qty;
-        input.min = 0;
-        input.max = 500;
-        input.onchange = (e) => setQuantity(product, e.target.value);
-
-        const plus = document.createElement("button");
-        plus.textContent = "+";
-        plus.onclick = () => setQuantity(product, data.qty + 10);
-
-        stepper.append(minus, input, plus);
-        controlDiv.appendChild(stepper);
+        qtyHTML = `
+            <div class="qty-stepper flex items-center bg-white border border-gray-200 rounded-2xl overflow-hidden">
+                <button onclick="setQuantity('${product}', ${data.qty - 10})" class="w-12 h-12 text-2xl font-light text-gray-600 hover:bg-gray-100">-</button>
+                <input type="number" value="${data.qty}" min="0" max="500" step="10"
+                       onchange="setQuantity('${product}', this.value)" 
+                       class="w-20 text-center font-semibold text-lg bg-transparent focus:outline-none">
+                <button onclick="setQuantity('${product}', ${data.qty + 10})" class="w-12 h-12 text-2xl font-light text-gray-600 hover:bg-gray-100">+</button>
+            </div>
+        `;
     } else {
-        const select = document.createElement("select");
-        for (let i = 0; i <= 50; i++) {
-            const opt = document.createElement("option");
-            opt.value = i;
-            opt.textContent = i;
-            if (i === data.qty) opt.selected = true;
-            select.appendChild(opt);
-        }
-        select.onchange = (e) => setQuantity(product, e.target.value);
-        controlDiv.appendChild(select);
+        qtyHTML = `
+            <select onchange="setQuantity('${product}', this.value)" 
+                    class="bg-white border border-gray-200 rounded-2xl px-4 py-3 font-medium focus:outline-none">
+                ${Array.from({length: 51}, (_, i) => 
+                    `<option value="${i}" ${i === data.qty ? 'selected' : ''}>${i}</option>`
+                ).join('')}
+            </select>
+        `;
     }
 
-    // Unit select
-    const unitSelect = document.createElement("select");
-    unitOptions.forEach(u => {
-        const opt = document.createElement("option");
-        opt.value = u;
-        opt.textContent = u;
-        if (u === data.unit) opt.selected = true;
-        unitSelect.appendChild(opt);
-    });
-    unitSelect.onchange = (e) => changeUnit(product, e.target.value);
-    controlDiv.appendChild(unitSelect);
+    card.innerHTML = `
+        <div class="flex justify-between items-start mb-4">
+            <div class="font-semibold text-lg leading-tight">${product}</div>
+            ${isMisc ? `<button onclick="deleteMiscProduct('${product}')" class="text-red-500 hover:text-red-700 text-xl">✕</button>` : ''}
+        </div>
+        <div class="flex items-center gap-4">
+            ${qtyHTML}
+            <select onchange="changeUnit('${product}', this.value)" 
+                    class="bg-white border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none">
+                ${unitOptions.map(u => `<option value="${u}" ${u === data.unit ? 'selected' : ''}>${u}</option>`).join('')}
+            </select>
+        </div>
+    `;
 
-    // Delete button for misc items
-    if (isMisc) {
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "✖";
-        delBtn.className = "delete-item";
-        delBtn.onclick = () => deleteMiscProduct(product);
-        controlDiv.appendChild(delBtn);
-    }
-
-    card.append(nameDiv, controlDiv);
     return card;
 }
 
-// ==================== REPORT & ACTIONS ====================
-function resetAll() {
-    Object.keys(stockData).forEach(key => stockData[key].qty = 0);
+// ==================== ACTIONS ====================
+function setQuantity(product, value) {
+    let val = parseInt(value) || 0;
+    const max = product === "Sausages" ? 500 : 50;
+    stockData[product].qty = Math.max(0, Math.min(max, val));
     render();
-    alert("All quantities have been reset to zero.");
 }
 
+function changeUnit(product, unit) {
+    stockData[product].unit = unit;
+    render();
+}
+
+function addMiscProduct() {
+    const input = document.getElementById("newItemInput");
+    const name = input.value.trim();
+    if (!name) return alert("Please enter a product name");
+
+    if (miscProducts.includes(name)) {
+        alert("Product already exists in Miscellaneous");
+        return;
+    }
+
+    miscProducts.push(name);
+    stockData[name] = { qty: 0, unit: "each" };
+    input.value = "";
+    render();
+}
+
+function deleteMiscProduct(name) {
+    if (!confirm(`Delete ${name}?`)) return;
+    miscProducts = miscProducts.filter(p => p !== name);
+    delete stockData[name];
+    render();
+}
+
+function resetAll() {
+    if (!confirm("Reset ALL quantities to zero?")) return;
+    Object.keys(stockData).forEach(key => stockData[key].qty = 0);
+    render();
+}
+
+// ==================== REPORT ====================
 function validateAndGetInfo() {
     const date = document.getElementById("stockDate").value;
     const staff = document.getElementById("staffName").value;
     const warning = document.getElementById("infoWarning");
 
     if (!date || !staff) {
-        warning.textContent = "⚠️ Please fill in both Date and Staff name";
+        warning.textContent = "⚠️ Please select both date and your name";
         return null;
     }
     warning.textContent = "";
@@ -602,13 +333,13 @@ function validateAndGetInfo() {
 function getFullStockTakeReport(info) {
     let report = `THE MEMBERS LOUNGE – STOCK TAKE REPORT\n`;
     report += `Date: ${info.date}\n`;
-    report += `Stocktake performed by: ${info.staff}\n`;
+    report += `Performed by: ${info.staff}\n`;
     report += `Generated: ${new Date().toLocaleString()}\n`;
     report += `=========================================\n\n`;
 
     baseCategories.forEach(cat => {
         let hasItems = false;
-        let section = `📁 ${cat.name}\n`;
+        let section = `${cat.name}\n`;
         cat.products.forEach(prod => {
             const d = stockData[prod];
             if (d && d.qty > 0) {
@@ -621,7 +352,7 @@ function getFullStockTakeReport(info) {
 
     if (miscProducts.length > 0) {
         let hasMisc = false;
-        let section = `📁 Miscellaneous\n`;
+        let section = `Miscellaneous\n`;
         miscProducts.forEach(prod => {
             const d = stockData[prod];
             if (d && d.qty > 0) {
@@ -640,10 +371,9 @@ function showPreview() {
     if (!info) return;
 
     const report = getFullStockTakeReport(info);
-    const preview = document.getElementById("summaryPreview");
-    preview.innerHTML = `<h3 style="margin:0 0 15px 0;">📋 Stock Take Summary</h3><pre>${report}</pre>`;
-    preview.classList.add("show");
-    preview.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("reportContent").textContent = report;
+    document.getElementById("summaryPreview").classList.remove("hidden");
+    document.getElementById("summaryPreview").scrollIntoView({ behavior: "smooth" });
 }
 
 function printPDF() {
@@ -654,29 +384,21 @@ function printPDF() {
     const win = window.open('', '_blank');
     win.document.write(`
         <html><head><title>Stock Take - ${info.date}</title>
-        <style>
-            body { font-family: system-ui, sans-serif; margin: 40px; }
-            h1 { border-left: 8px solid #000; padding-left: 20px; }
-            pre { font-family: monospace; white-space: pre-wrap; font-size: 11pt; background:#f9f9f9; padding:25px; border-radius:12px; }
-        </style>
+        <style>body { font-family: monospace; margin: 40px; line-height: 1.6; }</style>
         </head><body>
             <h1>The Members Lounge – Stock Take</h1>
             <pre>${report}</pre>
         </body></html>
     `);
     win.document.close();
-    win.print();
+    setTimeout(() => win.print(), 300);
 }
 
-// ==================== INITIALISATION ====================
+// ==================== START ====================
 document.getElementById("stockDate").value = new Date().toISOString().split('T')[0];
 
 initBaseData();
 render();
-
-document.getElementById("resetBtn").addEventListener("click", resetAll);
-document.getElementById("previewBtn").addEventListener("click", showPreview);
-document.getElementById("printPdfBtn").addEventListener("click", printPDF);
 </script>
 </body>
 </html>
