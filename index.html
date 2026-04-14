@@ -7,39 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', system_ui, sans-serif;
-        }
-        .category-header {
-            background: linear-gradient(to right, #111827, #1f2937);
-        }
-        .product-card {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .product-card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            transform: translateY(-2px);
-        }
-        .qty-stepper input {
-            -moz-appearance: textfield;
-        }
-        .qty-stepper input::-webkit-outer-spin-button,
-        .qty-stepper input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .category-header { background: linear-gradient(to right, #111827, #1f2937); }
+        .product-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .product-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
         @media print {
             .no-print { display: none !important; }
-            .category-header { 
-                background: #111827 !important; 
-                color: white !important;
-                -webkit-print-color-adjust: exact;
-            }
-            .product-card {
-                border: 1px solid #ddd !important;
-                box-shadow: none !important;
-            }
+            .category-header { background: #111827 !important; color: white !important; -webkit-print-color-adjust: exact; }
+            .product-card { border: 1px solid #ddd !important; box-shadow: none !important; break-inside: avoid; }
         }
     </style>
 </head>
@@ -49,12 +24,10 @@
         <!-- Header -->
         <div class="bg-white rounded-3xl shadow-sm overflow-hidden mb-8">
             <div class="bg-zinc-950 text-white px-8 py-10 flex items-center gap-6">
-                <div class="w-16 h-16 bg-white text-zinc-950 rounded-2xl flex items-center justify-center text-4xl font-bold flex-shrink-0">
-                    TML
-                </div>
+                <div class="w-16 h-16 bg-white text-zinc-950 rounded-2xl flex items-center justify-center text-4xl font-bold">TML</div>
                 <div>
                     <h1 class="text-3xl font-bold tracking-tight">The Members Lounge</h1>
-                    <p class="text-zinc-400 mt-1">Stock Take & Inventory</p>
+                    <p class="text-zinc-400 mt-1">Professional Stock Take System</p>
                 </div>
             </div>
         </div>
@@ -64,13 +37,11 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">📅 Stock Take Date</label>
-                    <input type="date" id="stockDate" 
-                           class="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-zinc-400 text-lg">
+                    <input type="date" id="stockDate" class="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-zinc-400 text-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">👤 Performed By</label>
-                    <select id="staffName" 
-                            class="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-zinc-400 text-lg">
+                    <select id="staffName" class="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-zinc-400 text-lg">
                         <option value="">-- Select your name --</option>
                         <option value="Carlo P">Carlo P</option>
                         <option value="Peter H">Peter H</option>
@@ -84,24 +55,37 @@
                         <option value="Tony B">Tony B</option>
                     </select>
                 </div>
-                <div id="infoWarning" class="text-red-600 text-sm font-medium self-end mb-1"></div>
+                <div id="infoWarning" class="text-red-600 text-sm font-medium self-end"></div>
             </div>
         </div>
 
         <!-- Toolbar -->
+        <div class="flex flex-wrap gap-3 mb-6 no-print">
+            <button onclick="resetAll()" class="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
+                🗑️ Reset All
+            </button>
+            <button onclick="showPreview()" class="flex-1 sm:flex-none bg-zinc-800 hover:bg-black text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
+                📄 Preview
+            </button>
+            <button onclick="printPDF()" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
+                🖨️ Print PDF
+            </button>
+            <button onclick="exportCSV()" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
+                📊 Export CSV
+            </button>
+        </div>
+
         <div class="flex flex-wrap gap-3 mb-8 no-print">
-            <button onclick="resetAll()" 
-                    class="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition">
-                🗑️ Reset All to Zero
-            </button>
-            <button onclick="showPreview()" 
-                    class="flex-1 sm:flex-none bg-zinc-800 hover:bg-black text-white px-8 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition">
-                📄 Preview Summary
-            </button>
-            <button onclick="printPDF()" 
-                    class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition">
-                🖨️ Print / Save PDF
-            </button>
+            <button onclick="saveToLocal()" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-2xl font-medium">💾 Save Now</button>
+            <button onclick="loadFromLocal()" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-2xl font-medium">📂 Load Saved</button>
+            <button onclick="clearAllData()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-2xl font-medium">Clear All Data</button>
+        </div>
+
+        <!-- Search -->
+        <div class="mb-8 no-print">
+            <input id="searchInput" type="text" placeholder="🔍 Search products..." 
+                   onkeyup="filterProducts()" 
+                   class="w-full px-6 py-4 bg-white border border-gray-200 rounded-3xl text-lg focus:outline-none focus:border-zinc-400">
         </div>
 
         <!-- Category Navigation -->
@@ -109,19 +93,16 @@
 
         <!-- Summary Preview -->
         <div id="summaryPreview" class="hidden bg-white rounded-3xl shadow-sm p-8 mb-10">
-            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3">
-                📋 Stock Take Summary
-            </h2>
-            <pre id="reportContent" class="bg-gray-50 p-8 rounded-2xl text-sm leading-relaxed overflow-auto max-h-[60vh] font-mono whitespace-pre-wrap"></pre>
+            <h2 class="text-2xl font-semibold mb-6">📋 Stock Take Summary</h2>
+            <pre id="reportContent" class="bg-gray-50 p-8 rounded-2xl text-sm leading-relaxed overflow-auto max-h-[65vh] font-mono whitespace-pre-wrap"></pre>
         </div>
 
         <!-- Categories Container -->
         <div id="categoriesContainer" class="space-y-10"></div>
 
-        <!-- Footer -->
         <div class="text-center text-gray-500 text-sm mt-16">
-            Sausages: 10-step stepper (max 500) • Others: 0–50 dropdown<br>
-            Green Beans added to Fruit & Vegetables • "buckets" unit now available for all items
+            Auto-saves to browser • Green Beans added • "buckets" unit available<br>
+            Search works across all categories • Only items with qty > 0 appear in reports
         </div>
     </div>
 
@@ -132,11 +113,7 @@ const baseCategories = [
     { name: "🐟 Seafood", products: ["Fish","Calamari","Prawns","Anchovies"] },
     { name: "🥛 Dairy", products: ["Butter block","Butter PC","Ricotta","Parmesan","Bocconcini","Mozzarella","Milk (3L)"] },
     { name: "🥖 Bakery", products: ["Bruschetta Bread","Gluten‑free bread"] },
-    { name: "🍎 Fruit & Vegetables", products: [
-        "Avocado","Basil","Broccoli","Capsicums Pizza","Carrots","Cauliflower","Celery","Eggplant","Garlic","Green Beans",
-        "Lemon","Mushrooms","Onion","Oranges","Parsley","Pineapple","Potatoes","Pumpkin","Rocket","Rosemary","Salad Mix",
-        "Strawberries","Tomatoes","Watermelon","Zucchini"
-    ] },
+    { name: "🍎 Fruit & Vegetables", products: ["Avocado","Basil","Broccoli","Capsicums Pizza","Carrots","Cauliflower","Celery","Eggplant","Garlic","Green Beans","Lemon","Mushrooms","Onion","Oranges","Parsley","Pineapple","Potatoes","Pumpkin","Rocket","Rosemary","Salad Mix","Strawberries","Tomatoes","Watermelon","Zucchini"] },
     { name: "📦 Dry Goods", products: ["Artichokes","Breadcrumbs - Panko","Capsicums (tin)","Chicken Nuggets (50/pack)","Chili Flakes","Coffee Espresso (1kg bag)","Frozen Chips","Gluten free Gnocchi (400g)","Olive Oil (10L box)","Olive Oil (20L drum)","Olives (Antipasto)","Olives (Pizza)","Oregano","Pasta Divella Elicoidali","Peeled Tomato's (box of 6)","Pizza Flour (12.5kg)","Red Wine Vinegar (5L)","Rice Flour (25kg)","Salt","Sugar","Sugar Sachet (2000x3g)","Tomato Sauce PC","Yeast"] },
     { name: "🧾 Paper Goods & Cleaning/Toiletries", products: ["5L Soap","25L Metho","Baking Paper roll","Bin Liners (72L)","Chux Roll","Dishwashing Liquid (25L)","Foil (3kg)","Gladwrap","Handtowels","Large Nitra Gloves","Mop Head & Handle","Ribbed Containers","Ribbed Lids","Scourer Sponge","Serviettes (1000/box)","Straws","Table Paper (100 sheets)","Thermal Printer Rolls","Thermal Rolls Eftpos","Toilet Rolls (jumbo)","Toilet Tablets","Wooden Stirrers"] },
     { name: "🍺 Beer & Cider", products: ["Carlton Draught","Cascade Light","Corona Extra","Peroni Red","VB"] },
@@ -145,49 +122,84 @@ const baseCategories = [
     { name: "🍰 Dessert", products: ["Cannoli Cream (2.5kg)","Cannoli shells Medium","Cannolis shells Small","Gelato","Strawberry Dixie Cups","Vanilla Choc coated Ice creams"] }
 ];
 
-// Sort products alphabetically in each category
-baseCategories.forEach(cat => {
-    cat.products.sort((a, b) => a.localeCompare(b));
-});
+baseCategories.forEach(cat => cat.products.sort((a,b) => a.localeCompare(b)));
 
 const unitOptions = ["each","units","grams (g)","kilograms (kg)","litres","boxes","bottles","packets","bags","cartons","trays","jars","tins","drums","loaves","punnets","bunches","dozens","buckets"];
 
 let stockData = {};
 let miscProducts = [];
 
-// ==================== INIT ====================
-function initBaseData() {
-    baseCategories.forEach(cat => {
-        cat.products.forEach(prod => {
-            stockData[prod] = { qty: 0, unit: "each" };
-        });
-    });
+// ==================== LOCALSTORAGE ====================
+const STORAGE_KEY = "tml_stocktake_data";
+
+function saveToLocal() {
+    const data = {
+        stockData,
+        miscProducts,
+        date: document.getElementById("stockDate").value,
+        staff: document.getElementById("staffName").value
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    alert("✅ Progress saved to browser");
 }
 
-// ==================== RENDER ====================
+function loadFromLocal() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return alert("No saved data found");
+
+    const data = JSON.parse(saved);
+    stockData = data.stockData || {};
+    miscProducts = data.miscProducts || [];
+    
+    if (data.date) document.getElementById("stockDate").value = data.date;
+    if (data.staff) document.getElementById("staffName").value = data.staff;
+
+    render();
+    alert("✅ Saved data loaded");
+}
+
+function clearAllData() {
+    if (!confirm("Delete ALL saved data? This cannot be undone.")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+}
+
+// Auto-save on changes
+function autoSave() {
+    saveToLocal();
+}
+
+// ==================== RENDER & FILTER ====================
+let currentFilter = "";
+
+function filterProducts() {
+    currentFilter = document.getElementById("searchInput").value.toLowerCase().trim();
+    render();
+}
+
 function render() {
     const container = document.getElementById("categoriesContainer");
     const nav = document.getElementById("categoryNav");
     container.innerHTML = "";
     nav.innerHTML = "";
 
+    const allCats = [...baseCategories, { name: "➕ Miscellaneous", products: miscProducts }];
+
     // Navigation
-    [...baseCategories.map(c => c.name), "➕ Miscellaneous"].forEach(name => {
-        const id = name.replace(/[^a-zA-Z0-9]/g, '');
+    allCats.forEach(cat => {
+        const id = cat.name.replace(/[^a-zA-Z0-9]/g, '');
         const btn = document.createElement("a");
         btn.href = `#${id}`;
         btn.className = "px-5 py-2.5 bg-white border border-gray-200 hover:border-zinc-300 rounded-2xl text-sm font-medium transition-colors";
-        btn.textContent = name;
-        btn.onclick = (e) => {
-            e.preventDefault();
-            document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-        };
+        btn.textContent = cat.name;
+        btn.onclick = (e) => { e.preventDefault(); document.getElementById(id).scrollIntoView({ behavior: "smooth" }); };
         nav.appendChild(btn);
     });
 
-    // Main Categories
-    baseCategories.forEach(cat => {
+    allCats.forEach(cat => {
         const id = cat.name.replace(/[^a-zA-Z0-9]/g, '');
+        const isMisc = cat.name === "➕ Miscellaneous";
+
         const section = document.createElement("div");
         section.id = id;
         section.className = "bg-white rounded-3xl shadow-sm overflow-hidden";
@@ -200,68 +212,42 @@ function render() {
         const grid = document.createElement("div");
         grid.className = "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 p-8";
 
+        let visibleCount = 0;
+
         cat.products.forEach(prod => {
-            grid.appendChild(createProductCard(prod, false));
+            if (currentFilter && !prod.toLowerCase().includes(currentFilter)) return;
+            
+            const card = createProductCard(prod, isMisc);
+            grid.appendChild(card);
+            visibleCount++;
         });
+
+        if (visibleCount === 0 && currentFilter) {
+            grid.innerHTML = `<p class="col-span-full text-center text-gray-500 py-8">No matching products found</p>`;
+        }
 
         section.appendChild(grid);
         container.appendChild(section);
     });
-
-    // Miscellaneous
-    const miscSection = document.createElement("div");
-    miscSection.id = "Miscellaneous";
-    miscSection.className = "bg-white rounded-3xl shadow-sm overflow-hidden";
-
-    const miscHeader = document.createElement("div");
-    miscHeader.className = "category-header px-8 py-6 text-white text-2xl font-semibold";
-    miscHeader.textContent = "➕ Miscellaneous";
-    miscSection.appendChild(miscHeader);
-
-    const miscGrid = document.createElement("div");
-    miscGrid.className = "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 p-8";
-    miscProducts.forEach(prod => miscGrid.appendChild(createProductCard(prod, true)));
-    miscSection.appendChild(miscGrid);
-
-    // Add new item
-    const addArea = document.createElement("div");
-    addArea.className = "px-8 py-6 bg-gray-50 border-t flex gap-3";
-    addArea.innerHTML = `
-        <input id="newItemInput" type="text" placeholder="Add missing product..." 
-               class="flex-1 px-5 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:border-zinc-400">
-        <button onclick="addMiscProduct()" 
-                class="bg-zinc-800 hover:bg-black text-white px-8 rounded-2xl font-medium">Add</button>
-    `;
-    miscSection.appendChild(addArea);
-    container.appendChild(miscSection);
 }
 
 function createProductCard(product, isMisc) {
-    const data = stockData[product];
+    const data = stockData[product] || { qty: 0, unit: "each" };
     const card = document.createElement("div");
     card.className = "product-card bg-gray-50 border border-gray-100 rounded-2xl p-6";
 
-    let qtyHTML = '';
-    if (product === "Sausages") {
-        qtyHTML = `
-            <div class="qty-stepper flex items-center bg-white border border-gray-200 rounded-2xl overflow-hidden">
-                <button onclick="setQuantity('${product}', ${data.qty - 10})" class="w-12 h-12 text-2xl font-light text-gray-600 hover:bg-gray-100">-</button>
-                <input type="number" value="${data.qty}" min="0" max="500" step="10"
-                       onchange="setQuantity('${product}', this.value)" 
-                       class="w-20 text-center font-semibold text-lg bg-transparent focus:outline-none">
-                <button onclick="setQuantity('${product}', ${data.qty + 10})" class="w-12 h-12 text-2xl font-light text-gray-600 hover:bg-gray-100">+</button>
-            </div>
-        `;
-    } else {
-        qtyHTML = `
-            <select onchange="setQuantity('${product}', this.value)" 
-                    class="bg-white border border-gray-200 rounded-2xl px-4 py-3 font-medium focus:outline-none">
-                ${Array.from({length: 51}, (_, i) => 
-                    `<option value="${i}" ${i === data.qty ? 'selected' : ''}>${i}</option>`
-                ).join('')}
-            </select>
-        `;
-    }
+    let qtyHTML = product === "Sausages" ? `
+        <div class="qty-stepper flex items-center bg-white border border-gray-200 rounded-2xl overflow-hidden">
+            <button onclick="setQuantity('${product}', ${data.qty - 10});autoSave()" class="w-12 h-12 text-2xl font-light text-gray-600 hover:bg-gray-100">-</button>
+            <input type="number" value="${data.qty}" min="0" max="500" step="10"
+                   onchange="setQuantity('${product}', this.value);autoSave()" 
+                   class="w-20 text-center font-semibold text-lg bg-transparent focus:outline-none">
+            <button onclick="setQuantity('${product}', ${data.qty + 10});autoSave()" class="w-12 h-12 text-2xl font-light text-gray-600 hover:bg-gray-100">+</button>
+        </div>` : `
+        <select onchange="setQuantity('${product}', this.value);autoSave()" 
+                class="bg-white border border-gray-200 rounded-2xl px-4 py-3 font-medium focus:outline-none">
+            ${Array.from({length:51}, (_,i) => `<option value="${i}" ${i===data.qty?'selected':''}>${i}</option>`).join('')}
+        </select>`;
 
     card.innerHTML = `
         <div class="flex justify-between items-start mb-4">
@@ -270,13 +256,12 @@ function createProductCard(product, isMisc) {
         </div>
         <div class="flex items-center gap-4">
             ${qtyHTML}
-            <select onchange="changeUnit('${product}', this.value)" 
+            <select onchange="changeUnit('${product}', this.value);autoSave()" 
                     class="bg-white border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none">
-                ${unitOptions.map(u => `<option value="${u}" ${u === data.unit ? 'selected' : ''}>${u}</option>`).join('')}
+                ${unitOptions.map(u => `<option value="${u}" ${u===data.unit?'selected':''}>${u}</option>`).join('')}
             </select>
         </div>
     `;
-
     return card;
 }
 
@@ -284,29 +269,25 @@ function createProductCard(product, isMisc) {
 function setQuantity(product, value) {
     let val = parseInt(value) || 0;
     const max = product === "Sausages" ? 500 : 50;
+    if (!stockData[product]) stockData[product] = { qty: 0, unit: "each" };
     stockData[product].qty = Math.max(0, Math.min(max, val));
-    render();
 }
 
 function changeUnit(product, unit) {
+    if (!stockData[product]) stockData[product] = { qty: 0, unit: "each" };
     stockData[product].unit = unit;
-    render();
 }
 
 function addMiscProduct() {
-    const input = document.getElementById("newItemInput");
-    const name = input.value.trim();
-    if (!name) return alert("Please enter a product name");
-
-    if (miscProducts.includes(name)) {
-        alert("Product already exists in Miscellaneous");
-        return;
-    }
+    const input = document.getElementById("newItemInput") || { value: prompt("Enter product name:") };
+    const name = (input.value || "").trim();
+    if (!name) return;
+    if (miscProducts.includes(name)) return alert("Already exists");
 
     miscProducts.push(name);
     stockData[name] = { qty: 0, unit: "each" };
-    input.value = "";
     render();
+    autoSave();
 }
 
 function deleteMiscProduct(name) {
@@ -314,22 +295,24 @@ function deleteMiscProduct(name) {
     miscProducts = miscProducts.filter(p => p !== name);
     delete stockData[name];
     render();
+    autoSave();
 }
 
 function resetAll() {
     if (!confirm("Reset ALL quantities to zero?")) return;
-    Object.keys(stockData).forEach(key => stockData[key].qty = 0);
+    Object.keys(stockData).forEach(k => stockData[k].qty = 0);
     render();
+    autoSave();
 }
 
-// ==================== REPORT & PRINT ====================
+// ==================== REPORTS ====================
 function validateAndGetInfo() {
     const date = document.getElementById("stockDate").value;
     const staff = document.getElementById("staffName").value;
     const warning = document.getElementById("infoWarning");
 
     if (!date || !staff) {
-        warning.textContent = "⚠️ Please select both date and your name";
+        warning.textContent = "⚠️ Please fill Date and Staff name";
         return null;
     }
     warning.textContent = "";
@@ -338,46 +321,35 @@ function validateAndGetInfo() {
 
 function getFullStockTakeReport(info) {
     let report = `THE MEMBERS LOUNGE – STOCK TAKE REPORT\n`;
-    report += `Date: ${info.date}\n`;
-    report += `Performed by: ${info.staff}\n`;
-    report += `Generated: ${new Date().toLocaleString()}\n`;
+    report += `Date: ${info.date}\nPerformed by: ${info.staff}\nGenerated: ${new Date().toLocaleString()}\n`;
     report += `=========================================\n\n`;
 
     baseCategories.forEach(cat => {
-        let hasItems = false;
-        let section = `${cat.name}\n`;
-        cat.products.forEach(prod => {
-            const d = stockData[prod];
-            if (d && d.qty > 0) {
-                section += `   • ${prod}: ${d.qty} ${d.unit}\n`;
-                hasItems = true;
-            }
+        let has = false;
+        let sec = `${cat.name}\n`;
+        cat.products.forEach(p => {
+            const d = stockData[p];
+            if (d && d.qty > 0) { sec += `   • ${p}: ${d.qty} ${d.unit}\n`; has = true; }
         });
-        if (hasItems) report += section + "\n";
+        if (has) report += sec + "\n";
     });
 
-    if (miscProducts.length > 0) {
-        let hasMisc = false;
-        let section = `Miscellaneous\n`;
-        miscProducts.forEach(prod => {
-            const d = stockData[prod];
-            if (d && d.qty > 0) {
-                section += `   • ${prod}: ${d.qty} ${d.unit}\n`;
-                hasMisc = true;
-            }
+    if (miscProducts.length) {
+        let has = false;
+        let sec = `Miscellaneous\n`;
+        miscProducts.forEach(p => {
+            const d = stockData[p];
+            if (d && d.qty > 0) { sec += `   • ${p}: ${d.qty} ${d.unit}\n`; has = true; }
         });
-        if (hasMisc) report += section + "\n";
+        if (has) report += sec + "\n";
     }
-
     return report;
 }
 
 function showPreview() {
     const info = validateAndGetInfo();
     if (!info) return;
-
-    const report = getFullStockTakeReport(info);
-    document.getElementById("reportContent").textContent = report;
+    document.getElementById("reportContent").textContent = getFullStockTakeReport(info);
     document.getElementById("summaryPreview").classList.remove("hidden");
     document.getElementById("summaryPreview").scrollIntoView({ behavior: "smooth" });
 }
@@ -386,39 +358,69 @@ function printPDF() {
     const info = validateAndGetInfo();
     if (!info) return;
 
-    const report = getFullStockTakeReport(info);
     const win = window.open('', '_blank');
-    
     win.document.write(`
-        <html>
-        <head>
-            <title>Stock Take - ${info.date}</title>
-            <style>
-                body { font-family: monospace; margin: 40px; line-height: 1.6; }
-                h1 { border-bottom: 2px solid #000; padding-bottom: 10px; }
-                pre { white-space: pre-wrap; font-size: 11pt; }
-            </style>
-        </head>
+        <html><head><title>Stock Take ${info.date}</title>
+        <style>
+            body { font-family: monospace; margin: 40px; line-height: 1.5; }
+            h1 { border-bottom: 3px solid black; padding-bottom: 10px; }
+            pre { white-space: pre-wrap; font-size: 11pt; }
+        </style></head>
         <body>
             <h1>The Members Lounge – Stock Take</h1>
-            <pre>${report}</pre>
-        </body>
-        </html>
+            <pre>${getFullStockTakeReport(info)}</pre>
+        </body></html>
     `);
-    
     win.document.close();
-    
-    // Small delay to ensure content loads before print dialog
-    setTimeout(() => {
-        win.print();
-    }, 500);
+    setTimeout(() => win.print(), 600);
 }
 
-// ==================== START ====================
+function exportCSV() {
+    const info = validateAndGetInfo();
+    if (!info) return;
+
+    let csv = `Stock Take Date,${info.date}\nPerformed By,${info.staff}\n\nProduct,Quantity,Unit\n`;
+
+    baseCategories.forEach(cat => {
+        cat.products.forEach(p => {
+            const d = stockData[p];
+            if (d && d.qty > 0) csv += `"${p}",${d.qty},"${d.unit}"\n`;
+        });
+    });
+
+    miscProducts.forEach(p => {
+        const d = stockData[p];
+        if (d && d.qty > 0) csv += `"${p}",${d.qty},"${d.unit}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `TML_StockTake_${info.date}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ==================== INIT ====================
 document.getElementById("stockDate").value = new Date().toISOString().split('T')[0];
 
-initBaseData();
+baseCategories.forEach(cat => {
+    cat.products.forEach(prod => {
+        stockData[prod] = { qty: 0, unit: "each" };
+    });
+});
+
 render();
+
+// Try to load previous data on start
+setTimeout(() => {
+    if (localStorage.getItem(STORAGE_KEY)) {
+        if (confirm("Previous stock take data found. Load it?")) {
+            loadFromLocal();
+        }
+    }
+}, 800);
 </script>
 </body>
 </html>
