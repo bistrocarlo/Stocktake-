@@ -272,88 +272,79 @@
     <div id="categoriesContainer"></div>
     <div class="footer-note">
         ✅ Sausages quantity up to 500 (stepper) · all others 0–50 dropdown<br>
-        ✅ Gluten‑free bread is in Bakery · Fruit & Vegetables separate category<br>
         ✅ Set the date, then print PDF – full stock take report
     </div>
 </div>
 
 <script>
-    // ========== CATEGORIES ==========
+    // ========== PRODUCT LIST (as provided by user) ==========
     const categories = [
         { name: "🥩 Meats", products: [
-            "Sausages", "Ragu Meatballs", "Chicken", "Veal", "Steak", "Ragu Meat",
-            "Prosciutto", "Mortadella", "Ham", "Salami (2.5kg bag)", "Meatballs (per guest)"
+            "Sausages", "Chicken", "Lamb Shanks", "Steak", "Ragu Meat - Tray",
+            "Prosciutto", "Mortadella", "Ham", "Salami"
         ] },
         { name: "🐟 Seafood", products: [
-            "Fish (5kg box)", "Calamari (5kg box)", "Oysters", "Prawns (bag)", "Lobster", "Salmon", "Anchovies"
+            "Fish", "Calamari", "Prawns", "Anchovies"
         ] },
         { name: "🥛 Dairy", products: [
-            "Butter", "Ricotta", "Parmesan", "Bocconcini", "Mozzarella (2.5kg tray)", "Listarella tray",
-            "Coles Milk (3L)", "Cannoli Cream (2.5kg)"
+            "Butter block", "Butter PC", "Ricotta", "Parmesan", "Bocconcini",
+            "Mozzarella", "Milk (3L)"
         ] },
         { name: "🥖 Bakery", products: [
-            "Bread Rolls", "Sliced Bread", "Bruschetta Bread", "Panini", "Tsoureki Easter Loaf",
-            "Gluten‑free bread"
+            "Bruschetta Bread", "Gluten‑free bread"
         ] },
         { name: "🍎 Fruit & Vegetables", products: [
-            "Watermelon", "Pineapple", "Strawberries", "Salad Mix", "Eggplant", "Lemon", "Garlic",
-            "Potatoes", "Pumpkin", "Broccoli", "Tomatoes", "Basil", "Oregano (fresh)", "Onion",
-            "Carrots", "Parsley", "Celery", "Rocket", "Rosemary", "Capsicums Pizza", "Oranges",
-            "Porcini Mushrooms", "Peas", "Chick Peas", "Polenta", "Avocado", "Zucchini"
+            "Watermelon", "Pineapple", "Strawberries", "Salad Mix", "Eggplant",
+            "Lemon", "Garlic", "Potatoes", "Pumpkin", "Broccoli", "Tomatoes",
+            "Basil", "Onion", "Carrots", "Parsley", "Celery", "Rocket",
+            "Rosemary", "Capsicums Pizza", "Oranges", "Cauliflower", "Avocado",
+            "Zucchini", "Mushrooms"
         ] },
         { name: "📦 Dry Goods", products: [
-            "Napoli Cut Tray 2kg", "Pasta (15kg box)", "Olives (bucket)", "Napoli Sauce (box of 6)",
-            "Olive Oil (20L drum)", "Chili Flakes", "Oregano", "Red Wine Vinegar (5L)",
-            "Breadcrumbs (5kg bag)", "Artichokes", "Capsicums (tin)", "Beans", "Salt", "Ragu Red Wine",
-            "Flour (12.5kg)", "Yeast", "Soppressata (hot)", "Breadcrumb Panko (7kg)",
-            "Cannerozzetti (500g)", "Tomato Sauce squeezy", "Peeled tomatoes Pelati", "Rice Flour (25kg)",
-            "Signetti", "Arancini", "Potato Croquettes", "Mini Pizza", "Meat Pies", "Sausage Rolls",
-            "Mixed Sandwiches", "Gluten Gnocchi (400g)", "Gluten Chips (2.5kg)", "Fructose",
-            "No seafood (dietary)", "Dairy Free", "Vegan", "FOD", "Chicken Nuggets (50/pack)",
-            "Chips (makes 30 kids)", "Baby Pizza", "Dixie Cups", "Cannoli shells (box of 150)",
-            "Cake (wedding)", "Mini Cannoli", "Sugar", "Coffee Espresso (1kg bag)",
-            "Sugar Sachet (2000x3g)", "Serviettes (1000/box)", "Table Cloths", "Bin Liners (72L)",
-            "Toilet Rolls (jumbo)", "5L Soap", "Table Paper (100 sheets)", "Foil (3kg)",
-            "Ribbed Containers", "Ribbed Lids", "Dishwashing Liquid (25L)", "Gladwrap", "Handtowels",
-            "Chux Roll", "Large Nitra Gloves", "Scourer Sponge", "Baking Paper roll", "25L Metho",
-            "Mop Head & Handle", "Straws", "Toilet Tablets", "Wooden Stirrers", "Gas Bottles (monthly)",
-            "Deep Fryer Oil (weekly)", "EFTPOS Rental", "Thermal Rolls Eftpos", "Thermal Printer Rolls"
+            "Pasta Divella Elicoidali", "Olives (Antipasto)", "Olives (Pizza)",
+            "Peeled Tomato's (box of 6)", "Olive Oil (20L drum)", "Olive Oil (10L box)",
+            "Chili Flakes", "Oregano", "Red Wine Vinegar (5L)", "Breadcrumbs - Panko",
+            "Artichokes", "Capsicums (tin)", "Salt", "Pizza Flour (12.5kg)", "Yeast",
+            "Tomato Sauce PC", "Rice Flour (25kg)", "Gluten free Gnocchi (400g)",
+            "Chicken Nuggets (50/pack)", "Frozen Chips", "Sugar",
+            "Coffee Espresso (1kg bag)", "Sugar Sachet (2000x3g)"
         ] },
-        { name: "🥤 Soft Drinks", products: [
-            "1.25L Cola", "2L Cola", "1.25L Diet Cola", "2L Diet Cola", "1.25L Solo", "2L Solo",
-            "1.25L Diet Solo", "2L Diet Solo", "1.25L Lemonade", "2L Lemonade", "1.25L Diet Lemonade",
-            "2L Diet Lemonade", "Chinotto (200ml)", "Aranciata (200ml)", "Lemon Juice",
-            "Spring Water Coles (1.25L pack)", "San Pellegrino (1L)", "Bickford's Lime Cordial",
-            "Bickford's Raspberry Cordial", "Bitters 200ml"
+        { name: "🧾 Paper Goods & Cleaning/Toiletries", products: [
+            "Serviettes (1000/box)", "Bin Liners (72L)", "Toilet Rolls (jumbo)",
+            "5L Soap", "Table Paper (100 sheets)", "Foil (3kg)", "Ribbed Containers",
+            "Ribbed Lids", "Dishwashing Liquid (25L)", "Gladwrap", "Handtowels",
+            "Chux Roll", "Large Nitra Gloves", "Scourer Sponge", "Baking Paper roll",
+            "25L Metho", "Mop Head & Handle", "Straws", "Toilet Tablets",
+            "Wooden Stirrers", "Thermal Rolls Eftpos", "Thermal Printer Rolls"
         ] },
         { name: "🍺 Beer & Cider", products: [
-            "Corona Extra (carton)", "Peroni Red (carton)", "Peroni Nastro Azzuro (carton)",
-            "Menabrea Birra 330mL", "Carlton Draught", "VB", "Asahi Super Dry (220mL)", "Cascade Light"
+            "Corona Extra", "Peroni Red", "Carlton Draught", "VB", "Cascade Light"
         ] },
         { name: "🍷 Wines", products: [
-            "Warburn Rich Red Shiraz", "Warburn Shiraz", "Peter Lehmann Bond Shiraz",
-            "Evans & Tate Shiraz", "Warburn Pinot Noir", "Yellow Tail Pinot Noir",
-            "Fat Sparrow Sangiovese", "Warburn Cabernet Sauvignon", "Evans & Tate Cab Sav",
-            "Warburn Merlot", "Primitivo / Zinfandel", "Malbec", "Nebbiolo",
-            "Warburn Vivo Moscato", "Brown Bro. Moscato Sauvignon Blanc", "Warburn VIVO Sauvignon Blanc",
-            "Oyster Bay Sauvignon Blanc", "Squealing Pig Sauvignon Blanc", "De Bortoli VIVO Chardonnay",
-            "Warburn Chardonnay", "Pinot Gris", "Yalumba Pinot Grigio", "Warburn Pinot Grigio",
-            "Riesling", "Viognier", "Chenin Blanc", "Albariño", "Warburn Rosé",
-            "La Gioiosa Prosecco", "Brown Brothers Prosecco (200ml)"
+            "Warburn Shiraz", "Warburn Pinot Noir", "Warburn Cabernet Sauvignon",
+            "Warburn Merlot", "Warburn Moscato", "Warburn Sauvignon Blanc",
+            "Warburn Chardonnay", "Warburn Pinot Grigio", "Warburn Rosé",
+            "La Gioiosa Prosecco", "Brown Brothers Prosecco (200ml)",
+            "Brown Brothers Prosecco (750ml)"
         ] },
         { name: "🥃 Spirits & Liqueurs", products: [
-            "Johny Walker Red 1L", "Johny Walker Black 1L", "Canadian Club Whisky 1L",
-            "Jack Daniels 1L", "Makers Mark Bourbon", "Jim Bean White 700ml", "Gordons Dry Gin 1L",
-            "Smirnoff Red Vodka 1L", "Grey Goose Vodka 1L", "Bundaberg Rum 1L", "Bacardi Rum 1L",
-            "Malibu Rum 1L", "Captain Morgan Black Rum 700ml", "Sierra Silver Tequila 1L",
-            "Jose Cuervo Tequila 700ml", "Cinzano Extra Dry Vermouth", "Cointreau 700ml",
-            "Frangelico 700ml", "Baileys Irish Cream 1L", "Kahlua 1L", "Suntory Midori 700ml",
-            "Vecchio Amaro del Capo", "Averna Amaro", "Penfolds Club Tawny", "Campari 700ml",
-            "Aperol Aperitivo 700ml", "Aperol Spritz (175ml pack)"
+            "Johny Walker Red", "Johny Walker Black", "Canadian Club Whiskey",
+            "Jack Daniels", "Jim Bean White", "Gordons Dry Gin", "Smirnoff Red Vodka",
+            "Bundaberg Rum", "Bacardi Rum", "Malibu", "Southern Comfort",
+            "Limoncello Strega", "Grapa Piave", "Sambuca Molinaro",
+            "Captain Morgan Black Rum", "Jose Cuervo Tequila",
+            "Cinzano Extra Dry Vermouth", "Cinzano Sweet Vermouth", "Cointreau",
+            "Frangelico", "Baileys Irish Cream", "Kahlua", "Suntory Midori",
+            "Vecchio Amaro del Capo", "Averna Amaro", "Penfolds Club Tawny Port",
+            "Campari", "Aperol Aperitivo", "Aperol Spritz (175ml pack)",
+            "Montenegro", "Chivas Regal", "Cognac Remy VSOP", "Lime cordial",
+            "Raspberry cordial", "Chinotto", "Aranciatta Rosa", "Apple cider Sommersby",
+            "Orange juice", "Apple juice", "Pineapple juice", "Angostura Bitters"
         ] },
         { name: "🍰 Dessert", products: [
-            "Gelato (each)", "Cannoli shells (box of 150)", "Cannoli Cream (2.5kg)",
-            "Cake (wedding)", "Mini Cannoli", "Terry's tortes & treats"
+            "Gelato", "Cannoli shells Medium", "Cannoli Cream (2.5kg)",
+            "Cannolis shells Small", "Vanilla Choc coated Ice creams",
+            "Strawberry Dixie Cups"
         ] }
     ];
 
