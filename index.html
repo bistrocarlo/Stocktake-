@@ -7,12 +7,12 @@
     <style>
         * {
             box-sizing: border-box;
-            font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         body {
             background: #f5f5f5;
             margin: 0;
-            padding: 20px;
+            padding: 16px;
         }
         .container {
             max-width: 1400px;
@@ -20,6 +20,7 @@
         }
         .logo-header {
             background: #000;
+            color: white;
             border-radius: 28px 28px 0 0;
             padding: 20px 28px;
             display: flex;
@@ -27,7 +28,6 @@
             gap: 20px;
             flex-wrap: wrap;
             justify-content: space-between;
-            border-bottom: 2px solid #ccc;
         }
         .logo {
             display: flex;
@@ -37,187 +37,178 @@
         .logo-icon {
             background: #fff;
             color: #000;
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 30px;
             font-weight: bold;
         }
         .logo-text {
-            color: #fff;
-            font-size: 1.6rem;
+            font-size: 1.75rem;
             font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         .logo-text span {
-            color: #ccc;
+            color: #aaa;
         }
         .tagline {
             color: #aaa;
-            font-size: 0.8rem;
-            margin-top: 4px;
+            font-size: 0.85rem;
+            margin-top: 2px;
         }
-        /* Sticky toolbar and nav */
+
+        .info-bar {
+            background: #fff;
+            padding: 18px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 5px solid #000;
+            border-radius: 0 0 12px 12px;
+            margin-bottom: 16px;
+        }
+        .info-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .info-field label {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .info-field input, .info-field select {
+            padding: 10px 14px;
+            border-radius: 9999px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+        .warning-text {
+            color: #d32f2f;
+            font-weight: 500;
+        }
+
         .toolbar {
             position: sticky;
             top: 0;
             z-index: 100;
             background: #fff;
-            margin: 20px 0 0 0;
             padding: 16px 24px;
-            border-radius: 28px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            align-items: center;
-        }
-        .category-nav {
-            position: sticky;
-            top: 80px; /* Adjust based on toolbar height */
-            z-index: 99;
-            background: #fff;
-            padding: 12px 20px;
-            border-radius: 40px;
-            margin: 10px 0 20px 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border: 1px solid #ddd;
-        }
-        .info-bar {
-            background: #fff;
-            padding: 16px 24px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 30px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border-left: 4px solid #000;
-            margin-top: 0;
-        }
-        .info-field {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .info-field label {
-            font-weight: 600;
-            color: #000;
-        }
-        .info-field input, .info-field select {
-            padding: 8px 12px;
-            border-radius: 40px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-            min-width: 200px;
-            background: white;
+            margin-bottom: 16px;
         }
         button {
             background: #000;
+            color: white;
             border: none;
-            color: #fff;
-            padding: 8px 18px;
-            border-radius: 40px;
+            padding: 10px 20px;
+            border-radius: 9999px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.9rem;
-        }
-        button.warning {
-            background: #555;
-        }
-        button.print-btn {
-            background: #000;
-        }
-        button.small-btn {
-            background: #333;
-            padding: 4px 12px;
-            font-size: 0.75rem;
+            transition: all 0.2s;
         }
         button:hover {
-            opacity: 0.8;
-            transform: scale(0.97);
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
+        button.warning { background: #555; }
+        button.print-btn { background: #000; }
+
+        .category-nav {
+            position: sticky;
+            top: 70px;
+            z-index: 99;
+            background: #fff;
+            padding: 12px 20px;
+            border-radius: 9999px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+        }
+        .category-nav a {
+            padding: 8px 16px;
+            background: #f8f8f8;
+            border-radius: 9999px;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .category-nav a:hover {
+            background: #000;
+            color: white;
+        }
+
         .category {
             background: #fff;
-            border-radius: 28px;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             overflow: hidden;
-            border: 1px solid #ddd;
-            scroll-margin-top: 120px;
+            border: 1px solid #eee;
         }
         .category-header {
             background: #000;
-            color: #fff;
-            padding: 14px 24px;
-            font-size: 1.3rem;
+            color: white;
+            padding: 16px 24px;
+            font-size: 1.35rem;
             font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
             gap: 12px;
             padding: 20px;
         }
         .product-card {
-            background: #fefefe;
-            border: 1px solid #e2e6df;
-            border-radius: 20px;
-            padding: 12px 16px;
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 18px;
+            padding: 14px 18px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: space-between;
-            gap: 10px;
+            gap: 12px;
         }
         .product-name {
             font-weight: 600;
-            font-size: 0.85rem;
-            flex: 2;
+            flex: 1;
             min-width: 140px;
-            color: #1e2a1c;
-            word-break: break-word;
         }
         .stock-control {
             display: flex;
-            gap: 8px;
-            align-items: center;
+            gap: 10px;
             flex-wrap: wrap;
-        }
-        .stock-control select, .stock-control input {
-            padding: 7px 10px;
-            border-radius: 40px;
-            border: 1px solid #ccc;
-            background: white;
-            font-size: 0.8rem;
-            min-width: 80px;
+            align-items: center;
         }
         .qty-stepper {
             display: flex;
             align-items: center;
-            background: #f1f3f0;
-            border-radius: 40px;
-            border: 1px solid #cfd9cc;
+            background: #f0f2ed;
+            border: 1px solid #d0d6c8;
+            border-radius: 9999px;
         }
         .qty-stepper button {
             background: #e0e6db;
             border: none;
-            color: #1f3b22;
-            font-size: 1.2rem;
+            width: 36px;
+            height: 36px;
+            font-size: 1.4rem;
             font-weight: bold;
-            width: 32px;
-            padding: 4px 0;
-            border-radius: 40px;
+            color: #1f3b22;
             cursor: pointer;
         }
         .qty-stepper input {
@@ -225,114 +216,65 @@
             text-align: center;
             border: none;
             background: transparent;
-            font-size: 0.9rem;
-            padding: 8px 0;
+            font-size: 1rem;
+        }
+        select {
+            padding: 8px 12px;
+            border-radius: 9999px;
+            border: 1px solid #ccc;
         }
         .delete-item {
-            background: #555;
-            border: none;
+            background: #666;
             color: white;
-            border-radius: 40px;
-            width: 28px;
-            height: 28px;
-            font-size: 1rem;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
         }
+
         .add-item-area {
+            padding: 18px 24px;
             background: #f9f9f9;
-            padding: 16px 24px;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid #eee;
             display: flex;
-            flex-wrap: wrap;
             gap: 12px;
-            align-items: center;
+            flex-wrap: wrap;
         }
-        .add-item-area input {
-            padding: 8px 16px;
-            border-radius: 40px;
-            border: 1px solid #ccc;
-            flex: 2;
-            min-width: 200px;
-        }
+
         .summary-preview {
             background: #fff;
-            border-radius: 28px;
+            border-radius: 20px;
+            padding: 24px;
             margin: 20px 0;
-            padding: 20px;
-            border: 1px solid #ddd;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             display: none;
         }
-        .summary-preview.show {
-            display: block;
-        }
+        .summary-preview.show { display: block; }
         .summary-preview pre {
-            background: #f9f9f9;
+            background: #f8f8f8;
             padding: 20px;
-            border-radius: 20px;
-            overflow-x: auto;
+            border-radius: 16px;
             font-family: monospace;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             white-space: pre-wrap;
+            overflow-x: auto;
         }
+
         .footer-note {
             text-align: center;
-            font-size: 0.75rem;
-            color: #6f7c6b;
-            margin-top: 2rem;
-            border-top: 1px solid #d4dfcc;
-            padding-top: 1.5rem;
-        }
-        .warning-text {
-            color: #cc0000;
             font-size: 0.8rem;
-            margin-left: 10px;
+            color: #666;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
         }
+
         @media print {
-            body {
-                background: white;
-                padding: 0;
-                margin: 0;
-            }
-            .toolbar, .info-bar button, .footer-note, .stock-control select, .stock-control .qty-stepper button, .category-nav, .add-item-area, .delete-item, .summary-preview {
-                display: none !important;
-            }
-            .product-card {
-                break-inside: avoid;
-                border: 1px solid #ccc;
-                margin-bottom: 5px;
-            }
-            .category-header {
-                background: #000;
-                color: white;
-                print-color-adjust: exact;
-            }
-            .logo-header {
-                background: #000;
-                print-color-adjust: exact;
-            }
-            .container {
-                max-width: 100%;
-                padding: 10px;
-            }
-            .stock-control input, .stock-control select {
-                border: none;
-                background: transparent;
-                font-weight: normal;
-            }
-            .qty-stepper input {
-                border: none;
-                background: transparent;
-            }
-            .qty-stepper {
-                border: none;
-                background: transparent;
-            }
-            button {
-                display: none;
-            }
+            body { background: white; padding: 20px; }
+            .toolbar, .info-bar button, .category-nav, .add-item-area, .delete-item, .summary-preview { display: none !important; }
+            .category-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .product-card { break-inside: avoid; page-break-inside: avoid; }
         }
     </style>
 </head>
@@ -343,7 +285,7 @@
             <div class="logo-icon">TML</div>
             <div>
                 <div class="logo-text">The Members <span>Lounge</span></div>
-                <div class="tagline">Stock Take & Inventory</div>
+                <div class="tagline">Stock Take & Inventory System</div>
             </div>
         </div>
     </div>
@@ -351,17 +293,17 @@
     <div class="info-bar">
         <div class="info-field">
             <label>📅 Stock take date:</label>
-            <input type="date" id="stockDate" value="">
+            <input type="date" id="stockDate">
         </div>
         <div class="info-field">
-            <label>👤 Stocktake performed by:</label>
+            <label>👤 Performed by:</label>
             <select id="staffName">
                 <option value="">-- Select your name --</option>
+                <option value="Carlo P">Carlo P</option>
                 <option value="Peter H">Peter H</option>
                 <option value="Rohitha PR">Rohitha PR</option>
                 <option value="Nam L">Nam L</option>
                 <option value="Michelle P">Michelle P</option>
-                <option value="Carlo P">Carlo P</option>
                 <option value="Remzi A">Remzi A</option>
                 <option value="Ralph M">Ralph M</option>
                 <option value="Laura P">Laura P</option>
@@ -372,447 +314,369 @@
         <div id="infoWarning" class="warning-text"></div>
     </div>
 
-    <!-- Sticky toolbar with buttons -->
     <div class="toolbar">
         <button id="resetBtn" class="warning">🗑️ Reset all to zero</button>
         <button id="previewBtn">📄 Preview Summary</button>
-        <button id="printPdfBtn" class="print-btn">🖨️ Print PDF (Save/Send)</button>
+        <button id="printPdfBtn" class="print-btn">🖨️ Print / Save as PDF</button>
     </div>
 
-    <!-- Sticky category navigation -->
     <div id="categoryNav" class="category-nav"></div>
-
     <div id="summaryPreview" class="summary-preview"></div>
     <div id="categoriesContainer"></div>
+
     <div class="footer-note">
-        ✅ Sausages quantity up to 500 (stepper) · all others 0–50 dropdown<br>
-        ✅ Click category tabs to jump · Add missing items in "➕ Miscellaneous"<br>
-        ✅ Select your name & date, then click "Preview Summary" to see report, then Print PDF to save/send<br>
-        ✅ Only products with quantity > 0 appear in the report
+        Sausages use 10-step stepper (max 500) • All other items 0–50 dropdown<br>
+        Use “Miscellaneous” to add any missing products • Only items with quantity > 0 appear in the final report
     </div>
 </div>
 
 <script>
-    // ========== BASE PRODUCT LIST (alphabetical within each category) ==========
-    const categoriesRaw = [
-        { name: "🥩 Meats", products: [
-            "Sausages", "Chicken", "Lamb Shanks", "Steak", "Ragu Meat - Tray",
-            "Prosciutto", "Mortadella", "Ham", "Salami"
-        ] },
-        { name: "🐟 Seafood", products: [
-            "Fish", "Calamari", "Prawns", "Anchovies"
-        ] },
-        { name: "🥛 Dairy", products: [
-            "Butter block", "Butter PC", "Ricotta", "Parmesan", "Bocconcini",
-            "Mozzarella", "Milk (3L)"
-        ] },
-        { name: "🥖 Bakery", products: [
-            "Bruschetta Bread", "Gluten‑free bread"
-        ] },
-        { name: "🍎 Fruit & Vegetables", products: [
-            "Avocado", "Basil", "Broccoli", "Capsicums Pizza", "Carrots", "Cauliflower",
-            "Celery", "Eggplant", "Garlic", "Lemon", "Mushrooms", "Onion", "Oranges",
-            "Parsley", "Pineapple", "Potatoes", "Pumpkin", "Rocket", "Rosemary",
-            "Salad Mix", "Strawberries", "Tomatoes", "Watermelon", "Zucchini"
-        ] },
-        { name: "📦 Dry Goods", products: [
-            "Artichokes", "Breadcrumbs - Panko", "Capsicums (tin)", "Chicken Nuggets (50/pack)",
-            "Chili Flakes", "Coffee Espresso (1kg bag)", "Frozen Chips",
-            "Gluten free Gnocchi (400g)", "Olive Oil (10L box)", "Olive Oil (20L drum)",
-            "Olives (Antipasto)", "Olives (Pizza)", "Oregano", "Pasta Divella Elicoidali",
-            "Peeled Tomato's (box of 6)", "Pizza Flour (12.5kg)", "Red Wine Vinegar (5L)",
-            "Rice Flour (25kg)", "Salt", "Sugar", "Sugar Sachet (2000x3g)",
-            "Tomato Sauce PC", "Yeast"
-        ] },
-        { name: "🧾 Paper Goods & Cleaning/Toiletries", products: [
-            "5L Soap", "25L Metho", "Baking Paper roll", "Bin Liners (72L)", "Chux Roll",
-            "Dishwashing Liquid (25L)", "Foil (3kg)", "Gladwrap", "Handtowels",
-            "Large Nitra Gloves", "Mop Head & Handle", "Ribbed Containers", "Ribbed Lids",
-            "Scourer Sponge", "Serviettes (1000/box)", "Straws", "Table Paper (100 sheets)",
-            "Thermal Printer Rolls", "Thermal Rolls Eftpos", "Toilet Rolls (jumbo)",
-            "Toilet Tablets", "Wooden Stirrers"
-        ] },
-        { name: "🍺 Beer & Cider", products: [
-            "Carlton Draught", "Cascade Light", "Corona Extra", "Peroni Red", "VB"
-        ] },
-        { name: "🍷 Wines", products: [
-            "Brown Brothers Prosecco (200ml)", "Brown Brothers Prosecco (750ml)",
-            "La Gioiosa Prosecco", "Warburn Cabernet Sauvignon", "Warburn Chardonnay",
-            "Warburn Merlot", "Warburn Moscato", "Warburn Pinot Grigio", "Warburn Pinot Noir",
-            "Warburn Rosé", "Warburn Sauvignon Blanc", "Warburn Shiraz"
-        ] },
-        { name: "🥃 Spirits & Liqueurs", products: [
-            "Angostura Bitters", "Aperol Aperitivo", "Aperol Spritz (175ml pack)",
-            "Apple cider Sommersby", "Apple juice", "Aranciatta Rosa", "Baileys Irish Cream",
-            "Bacardi Rum", "Bundaberg Rum", "Campari", "Canadian Club Whiskey",
-            "Captain Morgan Black Rum", "Chinotto", "Chivas Regal", "Cinzano Extra Dry Vermouth",
-            "Cinzano Sweet Vermouth", "Cognac Remy VSOP", "Cointreau", "Frangelico",
-            "Gordons Dry Gin", "Grapa Piave", "Jack Daniels", "Jim Bean White",
-            "Johny Walker Black", "Johny Walker Red", "Jose Cuervo Tequila", "Kahlua",
-            "Lime cordial", "Limoncello Strega", "Malibu", "Montenegro", "Orange juice",
-            "Penfolds Club Tawny Port", "Pineapple juice", "Raspberry cordial",
-            "Sambuca Molinaro", "Smirnoff Red Vodka", "Southern Comfort", "Suntory Midori",
-            "Vecchio Amaro del Capo"
-        ] },
-        { name: "🍰 Dessert", products: [
-            "Cannoli Cream (2.5kg)", "Cannoli shells Medium", "Cannolis shells Small",
-            "Gelato", "Strawberry Dixie Cups", "Vanilla Choc coated Ice creams"
-        ] }
-    ];
+// ==================== DATA & LOGIC ====================
+const baseCategories = [
+    { name: "🥩 Meats", products: ["Sausages","Chicken","Lamb Shanks","Steak","Ragu Meat - Tray","Prosciutto","Mortadella","Ham","Salami"] },
+    { name: "🐟 Seafood", products: ["Fish","Calamari","Prawns","Anchovies"] },
+    { name: "🥛 Dairy", products: ["Butter block","Butter PC","Ricotta","Parmesan","Bocconcini","Mozzarella","Milk (3L)"] },
+    { name: "🥖 Bakery", products: ["Bruschetta Bread","Gluten‑free bread"] },
+    { name: "🍎 Fruit & Vegetables", products: [
+        "Avocado","Basil","Broccoli","Capsicums Pizza","Carrots","Cauliflower","Celery","Eggplant","Garlic","Lemon",
+        "Mushrooms","Onion","Oranges","Parsley","Pineapple","Potatoes","Pumpkin","Rocket","Rosemary","Salad Mix",
+        "Strawberries","Tomatoes","Watermelon","Zucchini"
+    ] },
+    { name: "📦 Dry Goods", products: [
+        "Artichokes","Breadcrumbs - Panko","Capsicums (tin)","Chicken Nuggets (50/pack)","Chili Flakes",
+        "Coffee Espresso (1kg bag)","Frozen Chips","Gluten free Gnocchi (400g)","Olive Oil (10L box)",
+        "Olive Oil (20L drum)","Olives (Antipasto)","Olives (Pizza)","Oregano","Pasta Divella Elicoidali",
+        "Peeled Tomato's (box of 6)","Pizza Flour (12.5kg)","Red Wine Vinegar (5L)","Rice Flour (25kg)",
+        "Salt","Sugar","Sugar Sachet (2000x3g)","Tomato Sauce PC","Yeast"
+    ] },
+    { name: "🧾 Paper Goods & Cleaning/Toiletries", products: [
+        "5L Soap","25L Metho","Baking Paper roll","Bin Liners (72L)","Chux Roll","Dishwashing Liquid (25L)",
+        "Foil (3kg)","Gladwrap","Handtowels","Large Nitra Gloves","Mop Head & Handle","Ribbed Containers",
+        "Ribbed Lids","Scourer Sponge","Serviettes (1000/box)","Straws","Table Paper (100 sheets)",
+        "Thermal Printer Rolls","Thermal Rolls Eftpos","Toilet Rolls (jumbo)","Toilet Tablets","Wooden Stirrers"
+    ] },
+    { name: "🍺 Beer & Cider", products: ["Carlton Draught","Cascade Light","Corona Extra","Peroni Red","VB"] },
+    { name: "🍷 Wines", products: [
+        "Brown Brothers Prosecco (200ml)","Brown Brothers Prosecco (750ml)","La Gioiosa Prosecco",
+        "Warburn Cabernet Sauvignon","Warburn Chardonnay","Warburn Merlot","Warburn Moscato",
+        "Warburn Pinot Grigio","Warburn Pinot Noir","Warburn Rosé","Warburn Sauvignon Blanc","Warburn Shiraz"
+    ] },
+    { name: "🥃 Spirits & Liqueurs", products: [
+        "Angostura Bitters","Aperol Aperitivo","Aperol Spritz (175ml pack)","Apple cider Sommersby",
+        "Apple juice","Aranciatta Rosa","Baileys Irish Cream","Bacardi Rum","Bundaberg Rum","Campari",
+        "Canadian Club Whiskey","Captain Morgan Black Rum","Chinotto","Chivas Regal","Cinzano Extra Dry Vermouth",
+        "Cinzano Sweet Vermouth","Cognac Remy VSOP","Cointreau","Frangelico","Gordons Dry Gin","Grapa Piave",
+        "Jack Daniels","Jim Bean White","Johny Walker Black","Johny Walker Red","Jose Cuervo Tequila","Kahlua",
+        "Lime cordial","Limoncello Strega","Malibu","Montenegro","Orange juice","Penfolds Club Tawny Port",
+        "Pineapple juice","Raspberry cordial","Sambuca Molinaro","Smirnoff Red Vodka","Southern Comfort",
+        "Suntory Midori","Vecchio Amaro del Capo"
+    ] },
+    { name: "🍰 Dessert", products: [
+        "Cannoli Cream (2.5kg)","Cannoli shells Medium","Cannolis shells Small","Gelato",
+        "Strawberry Dixie Cups","Vanilla Choc coated Ice creams"
+    ] }
+];
 
-    // Sort products alphabetically within each category
-    const baseCategories = categoriesRaw.map(cat => ({
-        name: cat.name,
-        products: [...cat.products].sort((a,b) => a.localeCompare(b))
-    }));
+// Sort products alphabetically in each category
+baseCategories.forEach(cat => {
+    cat.products.sort((a, b) => a.localeCompare(b));
+});
 
-    // Unit options
-    const unitOptions = [
-        "grams (g)", "kilograms (kg)", "boxes", "bottles", "packets", "bags", 
-        "each", "units", "dozens", "cartons", "cases", "trays", "buckets", 
-        "jars", "tins", "drums", "loaves", "punnets", "bunches", "litres"
-    ];
+const unitOptions = ["each","units","grams (g)","kilograms (kg)","litres","boxes","bottles","packets","bags","cartons","trays","jars","tins","drums","loaves","punnets","bunches","dozens"];
 
-    let stockData = {};
-    let miscProducts = [];
+let stockData = {};
+let miscProducts = [];
 
-    function initBaseData() {
-        for (let cat of baseCategories) {
-            for (let prod of cat.products) {
-                if (!stockData[prod]) {
-                    stockData[prod] = { qty: 0, unit: "each" };
-                }
-            }
-        }
+function initBaseData() {
+    baseCategories.forEach(cat => {
+        cat.products.forEach(prod => {
+            stockData[prod] = { qty: 0, unit: "each" };
+        });
+    });
+}
+
+function addMiscProduct(name) {
+    name = name.trim();
+    if (!name || miscProducts.includes(name)) {
+        alert("Product already exists or name is empty.");
+        return;
     }
+    miscProducts.push(name);
+    stockData[name] = { qty: 0, unit: "each" };
+    render();
+}
 
-    function addMiscProduct(productName) {
-        if (!productName.trim()) return;
-        if (miscProducts.includes(productName)) {
-            alert("Product already exists in Miscellaneous");
-            return;
-        }
-        miscProducts.push(productName);
-        stockData[productName] = { qty: 0, unit: "each" };
-        render();
-    }
+function deleteMiscProduct(name) {
+    miscProducts = miscProducts.filter(p => p !== name);
+    delete stockData[name];
+    render();
+}
 
-    function deleteMiscProduct(productName) {
-        miscProducts = miscProducts.filter(p => p !== productName);
-        delete stockData[productName];
-        render();
-    }
+function setQuantity(product, newVal) {
+    let val = parseInt(newVal) || 0;
+    const max = product === "Sausages" ? 500 : 50;
+    val = Math.max(0, Math.min(max, val));
+    stockData[product].qty = val;
+    render();   // re-render to update stepper display
+}
 
-    function setQuantity(product, newVal) {
-        let val = parseInt(newVal, 10);
-        if (isNaN(val)) val = 0;
-        let max = (product === "Sausages") ? 500 : 50;
-        val = Math.min(max, Math.max(0, val));
-        stockData[product].qty = val;
-        render();
-    }
+function changeUnit(product, newUnit) {
+    stockData[product].unit = newUnit;
+    render();
+}
 
-    function changeUnit(product, newUnit) {
-        stockData[product].unit = newUnit;
-        render();
-    }
+// ==================== RENDERING ====================
+function render() {
+    const container = document.getElementById("categoriesContainer");
+    const nav = document.getElementById("categoryNav");
+    container.innerHTML = "";
+    nav.innerHTML = "";
 
-    function createQuantityControl(product, currentQty) {
-        if (product === "Sausages") {
-            const container = document.createElement("div");
-            container.className = "qty-stepper";
-            const minusBtn = document.createElement("button");
-            minusBtn.textContent = "−";
-            const input = document.createElement("input");
-            input.type = "number";
-            input.value = currentQty;
-            input.min = 0;
-            input.max = 500;
-            input.step = 10;
-            const plusBtn = document.createElement("button");
-            plusBtn.textContent = "+";
-            minusBtn.onclick = () => setQuantity(product, currentQty - 10);
-            plusBtn.onclick = () => setQuantity(product, currentQty + 10);
-            input.onchange = (e) => setQuantity(product, e.target.value);
-            container.appendChild(minusBtn);
-            container.appendChild(input);
-            container.appendChild(plusBtn);
-            return container;
-        } else {
-            const select = document.createElement("select");
-            for (let i = 0; i <= 50; i++) {
-                const opt = document.createElement("option");
-                opt.value = i;
-                opt.textContent = i;
-                if (currentQty === i) opt.selected = true;
-                select.appendChild(opt);
-            }
-            select.addEventListener("change", (function(p) {
-                return function(e) { setQuantity(p, e.target.value); };
-            })(product));
-            return select;
-        }
-    }
+    // Category navigation
+    [...baseCategories.map(c => c.name), "➕ Miscellaneous"].forEach(catName => {
+        const link = document.createElement("a");
+        link.href = `#${catName.replace(/[^a-zA-Z0-9]/g, '')}`;
+        link.textContent = catName;
+        link.onclick = (e) => {
+            e.preventDefault();
+            document.getElementById(catName.replace(/[^a-zA-Z0-9]/g, '')).scrollIntoView({ behavior: 'smooth' });
+        };
+        nav.appendChild(link);
+    });
 
-    function render() {
-        const container = document.getElementById("categoriesContainer");
-        const navContainer = document.getElementById("categoryNav");
-        if (!container) return;
-        container.innerHTML = "";
-        
-        navContainer.innerHTML = "";
-        const allCategoryNames = [...baseCategories.map(c => c.name), "➕ Miscellaneous"];
-        allCategoryNames.forEach(catName => {
-            const link = document.createElement("a");
-            link.href = `#${catName.replace(/\s/g, '')}`;
-            link.textContent = catName;
-            link.onclick = (e) => {
-                e.preventDefault();
-                const element = document.getElementById(catName.replace(/\s/g, ''));
-                if (element) element.scrollIntoView({ behavior: 'smooth' });
-            };
-            navContainer.appendChild(link);
+    // Main categories
+    baseCategories.forEach(cat => {
+        const catId = cat.name.replace(/[^a-zA-Z0-9]/g, '');
+        const catDiv = document.createElement("div");
+        catDiv.className = "category";
+        catDiv.id = catId;
+
+        const header = document.createElement("div");
+        header.className = "category-header";
+        header.textContent = cat.name;
+        catDiv.appendChild(header);
+
+        const grid = document.createElement("div");
+        grid.className = "product-grid";
+
+        cat.products.forEach(prod => {
+            const data = stockData[prod];
+            const card = createProductCard(prod, data);
+            grid.appendChild(card);
         });
 
-        for (let cat of baseCategories) {
-            const catId = cat.name.replace(/\s/g, '');
-            const catDiv = document.createElement("div");
-            catDiv.className = "category";
-            catDiv.id = catId;
-            const header = document.createElement("div");
-            header.className = "category-header";
-            header.textContent = cat.name;
-            catDiv.appendChild(header);
-            
-            const grid = document.createElement("div");
-            grid.className = "product-grid";
-            for (let prod of cat.products) {
-                const data = stockData[prod];
-                if (!data) continue;
-                const card = document.createElement("div");
-                card.className = "product-card";
-                const nameSpan = document.createElement("div");
-                nameSpan.className = "product-name";
-                nameSpan.textContent = prod;
-                
-                const controlDiv = document.createElement("div");
-                controlDiv.className = "stock-control";
-                const qtyControl = createQuantityControl(prod, data.qty);
-                const unitSelect = document.createElement("select");
-                unitOptions.forEach(unit => {
-                    const opt = document.createElement("option");
-                    opt.value = unit;
-                    opt.textContent = unit;
-                    if (data.unit === unit) opt.selected = true;
-                    unitSelect.appendChild(opt);
-                });
-                unitSelect.addEventListener("change", (function(p) {
-                    return function(e) { changeUnit(p, e.target.value); };
-                })(prod));
-                controlDiv.appendChild(qtyControl);
-                controlDiv.appendChild(unitSelect);
-                card.appendChild(nameSpan);
-                card.appendChild(controlDiv);
-                grid.appendChild(card);
-            }
-            catDiv.appendChild(grid);
-            container.appendChild(catDiv);
-        }
+        catDiv.appendChild(grid);
+        container.appendChild(catDiv);
+    });
 
-        // Miscellaneous section
-        const miscId = "Miscellaneous";
-        const miscDiv = document.createElement("div");
-        miscDiv.className = "category";
-        miscDiv.id = miscId.replace(/\s/g, '');
-        const miscHeader = document.createElement("div");
-        miscHeader.className = "category-header";
-        miscHeader.textContent = "➕ Miscellaneous (add missing items)";
-        miscDiv.appendChild(miscHeader);
-        
-        const miscGrid = document.createElement("div");
-        miscGrid.className = "product-grid";
-        for (let prod of miscProducts) {
-            const data = stockData[prod];
-            if (!data) continue;
-            const card = document.createElement("div");
-            card.className = "product-card";
-            const nameSpan = document.createElement("div");
-            nameSpan.className = "product-name";
-            nameSpan.textContent = prod;
-            const controlDiv = document.createElement("div");
-            controlDiv.className = "stock-control";
-            const qtyControl = createQuantityControl(prod, data.qty);
-            const unitSelect = document.createElement("select");
-            unitOptions.forEach(unit => {
-                const opt = document.createElement("option");
-                opt.value = unit;
-                opt.textContent = unit;
-                if (data.unit === unit) opt.selected = true;
-                unitSelect.appendChild(opt);
-            });
-            unitSelect.addEventListener("change", (function(p) {
-                return function(e) { changeUnit(p, e.target.value); };
-            })(prod));
-            const deleteBtn = document.createElement("button");
-            deleteBtn.textContent = "✖";
-            deleteBtn.className = "delete-item";
-            deleteBtn.onclick = () => deleteMiscProduct(prod);
-            controlDiv.appendChild(qtyControl);
-            controlDiv.appendChild(unitSelect);
-            controlDiv.appendChild(deleteBtn);
-            card.appendChild(nameSpan);
-            card.appendChild(controlDiv);
-            miscGrid.appendChild(card);
+    // Miscellaneous
+    const miscDiv = document.createElement("div");
+    miscDiv.className = "category";
+    miscDiv.id = "Miscellaneous";
+
+    const miscHeader = document.createElement("div");
+    miscHeader.className = "category-header";
+    miscHeader.textContent = "➕ Miscellaneous (add missing items)";
+    miscDiv.appendChild(miscHeader);
+
+    const miscGrid = document.createElement("div");
+    miscGrid.className = "product-grid";
+
+    miscProducts.forEach(prod => {
+        const card = createProductCard(prod, stockData[prod], true);
+        miscGrid.appendChild(card);
+    });
+    miscDiv.appendChild(miscGrid);
+
+    // Add new item area
+    const addArea = document.createElement("div");
+    addArea.className = "add-item-area";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Enter missing product name...";
+    const addBtn = document.createElement("button");
+    addBtn.textContent = "+ Add";
+    addBtn.onclick = () => {
+        if (input.value.trim()) {
+            addMiscProduct(input.value);
+            input.value = "";
         }
-        miscDiv.appendChild(miscGrid);
-        
-        const addArea = document.createElement("div");
-        addArea.className = "add-item-area";
-        const newItemInput = document.createElement("input");
-        newItemInput.type = "text";
-        newItemInput.placeholder = "Enter missing product name...";
-        const addBtn = document.createElement("button");
-        addBtn.textContent = "+ Add to Miscellaneous";
-        addBtn.className = "small-btn";
-        addBtn.onclick = () => {
-            const name = newItemInput.value.trim();
-            if (name) {
-                addMiscProduct(name);
-                newItemInput.value = "";
-            } else {
-                alert("Please enter a product name");
-            }
-        };
-        addArea.appendChild(newItemInput);
-        addArea.appendChild(addBtn);
-        miscDiv.appendChild(addArea);
-        
-        container.appendChild(miscDiv);
+    };
+    addArea.append(input, addBtn);
+    miscDiv.appendChild(addArea);
+
+    container.appendChild(miscDiv);
+}
+
+function createProductCard(product, data, isMisc = false) {
+    const card = document.createElement("div");
+    card.className = "product-card";
+
+    const nameDiv = document.createElement("div");
+    nameDiv.className = "product-name";
+    nameDiv.textContent = product;
+
+    const controlDiv = document.createElement("div");
+    controlDiv.className = "stock-control";
+
+    // Quantity control
+    if (product === "Sausages") {
+        const stepper = document.createElement("div");
+        stepper.className = "qty-stepper";
+
+        const minus = document.createElement("button");
+        minus.textContent = "−";
+        minus.onclick = () => setQuantity(product, data.qty - 10);
+
+        const input = document.createElement("input");
+        input.type = "number";
+        input.value = data.qty;
+        input.min = 0;
+        input.max = 500;
+        input.onchange = (e) => setQuantity(product, e.target.value);
+
+        const plus = document.createElement("button");
+        plus.textContent = "+";
+        plus.onclick = () => setQuantity(product, data.qty + 10);
+
+        stepper.append(minus, input, plus);
+        controlDiv.appendChild(stepper);
+    } else {
+        const select = document.createElement("select");
+        for (let i = 0; i <= 50; i++) {
+            const opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = i;
+            if (i === data.qty) opt.selected = true;
+            select.appendChild(opt);
+        }
+        select.onchange = (e) => setQuantity(product, e.target.value);
+        controlDiv.appendChild(select);
     }
 
-    function resetAll() {
-        for (let prod in stockData) {
-            stockData[prod].qty = 0;
-        }
-        render();
-        alert("All quantities set to zero.");
+    // Unit select
+    const unitSelect = document.createElement("select");
+    unitOptions.forEach(u => {
+        const opt = document.createElement("option");
+        opt.value = u;
+        opt.textContent = u;
+        if (u === data.unit) opt.selected = true;
+        unitSelect.appendChild(opt);
+    });
+    unitSelect.onchange = (e) => changeUnit(product, e.target.value);
+    controlDiv.appendChild(unitSelect);
+
+    // Delete button for misc items
+    if (isMisc) {
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "✖";
+        delBtn.className = "delete-item";
+        delBtn.onclick = () => deleteMiscProduct(product);
+        controlDiv.appendChild(delBtn);
     }
 
-    function validateAndGetInfo() {
-        const dateInput = document.getElementById("stockDate");
-        const staffSelect = document.getElementById("staffName");
-        const warningSpan = document.getElementById("infoWarning");
-        let isValid = true;
-        let errors = [];
-        if (!dateInput.value) {
-            errors.push("Date");
-            isValid = false;
-        }
-        if (!staffSelect.value) {
-            errors.push("Staff name");
-            isValid = false;
-        }
-        if (!isValid) {
-            warningSpan.innerHTML = `⚠️ Please fill in: ${errors.join(" & ")}`;
-            return null;
-        }
-        warningSpan.innerHTML = "";
-        return {
-            date: dateInput.value,
-            staff: staffSelect.value
-        };
-    }
+    card.append(nameDiv, controlDiv);
+    return card;
+}
 
-    function getFullStockTakeReport(info) {
-        let report = `THE MEMBERS LOUNGE – STOCK TAKE REPORT\n`;
-        report += `Date: ${info.date}\n`;
-        report += `Stocktake performed by: ${info.staff}\n`;
-        report += `=========================================\n\n`;
-        for (let cat of baseCategories) {
-            let hasItems = false;
-            let categoryReport = `📁 ${cat.name}\n`;
-            for (let prod of cat.products) {
-                const data = stockData[prod];
-                if (data && data.qty > 0) {
-                    categoryReport += `   • ${prod}: ${data.qty} ${data.unit}\n`;
-                    hasItems = true;
-                }
-            }
-            if (hasItems) {
-                report += categoryReport + "\n";
-            }
-        }
-        if (miscProducts.length > 0) {
-            let hasMisc = false;
-            let miscReport = `📁 Miscellaneous (added items)\n`;
-            for (let prod of miscProducts) {
-                const data = stockData[prod];
-                if (data && data.qty > 0) {
-                    miscReport += `   • ${prod}: ${data.qty} ${data.unit}\n`;
-                    hasMisc = true;
-                }
-            }
-            if (hasMisc) {
-                report += miscReport + "\n";
-            }
-        }
-        report += `Report generated: ${new Date().toLocaleString()}\n`;
-        return report;
-    }
-
-    function showPreview() {
-        const info = validateAndGetInfo();
-        if (!info) {
-            alert("Please select both the stock take date and your name before previewing.");
-            return;
-        }
-        const reportText = getFullStockTakeReport(info);
-        const previewDiv = document.getElementById("summaryPreview");
-        previewDiv.innerHTML = `<h3 style="margin-top:0;">📋 Stock Take Summary</h3><pre>${reportText}</pre>`;
-        previewDiv.classList.add("show");
-        previewDiv.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function printPDF() {
-        const info = validateAndGetInfo();
-        if (!info) {
-            alert("Please select both the stock take date and your name before printing.");
-            return;
-        }
-        const reportText = getFullStockTakeReport(info);
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-            <html>
-            <head>
-                <title>Members Lounge Stock Take - ${info.date}</title>
-                <style>
-                    body { font-family: system-ui, 'Segoe UI', Roboto, sans-serif; margin: 40px; }
-                    h1 { color: #111; border-left: 6px solid #000; padding-left: 20px; }
-                    pre { font-family: monospace; white-space: pre-wrap; font-size: 11pt; background: #f9f9f9; padding: 20px; border-radius: 12px; }
-                    .footer { margin-top: 40px; font-size: 9pt; color: #666; }
-                </style>
-            </head>
-            <body>
-                <h1>The Members Lounge – Stock Take</h1>
-                <pre>${reportText}</pre>
-                <div class="footer">Printed from The Members Lounge stock take system</div>
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-    }
-
-    // Set today's date as default
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById("stockDate").value = today;
-
-    initBaseData();
+// ==================== REPORT & ACTIONS ====================
+function resetAll() {
+    Object.keys(stockData).forEach(key => stockData[key].qty = 0);
     render();
+    alert("All quantities have been reset to zero.");
+}
 
-    document.getElementById("resetBtn").addEventListener("click", resetAll);
-    document.getElementById("previewBtn").addEventListener("click", showPreview);
-    document.getElementById("printPdfBtn").addEventListener("click", printPDF);
+function validateAndGetInfo() {
+    const date = document.getElementById("stockDate").value;
+    const staff = document.getElementById("staffName").value;
+    const warning = document.getElementById("infoWarning");
+
+    if (!date || !staff) {
+        warning.textContent = "⚠️ Please fill in both Date and Staff name";
+        return null;
+    }
+    warning.textContent = "";
+    return { date, staff };
+}
+
+function getFullStockTakeReport(info) {
+    let report = `THE MEMBERS LOUNGE – STOCK TAKE REPORT\n`;
+    report += `Date: ${info.date}\n`;
+    report += `Stocktake performed by: ${info.staff}\n`;
+    report += `Generated: ${new Date().toLocaleString()}\n`;
+    report += `=========================================\n\n`;
+
+    baseCategories.forEach(cat => {
+        let hasItems = false;
+        let section = `📁 ${cat.name}\n`;
+        cat.products.forEach(prod => {
+            const d = stockData[prod];
+            if (d && d.qty > 0) {
+                section += `   • ${prod}: ${d.qty} ${d.unit}\n`;
+                hasItems = true;
+            }
+        });
+        if (hasItems) report += section + "\n";
+    });
+
+    if (miscProducts.length > 0) {
+        let hasMisc = false;
+        let section = `📁 Miscellaneous\n`;
+        miscProducts.forEach(prod => {
+            const d = stockData[prod];
+            if (d && d.qty > 0) {
+                section += `   • ${prod}: ${d.qty} ${d.unit}\n`;
+                hasMisc = true;
+            }
+        });
+        if (hasMisc) report += section + "\n";
+    }
+
+    return report;
+}
+
+function showPreview() {
+    const info = validateAndGetInfo();
+    if (!info) return;
+
+    const report = getFullStockTakeReport(info);
+    const preview = document.getElementById("summaryPreview");
+    preview.innerHTML = `<h3 style="margin:0 0 15px 0;">📋 Stock Take Summary</h3><pre>${report}</pre>`;
+    preview.classList.add("show");
+    preview.scrollIntoView({ behavior: "smooth" });
+}
+
+function printPDF() {
+    const info = validateAndGetInfo();
+    if (!info) return;
+
+    const report = getFullStockTakeReport(info);
+    const win = window.open('', '_blank');
+    win.document.write(`
+        <html><head><title>Stock Take - ${info.date}</title>
+        <style>
+            body { font-family: system-ui, sans-serif; margin: 40px; }
+            h1 { border-left: 8px solid #000; padding-left: 20px; }
+            pre { font-family: monospace; white-space: pre-wrap; font-size: 11pt; background:#f9f9f9; padding:25px; border-radius:12px; }
+        </style>
+        </head><body>
+            <h1>The Members Lounge – Stock Take</h1>
+            <pre>${report}</pre>
+        </body></html>
+    `);
+    win.document.close();
+    win.print();
+}
+
+// ==================== INITIALISATION ====================
+document.getElementById("stockDate").value = new Date().toISOString().split('T')[0];
+
+initBaseData();
+render();
+
+document.getElementById("resetBtn").addEventListener("click", resetAll);
+document.getElementById("previewBtn").addEventListener("click", showPreview);
+document.getElementById("printPdfBtn").addEventListener("click", printPDF);
 </script>
 </body>
 </html>
