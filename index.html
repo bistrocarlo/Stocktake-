@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Members Lounge – Supplier Stock Take</title>
+    <title>Members Lounge – Supplier Stock Take (per product)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -87,41 +87,14 @@
         .category-header {
             background: #e9f0e3;
             padding: 14px 24px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            border-bottom: 1px solid #cddfc0;
-        }
-        .category-header h2 {
-            margin: 0;
             font-size: 1.3rem;
             font-weight: 600;
             color: #1f3b22;
-        }
-        .supplier-select {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: white;
-            padding: 5px 12px;
-            border-radius: 40px;
-        }
-        .supplier-select label {
-            font-weight: 500;
-            font-size: 0.8rem;
-        }
-        .supplier-select select {
-            padding: 6px 12px;
-            border-radius: 40px;
-            border: 1px solid #ccc;
-            background: white;
-            font-size: 0.8rem;
+            border-bottom: 1px solid #cddfc0;
         }
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 12px;
             padding: 20px;
         }
@@ -155,7 +128,7 @@
             border: 1px solid #ccc;
             background: white;
             font-size: 0.8rem;
-            min-width: 70px;
+            min-width: 80px;
         }
         .footer-note {
             text-align: center;
@@ -178,90 +151,91 @@
 </head>
 <body>
 <div class="container">
-    <h1>🍽️ Members Lounge – Supplier Stock Take</h1>
-    <div class="sub">Sunday night after service · enter remaining stock · assign supplier per category</div>
+    <h1>🍽️ Members Lounge – Stock Take</h1>
+    <div class="sub">Sunday night after service · assign supplier & remaining stock for EACH product</div>
 
     <div class="toolbar">
         <button id="saveBtn">💾 Save to browser</button>
         <button id="loadBtn">📂 Load last session</button>
         <button id="resetBtn" class="warning">🗑️ Reset all to zero</button>
-        <button id="exportBySupplierBtn" class="supplier-report">📋 Report grouped by supplier</button>
+        <button id="exportBySupplierBtn" class="supplier-report">📋 Consolidated order by supplier</button>
         <button id="exportFullBtn" class="secondary">📄 Full inventory report</button>
     </div>
 
     <div id="categoriesContainer"></div>
     <div id="exportArea" class="export-area"></div>
     <div class="footer-note">
-        ✅ Use dropdown to set quantity (0–50) – each product also has unit dropdown<br>
-        ✅ Each category has a supplier dropdown → report groups items by supplier for easy reordering
+        ✅ Each product has its own supplier & unit & quantity (0–50 dropdown)<br>
+        ✅ Consolidated report groups items by supplier – only products with quantity > 0 appear
     </div>
 </div>
 
 <script>
-    // ========== PRODUCT DATABASE (from your PDF) ==========
+    // --------------------------------------------------------------
+    // PRODUCT DATABASE with NEW CATEGORIES (Meats, Seafood, Dairy, Bakery,
+    // Dry Goods, Soft Drinks, Beer & Cider, Wines, Spirits, Dessert)
+    // --------------------------------------------------------------
     const categories = [
-        { name: "🐟 Seafood & Meat", products: [
-            "Fish (5kg box)", "Calamari (5kg box)", "Oysters", "Prawns (bag)", "Lobster", "Salmon",
+        { name: "🥩 Meats", products: [
             "Sausages", "Ragu Meatballs", "Chicken", "Veal", "Steak", "Ragu Meat",
-            "Prosciutto", "Mortadella"
+            "Prosciutto", "Mortadella", "Ham", "Salami (2.5kg bag)", "Meatballs (per guest)"
         ] },
-        { name: "🥖 Bakery & Dairy", products: [
-            "Bread Rolls", "Sliced Bread", "Bruschetta Bread", "Butter", "Ricotta",
-            "Parmesan", "Bocconcini"
+        { name: "🐟 Seafood", products: [
+            "Fish (5kg box)", "Calamari (5kg box)", "Oysters", "Prawns (bag)", "Lobster", "Salmon", "Anchovies"
         ] },
-        { name: "🥫 Pantry & Dry Goods", products: [
+        { name: "🥛 Dairy", products: [
+            "Butter", "Ricotta", "Parmesan", "Bocconcini", "Mozzarella (2.5kg tray)", "Listarella tray",
+            "Coles Milk (3L)", "Cannoli Cream (2.5kg)"
+        ] },
+        { name: "🥖 Bakery", products: [
+            "Bread Rolls", "Sliced Bread", "Bruschetta Bread", "Panini", "Tsoureki Easter Loaf",
+            "Como Bakery (generic)", "Nonna J's Bakery (generic)"
+        ] },
+        { name: "📦 Dry Goods (produce, pantry, cleaning, etc.)", products: [
             "Napoli Cut Tray 2kg", "Pasta (15kg box)", "Olives (bucket)", "Napoli Sauce (box of 6)",
             "Olive Oil (20L drum)", "Chili Flakes", "Oregano", "Red Wine Vinegar (5L)",
             "Breadcrumbs (5kg bag)", "Artichokes", "Capsicums (tin)", "Beans", "Salt", "Ragu Red Wine",
-            "Flour (12.5kg)", "Mozzarella (2.5kg tray)", "Ham", "Salami (2.5kg bag)", "Anchovies",
-            "Mushrooms (4kg box)", "Kalamata Split Olives (tin)", "Ristoris", "Yeast", "Listarella tray",
-            "Soppressata (hot)", "Breadcrumb Panko (7kg)", "Cannerozzetti (500g)", "Tomato Sauce squeezy",
-            "Peeled tomatoes Pelati", "Rice Flour (25kg)", "Signetti"
-        ] },
-        { name: "🌽 Produce", products: [
-            "Watermelon", "Pineapple", "Strawberries", "Salad Mix", "Eggplant", "Lemon", "Garlic",
-            "Potatoes", "Pumpkin", "Broccoli", "Tomatoes", "Basil", "Oregano (fresh)", "Onion",
-            "Carrots", "Parsley", "Celery", "Rocket", "Rosemary", "Capsicums Pizza", "Oranges",
-            "Porcini Mushrooms", "Peas", "Chick Peas", "Polenta", "Avocado", "Zucchini"
-        ] },
-        { name: "🍕 Prepared / Catering", products: [
-            "Arancini", "Meatballs (per guest)", "Potato Croquettes", "Panini", "Mini Pizza",
-            "Meat Pies", "Sausage Rolls", "Mixed Sandwiches", "Gluten Gnocchi (400g)",
-            "Gluten Chips (2.5kg)", "Fructose", "No seafood (dietary)", "Dairy Free", "Vegan", "FOD"
-        ] },
-        { name: "🧒 Children’s Items", products: [
-            "Chicken Nuggets (50/pack)", "Chips (makes 30 kids)", "Baby Pizza"
-        ] },
-        { name: "🍰 Dessert", products: [
-            "Gelato (each)", "Dixie Cups", "Cannoli shells (box of 150)", "Cannoli Cream (2.5kg)",
-            "Cake (wedding)", "Mini Cannoli", "Tsoureki Easter Loaf"
+            "Flour (12.5kg)", "Yeast", "Soppressata (hot)", "Breadcrumb Panko (7kg)",
+            "Cannerozzetti (500g)", "Tomato Sauce squeezy", "Peeled tomatoes Pelati", "Rice Flour (25kg)",
+            "Signetti", "Watermelon", "Pineapple", "Strawberries", "Salad Mix", "Eggplant", "Lemon",
+            "Garlic", "Potatoes", "Pumpkin", "Broccoli", "Tomatoes", "Basil", "Oregano (fresh)",
+            "Onion", "Carrots", "Parsley", "Celery", "Rocket", "Rosemary", "Capsicums Pizza",
+            "Oranges", "Porcini Mushrooms", "Peas", "Chick Peas", "Polenta", "Avocado", "Zucchini",
+            "Arancini", "Potato Croquettes", "Mini Pizza", "Meat Pies", "Sausage Rolls",
+            "Mixed Sandwiches", "Gluten Gnocchi (400g)", "Gluten Chips (2.5kg)", "Fructose",
+            "No seafood (dietary)", "Dairy Free", "Vegan", "FOD", "Chicken Nuggets (50/pack)",
+            "Chips (makes 30 kids)", "Baby Pizza", "Dixie Cups", "Cannoli shells (box of 150)",
+            "Cake (wedding)", "Mini Cannoli", "Sugar", "Coffee Espresso (1kg bag)",
+            "Sugar Sachet (2000x3g)", "Serviettes (1000/box)", "Table Cloths", "Bin Liners (72L)",
+            "Toilet Rolls (jumbo)", "5L Soap", "Table Paper (100 sheets)", "Foil (3kg)",
+            "Ribbed Containers", "Ribbed Lids", "Dishwashing Liquid (25L)", "Gladwrap", "Handtowels",
+            "Chux Roll", "Large Nitra Gloves", "Scourer Sponge", "Baking Paper roll", "25L Metho",
+            "Mop Head & Handle", "Straws", "Toilet Tablets", "Wooden Stirrers", "Gas Bottles (monthly)",
+            "Deep Fryer Oil (weekly)", "EFTPOS Rental", "Thermal Rolls Eftpos", "Thermal Printer Rolls"
         ] },
         { name: "🥤 Soft Drinks", products: [
             "1.25L Cola", "2L Cola", "1.25L Diet Cola", "2L Diet Cola", "1.25L Solo", "2L Solo",
             "1.25L Diet Solo", "2L Diet Solo", "1.25L Lemonade", "2L Lemonade", "1.25L Diet Lemonade",
             "2L Diet Lemonade", "Chinotto (200ml)", "Aranciata (200ml)", "Lemon Juice",
-            "Spring Water Coles (1.25L pack)", "San Pellegrino (1L)"
+            "Spring Water Coles (1.25L pack)", "San Pellegrino (1L)", "Bickford's Lime Cordial",
+            "Bickford's Raspberry Cordial", "Bitters 200ml"
         ] },
-        { name: "🍺 Beer", products: [
+        { name: "🍺 Beer & Cider", products: [
             "Corona Extra (carton)", "Peroni Red (carton)", "Peroni Nastro Azzuro (carton)",
             "Menabrea Birra 330mL", "Carlton Draught", "VB", "Asahi Super Dry (220mL)", "Cascade Light"
         ] },
-        { name: "🍷 Red Wine", products: [
+        { name: "🍷 Wines", products: [
             "Warburn Rich Red Shiraz", "Warburn Shiraz", "Peter Lehmann Bond Shiraz",
             "Evans & Tate Shiraz", "Warburn Pinot Noir", "Yellow Tail Pinot Noir",
             "Fat Sparrow Sangiovese", "Warburn Cabernet Sauvignon", "Evans & Tate Cab Sav",
-            "Warburn Merlot", "Primitivo / Zinfandel", "Malbec", "Nebbiolo"
-        ] },
-        { name: "🥂 White Wine", products: [
+            "Warburn Merlot", "Primitivo / Zinfandel", "Malbec", "Nebbiolo",
             "Warburn Vivo Moscato", "Brown Bro. Moscato Sauvignon Blanc", "Warburn VIVO Sauvignon Blanc",
             "Oyster Bay Sauvignon Blanc", "Squealing Pig Sauvignon Blanc", "De Bortoli VIVO Chardonnay",
             "Warburn Chardonnay", "Pinot Gris", "Yalumba Pinot Grigio", "Warburn Pinot Grigio",
-            "Riesling", "Viognier", "Chenin Blanc", "Albariño"
+            "Riesling", "Viognier", "Chenin Blanc", "Albariño", "Warburn Rosé",
+            "La Gioiosa Prosecco", "Brown Brothers Prosecco (200ml)"
         ] },
-        { name: "💖 Rosé & Sparkling", products: [
-            "Warburn Rosé", "La Gioiosa Prosecco", "Brown Brothers Prosecco (200ml)"
-        ] },
-        { name: "🍸 Spirits & Liqueurs", products: [
+        { name: "🥃 Spirits & Liqueurs", products: [
             "Johny Walker Red 1L", "Johny Walker Black 1L", "Canadian Club Whisky 1L",
             "Jack Daniels 1L", "Makers Mark Bourbon", "Jim Bean White 700ml", "Gordons Dry Gin 1L",
             "Smirnoff Red Vodka 1L", "Grey Goose Vodka 1L", "Bundaberg Rum 1L", "Bacardi Rum 1L",
@@ -271,21 +245,13 @@
             "Vecchio Amaro del Capo", "Averna Amaro", "Penfolds Club Tawny", "Campari 700ml",
             "Aperol Aperitivo 700ml", "Aperol Spritz (175ml pack)"
         ] },
-        { name: "🧃 Mixers & Cordials", products: [
-            "Bickford's Lime Cordial", "Bickford's Raspberry Cordial", "Bitters 200ml"
-        ] },
-        { name: "🧾 Non‑food / Consumables", products: [
-            "Coles Milk (3L)", "Sugar", "Coffee Espresso (1kg bag)", "Sugar Sachet (2000x3g)",
-            "Serviettes (1000/box)", "Table Cloths", "Bin Liners (72L)", "Toilet Rolls (jumbo)",
-            "5L Soap", "Table Paper (100 sheets)", "Foil (3kg)", "Ribbed Containers", "Ribbed Lids",
-            "Dishwashing Liquid (25L)", "Gladwrap", "Handtowels", "Chux Roll", "Large Nitra Gloves",
-            "Scourer Sponge", "Baking Paper roll", "25L Metho", "Mop Head & Handle", "Straws",
-            "Toilet Tablets", "Wooden Stirrers", "Gas Bottles (monthly)", "Deep Fryer Oil (weekly)",
-            "EFTPOS Rental", "Thermal Rolls Eftpos", "Thermal Printer Rolls"
+        { name: "🍰 Dessert", products: [
+            "Gelato (each)", "Cannoli shells (box of 150)", "Cannoli Cream (2.5kg)",
+            "Cake (wedding)", "Mini Cannoli", "Terry's tortes & treats"
         ] }
     ];
 
-    // ----- YOUR SUPPLIER LIST -----
+    // ----- SUPPLIER LIST (your full list) -----
     const supplierList = [
         "Select supplier",
         "Nino & Joe's Meats Pty Ltd",
@@ -323,35 +289,29 @@
         "jars", "tins", "drums", "loaves", "punnets", "bunches", "litres"
     ];
 
-    // Data structures
-    let stockData = {};        // { productName: { qty, unit } }
-    let categorySupplier = {}; // { categoryName: supplier }
+    // Data structures: each product has { qty, unit, supplier }
+    let stockData = {};
 
     // Storage key
-    const STORAGE_KEY = "members_lounge_stock_supplier";
+    const STORAGE_KEY = "members_lounge_stock_supplier_per_product";
 
     // Initialize data
     function initData() {
         for (let cat of categories) {
             for (let prod of cat.products) {
                 if (!stockData[prod]) {
-                    stockData[prod] = { qty: 0, unit: "each" };
+                    stockData[prod] = { qty: 0, unit: "each", supplier: "Select supplier" };
                 }
-            }
-            if (!categorySupplier[cat.name]) {
-                categorySupplier[cat.name] = "Select supplier";
             }
         }
     }
 
-    // Helper: set quantity (called from dropdown)
+    // Helper: set quantity (0-50)
     function setQuantity(product, newVal) {
         let val = parseInt(newVal, 10);
         if (isNaN(val)) val = 0;
         val = Math.min(50, Math.max(0, val));
         stockData[product].qty = val;
-        // No need to re-render the whole UI, but we can just update the dropdown value.
-        // For consistency, we'll re-render the whole product grid (simple and safe).
         render();
     }
 
@@ -360,8 +320,8 @@
         render();
     }
 
-    function changeCategorySupplier(catName, supplier) {
-        categorySupplier[catName] = supplier;
+    function changeSupplier(product, newSupplier) {
+        stockData[product].supplier = newSupplier;
         render();
     }
 
@@ -386,36 +346,16 @@
         for (let cat of categories) {
             const catDiv = document.createElement("div");
             catDiv.className = "category";
-            
-            // Header with supplier dropdown
             const header = document.createElement("div");
             header.className = "category-header";
-            const h2 = document.createElement("h2");
-            h2.textContent = cat.name;
-            const supplierDiv = document.createElement("div");
-            supplierDiv.className = "supplier-select";
-            supplierDiv.innerHTML = `<label>📦 Supplier:</label>`;
-            const supSelect = document.createElement("select");
-            supplierList.forEach(sup => {
-                const opt = document.createElement("option");
-                opt.value = sup;
-                opt.textContent = sup;
-                if (categorySupplier[cat.name] === sup) opt.selected = true;
-                supSelect.appendChild(opt);
-            });
-            supSelect.addEventListener("change", (function(catName) {
-                return function(e) { changeCategorySupplier(catName, e.target.value); };
-            })(cat.name));
-            supplierDiv.appendChild(supSelect);
-            header.appendChild(h2);
-            header.appendChild(supplierDiv);
+            header.textContent = cat.name;
             catDiv.appendChild(header);
             
-            // Product grid
             const grid = document.createElement("div");
             grid.className = "product-grid";
             for (let prod of cat.products) {
                 const data = stockData[prod];
+                if (!data) continue;
                 const card = document.createElement("div");
                 card.className = "product-card";
                 const nameSpan = document.createElement("div");
@@ -425,7 +365,7 @@
                 const controlDiv = document.createElement("div");
                 controlDiv.className = "stock-control";
                 
-                // Quantity dropdown (0-50)
+                // Quantity dropdown
                 const qtySelect = quantityDropdown(data.qty);
                 qtySelect.addEventListener("change", (function(p) {
                     return function(e) { setQuantity(p, e.target.value); };
@@ -444,8 +384,22 @@
                     return function(e) { changeUnit(p, e.target.value); };
                 })(prod));
                 
+                // Supplier select
+                const supSelect = document.createElement("select");
+                supplierList.forEach(sup => {
+                    const opt = document.createElement("option");
+                    opt.value = sup;
+                    opt.textContent = sup;
+                    if (data.supplier === sup) opt.selected = true;
+                    supSelect.appendChild(opt);
+                });
+                supSelect.addEventListener("change", (function(p) {
+                    return function(e) { changeSupplier(p, e.target.value); };
+                })(prod));
+                
                 controlDiv.appendChild(qtySelect);
                 controlDiv.appendChild(unitSelect);
+                controlDiv.appendChild(supSelect);
                 card.appendChild(nameSpan);
                 card.appendChild(controlDiv);
                 grid.appendChild(card);
@@ -457,12 +411,7 @@
 
     // Save to localStorage
     function saveToLocal() {
-        const saveObj = {
-            stockData: stockData,
-            categorySupplier: categorySupplier,
-            version: 3
-        };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(saveObj));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stockData));
         alert("Stock & supplier assignments saved!");
     }
 
@@ -470,19 +419,10 @@
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
             try {
-                const obj = JSON.parse(saved);
-                if (obj.stockData) {
-                    for (let prod in obj.stockData) {
-                        if (stockData[prod]) {
-                            stockData[prod] = obj.stockData[prod];
-                        }
-                    }
-                }
-                if (obj.categorySupplier) {
-                    for (let cat in obj.categorySupplier) {
-                        if (categorySupplier[cat] !== undefined) {
-                            categorySupplier[cat] = obj.categorySupplier[cat];
-                        }
+                const parsed = JSON.parse(saved);
+                for (let prod in parsed) {
+                    if (stockData[prod]) {
+                        stockData[prod] = parsed[prod];
                     }
                 }
                 render();
@@ -501,18 +441,16 @@
         alert("All quantities set to zero.");
     }
 
-    // Generate report grouped by supplier
-    function getSupplierGroupedReport() {
-        let supplierMap = new Map();
+    // Consolidated report grouped by supplier (only items with qty > 0)
+    function getSupplierConsolidatedReport() {
+        let supplierMap = new Map(); // supplier -> array of { category, product, qty, unit }
         for (let cat of categories) {
-            const supplier = categorySupplier[cat.name];
-            if (!supplier || supplier === "Select supplier") continue;
-            if (!supplierMap.has(supplier)) supplierMap.set(supplier, []);
-            const items = supplierMap.get(supplier);
             for (let prod of cat.products) {
                 const data = stockData[prod];
-                if (data && data.qty > 0) {
-                    items.push({
+                if (data && data.qty > 0 && data.supplier && data.supplier !== "Select supplier") {
+                    const supplier = data.supplier;
+                    if (!supplierMap.has(supplier)) supplierMap.set(supplier, []);
+                    supplierMap.get(supplier).push({
                         category: cat.name,
                         product: prod,
                         qty: data.qty,
@@ -521,37 +459,51 @@
                 }
             }
         }
-        // Unassigned
+        // Unassigned items (supplier = "Select supplier")
         let unassigned = [];
         for (let cat of categories) {
-            const supplier = categorySupplier[cat.name];
-            if (!supplier || supplier === "Select supplier") {
-                for (let prod of cat.products) {
-                    const data = stockData[prod];
-                    if (data && data.qty > 0) {
-                        unassigned.push({
-                            category: cat.name,
-                            product: prod,
-                            qty: data.qty,
-                            unit: data.unit
-                        });
-                    }
+            for (let prod of cat.products) {
+                const data = stockData[prod];
+                if (data && data.qty > 0 && (!data.supplier || data.supplier === "Select supplier")) {
+                    unassigned.push({
+                        category: cat.name,
+                        product: prod,
+                        qty: data.qty,
+                        unit: data.unit
+                    });
                 }
             }
         }
-        let report = "📦 MEMBERS LOUNGE – ORDER BY SUPPLIER\n";
-        report += "=====================================\n\n";
+        let report = "📦 MEMBERS LOUNGE – CONSOLIDATED ORDER BY SUPPLIER\n";
+        report += "================================================\n\n";
         for (let [supplier, items] of supplierMap.entries()) {
             report += `🔹 SUPPLIER: ${supplier}\n`;
+            // Group items within supplier by category for readability
+            let catGroups = new Map();
             for (let it of items) {
-                report += `   • ${it.product} : ${it.qty} ${it.unit}\n`;
+                if (!catGroups.has(it.category)) catGroups.set(it.category, []);
+                catGroups.get(it.category).push(it);
+            }
+            for (let [catName, catItems] of catGroups.entries()) {
+                report += `   📁 ${catName}\n`;
+                for (let it of catItems) {
+                    report += `      • ${it.product} : ${it.qty} ${it.unit}\n`;
+                }
             }
             report += "\n";
         }
         if (unassigned.length > 0) {
-            report += `⚠️ UNASSIGNED (no supplier selected for category)\n`;
+            report += `⚠️ UNASSIGNED (no supplier selected)\n`;
+            let catGroups = new Map();
             for (let it of unassigned) {
-                report += `   • ${it.product} (${it.category}) : ${it.qty} ${it.unit}\n`;
+                if (!catGroups.has(it.category)) catGroups.set(it.category, []);
+                catGroups.get(it.category).push(it);
+            }
+            for (let [catName, catItems] of catGroups.entries()) {
+                report += `   📁 ${catName}\n`;
+                for (let it of catItems) {
+                    report += `      • ${it.product} : ${it.qty} ${it.unit}\n`;
+                }
             }
             report += "\n";
         }
@@ -560,14 +512,13 @@
     }
 
     function getFullInventoryReport() {
-        let report = "📋 MEMBERS LOUNGE – FULL STOCK TAKE\n";
-        report += "==================================\n\n";
+        let report = "📋 MEMBERS LOUNGE – FULL STOCK TAKE (all items)\n";
+        report += "================================================\n\n";
         for (let cat of categories) {
-            const supplier = categorySupplier[cat.name];
-            report += `📁 ${cat.name}  [Supplier: ${supplier}]\n`;
+            report += `📁 ${cat.name}\n`;
             for (let prod of cat.products) {
                 const data = stockData[prod];
-                report += `   • ${prod}: ${data.qty} ${data.unit}\n`;
+                report += `   • ${prod} : ${data.qty} ${data.unit}  [Supplier: ${data.supplier}]\n`;
             }
             report += "\n";
         }
@@ -576,7 +527,7 @@
     }
 
     function showExportBySupplier() {
-        const report = getSupplierGroupedReport();
+        const report = getSupplierConsolidatedReport();
         const exportDiv = document.getElementById("exportArea");
         exportDiv.textContent = report;
         exportDiv.classList.add("show");
