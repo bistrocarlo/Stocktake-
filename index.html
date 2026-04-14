@@ -10,7 +10,7 @@
             font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
         }
         body {
-            background: #f0f0f0;
+            background: #f5f5f5;
             margin: 0;
             padding: 20px;
         }
@@ -19,7 +19,7 @@
             margin: 0 auto;
         }
         .logo-header {
-            background: #111;
+            background: #000;
             border-radius: 28px 28px 0 0;
             padding: 20px 28px;
             display: flex;
@@ -27,7 +27,7 @@
             gap: 20px;
             flex-wrap: wrap;
             justify-content: space-between;
-            border-bottom: 4px solid #cc0000;
+            border-bottom: 2px solid #ccc;
         }
         .logo {
             display: flex;
@@ -35,7 +35,8 @@
             gap: 12px;
         }
         .logo-icon {
-            background: #cc0000;
+            background: #fff;
+            color: #000;
             width: 48px;
             height: 48px;
             border-radius: 50%;
@@ -44,31 +45,61 @@
             justify-content: center;
             font-size: 28px;
             font-weight: bold;
-            color: white;
         }
         .logo-text {
-            color: white;
+            color: #fff;
             font-size: 1.6rem;
             font-weight: 700;
             letter-spacing: 1px;
         }
         .logo-text span {
-            color: #cc0000;
+            color: #ccc;
         }
         .tagline {
             color: #aaa;
             font-size: 0.8rem;
             margin-top: 4px;
         }
+        .category-nav {
+            background: #fff;
+            padding: 12px 20px;
+            border-radius: 40px;
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            background: #fefefe;
+            border: 1px solid #ddd;
+        }
+        .category-nav a {
+            background: #eee;
+            color: #000;
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .category-nav a:hover {
+            background: #000;
+            color: #fff;
+        }
         .info-bar {
-            background: white;
+            background: #fff;
             padding: 16px 24px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 30px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            border-left: 4px solid #cc0000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid #000;
+            margin-top: 0;
         }
         .info-field {
             display: flex;
@@ -77,30 +108,31 @@
         }
         .info-field label {
             font-weight: 600;
-            color: #111;
+            color: #000;
         }
-        .info-field input {
+        .info-field input, .info-field select {
             padding: 8px 12px;
             border-radius: 40px;
             border: 1px solid #ccc;
             font-size: 1rem;
-            min-width: 220px;
+            min-width: 200px;
+            background: white;
         }
         .toolbar {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
             margin: 20px 0;
-            background: white;
+            background: #fff;
             padding: 16px 24px;
             border-radius: 28px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             align-items: center;
         }
         button {
-            background: #111;
+            background: #000;
             border: none;
-            color: white;
+            color: #fff;
             padding: 8px 18px;
             border-radius: 40px;
             font-weight: 600;
@@ -109,30 +141,38 @@
             font-size: 0.9rem;
         }
         button.warning {
-            background: #cc0000;
+            background: #555;
         }
         button.print-btn {
-            background: #cc0000;
+            background: #000;
+        }
+        button.small-btn {
+            background: #333;
+            padding: 4px 12px;
+            font-size: 0.75rem;
         }
         button:hover {
-            opacity: 0.85;
+            opacity: 0.8;
             transform: scale(0.97);
         }
         .category {
-            background: white;
+            background: #fff;
             border-radius: 28px;
             margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             overflow: hidden;
             border: 1px solid #ddd;
+            scroll-margin-top: 100px;
         }
         .category-header {
-            background: #111;
-            color: white;
+            background: #000;
+            color: #fff;
             padding: 14px 24px;
             font-size: 1.3rem;
             font-weight: 600;
-            border-bottom: 2px solid #cc0000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .product-grid {
             display: grid;
@@ -157,6 +197,7 @@
             flex: 2;
             min-width: 140px;
             color: #1e2a1c;
+            word-break: break-word;
         }
         .stock-control {
             display: flex;
@@ -198,6 +239,35 @@
             font-size: 0.9rem;
             padding: 8px 0;
         }
+        .delete-item {
+            background: #555;
+            border: none;
+            color: white;
+            border-radius: 40px;
+            width: 28px;
+            height: 28px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .add-item-area {
+            background: #f9f9f9;
+            padding: 16px 24px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        .add-item-area input {
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+            flex: 2;
+            min-width: 200px;
+        }
         .footer-note {
             text-align: center;
             font-size: 0.75rem;
@@ -217,7 +287,7 @@
                 padding: 0;
                 margin: 0;
             }
-            .toolbar, .info-bar button, .footer-note, .stock-control select, .stock-control .qty-stepper button {
+            .toolbar, .info-bar button, .footer-note, .stock-control select, .stock-control .qty-stepper button, .category-nav, .add-item-area, .delete-item {
                 display: none !important;
             }
             .product-card {
@@ -226,12 +296,12 @@
                 margin-bottom: 5px;
             }
             .category-header {
-                background: #111;
+                background: #000;
                 color: white;
                 print-color-adjust: exact;
             }
             .logo-header {
-                background: #111;
+                background: #000;
                 print-color-adjust: exact;
             }
             .container {
@@ -275,8 +345,20 @@
             <input type="date" id="stockDate" value="">
         </div>
         <div class="info-field">
-            <label>👤 Stocktake performed by (full name):</label>
-            <input type="text" id="staffName" placeholder="e.g. John Smith" autocomplete="off">
+            <label>👤 Stocktake performed by:</label>
+            <select id="staffName">
+                <option value="">-- Select your name --</option>
+                <option value="Peter H">Peter H</option>
+                <option value="Rohitha PR">Rohitha PR</option>
+                <option value="Nam L">Nam L</option>
+                <option value="Michelle P">Michelle P</option>
+                <option value="Carlo P">Carlo P</option>
+                <option value="Remzi A">Remzi A</option>
+                <option value="Ralph M">Ralph M</option>
+                <option value="Laura P">Laura P</option>
+                <option value="Stevan B">Stevan B</option>
+                <option value="Tony B">Tony B</option>
+            </select>
         </div>
         <div id="infoWarning" class="warning-text"></div>
     </div>
@@ -286,16 +368,17 @@
         <button id="printPdfBtn" class="print-btn">🖨️ Print Stock Take (PDF)</button>
     </div>
 
+    <div id="categoryNav" class="category-nav"></div>
     <div id="categoriesContainer"></div>
     <div class="footer-note">
         ✅ Sausages quantity up to 500 (stepper) · all others 0–50 dropdown<br>
-        ✅ Products are alphabetical within each category<br>
-        ✅ Set date & your full name, then print PDF
+        ✅ Click category tabs to jump · Add missing items in "➕ Miscellaneous"<br>
+        ✅ Select your name & date, then print PDF
     </div>
 </div>
 
 <script>
-    // ========== PRODUCT LIST (alphabetical within each category) ==========
+    // ========== BASE PRODUCT LIST (alphabetical within each category) ==========
     const categoriesRaw = [
         { name: "🥩 Meats", products: [
             "Sausages", "Chicken", "Lamb Shanks", "Steak", "Ragu Meat - Tray",
@@ -312,62 +395,58 @@
             "Bruschetta Bread", "Gluten‑free bread"
         ] },
         { name: "🍎 Fruit & Vegetables", products: [
-            "Watermelon", "Pineapple", "Strawberries", "Salad Mix", "Eggplant",
-            "Lemon", "Garlic", "Potatoes", "Pumpkin", "Broccoli", "Tomatoes",
-            "Basil", "Onion", "Carrots", "Parsley", "Celery", "Rocket",
-            "Rosemary", "Capsicums Pizza", "Oranges", "Cauliflower", "Avocado",
-            "Zucchini", "Mushrooms"
+            "Avocado", "Basil", "Broccoli", "Capsicums Pizza", "Carrots", "Cauliflower",
+            "Celery", "Eggplant", "Garlic", "Lemon", "Mushrooms", "Onion", "Oranges",
+            "Parsley", "Pineapple", "Potatoes", "Pumpkin", "Rocket", "Rosemary",
+            "Salad Mix", "Strawberries", "Tomatoes", "Watermelon", "Zucchini"
         ] },
         { name: "📦 Dry Goods", products: [
-            "Pasta Divella Elicoidali", "Olives (Antipasto)", "Olives (Pizza)",
-            "Peeled Tomato's (box of 6)", "Olive Oil (20L drum)", "Olive Oil (10L box)",
-            "Chili Flakes", "Oregano", "Red Wine Vinegar (5L)", "Breadcrumbs - Panko",
-            "Artichokes", "Capsicums (tin)", "Salt", "Pizza Flour (12.5kg)", "Yeast",
-            "Tomato Sauce PC", "Rice Flour (25kg)", "Gluten free Gnocchi (400g)",
-            "Chicken Nuggets (50/pack)", "Frozen Chips", "Sugar",
-            "Coffee Espresso (1kg bag)", "Sugar Sachet (2000x3g)"
+            "Artichokes", "Breadcrumbs - Panko", "Capsicums (tin)", "Chicken Nuggets (50/pack)",
+            "Chili Flakes", "Coffee Espresso (1kg bag)", "Frozen Chips",
+            "Gluten free Gnocchi (400g)", "Olive Oil (10L box)", "Olive Oil (20L drum)",
+            "Olives (Antipasto)", "Olives (Pizza)", "Oregano", "Pasta Divella Elicoidali",
+            "Peeled Tomato's (box of 6)", "Pizza Flour (12.5kg)", "Red Wine Vinegar (5L)",
+            "Rice Flour (25kg)", "Salt", "Sugar", "Sugar Sachet (2000x3g)",
+            "Tomato Sauce PC", "Yeast"
         ] },
         { name: "🧾 Paper Goods & Cleaning/Toiletries", products: [
-            "Serviettes (1000/box)", "Bin Liners (72L)", "Toilet Rolls (jumbo)",
-            "5L Soap", "Table Paper (100 sheets)", "Foil (3kg)", "Ribbed Containers",
-            "Ribbed Lids", "Dishwashing Liquid (25L)", "Gladwrap", "Handtowels",
-            "Chux Roll", "Large Nitra Gloves", "Scourer Sponge", "Baking Paper roll",
-            "25L Metho", "Mop Head & Handle", "Straws", "Toilet Tablets",
-            "Wooden Stirrers", "Thermal Rolls Eftpos", "Thermal Printer Rolls"
+            "5L Soap", "25L Metho", "Baking Paper roll", "Bin Liners (72L)", "Chux Roll",
+            "Dishwashing Liquid (25L)", "Foil (3kg)", "Gladwrap", "Handtowels",
+            "Large Nitra Gloves", "Mop Head & Handle", "Ribbed Containers", "Ribbed Lids",
+            "Scourer Sponge", "Serviettes (1000/box)", "Straws", "Table Paper (100 sheets)",
+            "Thermal Printer Rolls", "Thermal Rolls Eftpos", "Toilet Rolls (jumbo)",
+            "Toilet Tablets", "Wooden Stirrers"
         ] },
         { name: "🍺 Beer & Cider", products: [
-            "Corona Extra", "Peroni Red", "Carlton Draught", "VB", "Cascade Light"
+            "Carlton Draught", "Cascade Light", "Corona Extra", "Peroni Red", "VB"
         ] },
         { name: "🍷 Wines", products: [
-            "Warburn Shiraz", "Warburn Pinot Noir", "Warburn Cabernet Sauvignon",
-            "Warburn Merlot", "Warburn Moscato", "Warburn Sauvignon Blanc",
-            "Warburn Chardonnay", "Warburn Pinot Grigio", "Warburn Rosé",
-            "La Gioiosa Prosecco", "Brown Brothers Prosecco (200ml)",
-            "Brown Brothers Prosecco (750ml)"
+            "Brown Brothers Prosecco (200ml)", "Brown Brothers Prosecco (750ml)",
+            "La Gioiosa Prosecco", "Warburn Cabernet Sauvignon", "Warburn Chardonnay",
+            "Warburn Merlot", "Warburn Moscato", "Warburn Pinot Grigio", "Warburn Pinot Noir",
+            "Warburn Rosé", "Warburn Sauvignon Blanc", "Warburn Shiraz"
         ] },
         { name: "🥃 Spirits & Liqueurs", products: [
-            "Johny Walker Red", "Johny Walker Black", "Canadian Club Whiskey",
-            "Jack Daniels", "Jim Bean White", "Gordons Dry Gin", "Smirnoff Red Vodka",
-            "Bundaberg Rum", "Bacardi Rum", "Malibu", "Southern Comfort",
-            "Limoncello Strega", "Grapa Piave", "Sambuca Molinaro",
-            "Captain Morgan Black Rum", "Jose Cuervo Tequila",
-            "Cinzano Extra Dry Vermouth", "Cinzano Sweet Vermouth", "Cointreau",
-            "Frangelico", "Baileys Irish Cream", "Kahlua", "Suntory Midori",
-            "Vecchio Amaro del Capo", "Averna Amaro", "Penfolds Club Tawny Port",
-            "Campari", "Aperol Aperitivo", "Aperol Spritz (175ml pack)",
-            "Montenegro", "Chivas Regal", "Cognac Remy VSOP", "Lime cordial",
-            "Raspberry cordial", "Chinotto", "Aranciatta Rosa", "Apple cider Sommersby",
-            "Orange juice", "Apple juice", "Pineapple juice", "Angostura Bitters"
+            "Angostura Bitters", "Aperol Aperitivo", "Aperol Spritz (175ml pack)",
+            "Apple cider Sommersby", "Apple juice", "Aranciatta Rosa", "Baileys Irish Cream",
+            "Bacardi Rum", "Bundaberg Rum", "Campari", "Canadian Club Whiskey",
+            "Captain Morgan Black Rum", "Chinotto", "Chivas Regal", "Cinzano Extra Dry Vermouth",
+            "Cinzano Sweet Vermouth", "Cognac Remy VSOP", "Cointreau", "Frangelico",
+            "Gordons Dry Gin", "Grapa Piave", "Jack Daniels", "Jim Bean White",
+            "Johny Walker Black", "Johny Walker Red", "Jose Cuervo Tequila", "Kahlua",
+            "Lime cordial", "Limoncello Strega", "Malibu", "Montenegro", "Orange juice",
+            "Penfolds Club Tawny Port", "Pineapple juice", "Raspberry cordial",
+            "Sambuca Molinaro", "Smirnoff Red Vodka", "Southern Comfort", "Suntory Midori",
+            "Vecchio Amaro del Capo"
         ] },
         { name: "🍰 Dessert", products: [
-            "Gelato", "Cannoli shells Medium", "Cannoli Cream (2.5kg)",
-            "Cannolis shells Small", "Vanilla Choc coated Ice creams",
-            "Strawberry Dixie Cups"
+            "Cannoli Cream (2.5kg)", "Cannoli shells Medium", "Cannolis shells Small",
+            "Gelato", "Strawberry Dixie Cups", "Vanilla Choc coated Ice creams"
         ] }
     ];
 
     // Sort products alphabetically within each category
-    const categories = categoriesRaw.map(cat => ({
+    const baseCategories = categoriesRaw.map(cat => ({
         name: cat.name,
         products: [...cat.products].sort((a,b) => a.localeCompare(b))
     }));
@@ -379,16 +458,38 @@
         "jars", "tins", "drums", "loaves", "punnets", "bunches", "litres"
     ];
 
+    // Data structure: stockData[product] = { qty, unit }
     let stockData = {};
+    let miscProducts = []; // array of product names in Miscellaneous
 
-    function initData() {
-        for (let cat of categories) {
+    // Helper: initialize stock data from base categories
+    function initBaseData() {
+        for (let cat of baseCategories) {
             for (let prod of cat.products) {
                 if (!stockData[prod]) {
                     stockData[prod] = { qty: 0, unit: "each" };
                 }
             }
         }
+    }
+
+    // Add a new product to Miscellaneous (if not already there)
+    function addMiscProduct(productName) {
+        if (!productName.trim()) return;
+        if (miscProducts.includes(productName)) {
+            alert("Product already exists in Miscellaneous");
+            return;
+        }
+        miscProducts.push(productName);
+        stockData[productName] = { qty: 0, unit: "each" };
+        render();
+    }
+
+    // Delete a product from Miscellaneous
+    function deleteMiscProduct(productName) {
+        miscProducts = miscProducts.filter(p => p !== productName);
+        delete stockData[productName];
+        render();
     }
 
     function setQuantity(product, newVal) {
@@ -442,13 +543,34 @@
         }
     }
 
+    // Render all categories + miscellaneous section
     function render() {
         const container = document.getElementById("categoriesContainer");
+        const navContainer = document.getElementById("categoryNav");
         if (!container) return;
         container.innerHTML = "";
-        for (let cat of categories) {
+        
+        // Build nav links
+        navContainer.innerHTML = "";
+        const allCategoryNames = [...baseCategories.map(c => c.name), "➕ Miscellaneous"];
+        allCategoryNames.forEach(catName => {
+            const link = document.createElement("a");
+            link.href = `#${catName.replace(/\s/g, '')}`;
+            link.textContent = catName;
+            link.onclick = (e) => {
+                e.preventDefault();
+                const element = document.getElementById(catName.replace(/\s/g, ''));
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+            };
+            navContainer.appendChild(link);
+        });
+
+        // Render base categories
+        for (let cat of baseCategories) {
+            const catId = cat.name.replace(/\s/g, '');
             const catDiv = document.createElement("div");
             catDiv.className = "category";
+            catDiv.id = catId;
             const header = document.createElement("div");
             header.className = "category-header";
             header.textContent = cat.name;
@@ -467,9 +589,7 @@
                 
                 const controlDiv = document.createElement("div");
                 controlDiv.className = "stock-control";
-                
                 const qtyControl = createQuantityControl(prod, data.qty);
-                
                 const unitSelect = document.createElement("select");
                 unitOptions.forEach(unit => {
                     const opt = document.createElement("option");
@@ -481,7 +601,6 @@
                 unitSelect.addEventListener("change", (function(p) {
                     return function(e) { changeUnit(p, e.target.value); };
                 })(prod));
-                
                 controlDiv.appendChild(qtyControl);
                 controlDiv.appendChild(unitSelect);
                 card.appendChild(nameSpan);
@@ -491,6 +610,77 @@
             catDiv.appendChild(grid);
             container.appendChild(catDiv);
         }
+
+        // Render Miscellaneous section
+        const miscId = "Miscellaneous";
+        const miscDiv = document.createElement("div");
+        miscDiv.className = "category";
+        miscDiv.id = miscId.replace(/\s/g, '');
+        const miscHeader = document.createElement("div");
+        miscHeader.className = "category-header";
+        miscHeader.textContent = "➕ Miscellaneous (add missing items)";
+        miscDiv.appendChild(miscHeader);
+        
+        const miscGrid = document.createElement("div");
+        miscGrid.className = "product-grid";
+        for (let prod of miscProducts) {
+            const data = stockData[prod];
+            if (!data) continue;
+            const card = document.createElement("div");
+            card.className = "product-card";
+            const nameSpan = document.createElement("div");
+            nameSpan.className = "product-name";
+            nameSpan.textContent = prod;
+            const controlDiv = document.createElement("div");
+            controlDiv.className = "stock-control";
+            const qtyControl = createQuantityControl(prod, data.qty);
+            const unitSelect = document.createElement("select");
+            unitOptions.forEach(unit => {
+                const opt = document.createElement("option");
+                opt.value = unit;
+                opt.textContent = unit;
+                if (data.unit === unit) opt.selected = true;
+                unitSelect.appendChild(opt);
+            });
+            unitSelect.addEventListener("change", (function(p) {
+                return function(e) { changeUnit(p, e.target.value); };
+            })(prod));
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "✖";
+            deleteBtn.className = "delete-item";
+            deleteBtn.onclick = () => deleteMiscProduct(prod);
+            controlDiv.appendChild(qtyControl);
+            controlDiv.appendChild(unitSelect);
+            controlDiv.appendChild(deleteBtn);
+            card.appendChild(nameSpan);
+            card.appendChild(controlDiv);
+            miscGrid.appendChild(card);
+        }
+        miscDiv.appendChild(miscGrid);
+        
+        // Add new item form
+        const addArea = document.createElement("div");
+        addArea.className = "add-item-area";
+        const newItemInput = document.createElement("input");
+        newItemInput.type = "text";
+        newItemInput.placeholder = "Enter missing product name...";
+        const addBtn = document.createElement("button");
+        addBtn.textContent = "+ Add to Miscellaneous";
+        addBtn.className = "small-btn";
+        addBtn.onclick = () => {
+            const name = newItemInput.value.trim();
+            if (name) {
+                addMiscProduct(name);
+                newItemInput.value = "";
+            } else {
+                alert("Please enter a product name");
+            }
+        };
+        addArea.appendChild(newItemInput);
+        addArea.appendChild(addBtn);
+        miscDiv.appendChild(addArea);
+        
+        container.appendChild(miscDiv);
     }
 
     function resetAll() {
@@ -503,7 +693,7 @@
 
     function validateAndGetInfo() {
         const dateInput = document.getElementById("stockDate");
-        const staffInput = document.getElementById("staffName");
+        const staffSelect = document.getElementById("staffName");
         const warningSpan = document.getElementById("infoWarning");
         let isValid = true;
         let errors = [];
@@ -511,7 +701,7 @@
             errors.push("Date");
             isValid = false;
         }
-        if (!staffInput.value.trim()) {
+        if (!staffSelect.value) {
             errors.push("Staff name");
             isValid = false;
         }
@@ -522,7 +712,7 @@
         warningSpan.innerHTML = "";
         return {
             date: dateInput.value,
-            staff: staffInput.value.trim()
+            staff: staffSelect.value
         };
     }
 
@@ -531,9 +721,17 @@
         report += `Date: ${info.date}\n`;
         report += `Stocktake performed by: ${info.staff}\n`;
         report += `=========================================\n\n`;
-        for (let cat of categories) {
+        for (let cat of baseCategories) {
             report += `📁 ${cat.name}\n`;
             for (let prod of cat.products) {
+                const data = stockData[prod];
+                report += `   • ${prod}: ${data.qty} ${data.unit}\n`;
+            }
+            report += "\n";
+        }
+        if (miscProducts.length > 0) {
+            report += `📁 Miscellaneous (added items)\n`;
+            for (let prod of miscProducts) {
                 const data = stockData[prod];
                 report += `   • ${prod}: ${data.qty} ${data.unit}\n`;
             }
@@ -546,7 +744,7 @@
     function printPDF() {
         const info = validateAndGetInfo();
         if (!info) {
-            alert("Please set both the stock take date and your full name before printing.");
+            alert("Please select both the stock take date and your name before printing.");
             return;
         }
         const reportText = getFullStockTakeReport(info);
@@ -557,7 +755,7 @@
                 <title>Members Lounge Stock Take - ${info.date}</title>
                 <style>
                     body { font-family: system-ui, 'Segoe UI', Roboto, sans-serif; margin: 40px; }
-                    h1 { color: #111; border-left: 6px solid #cc0000; padding-left: 20px; }
+                    h1 { color: #111; border-left: 6px solid #000; padding-left: 20px; }
                     pre { font-family: monospace; white-space: pre-wrap; font-size: 11pt; background: #f9f9f9; padding: 20px; border-radius: 12px; }
                     .footer { margin-top: 40px; font-size: 9pt; color: #666; }
                 </style>
@@ -577,7 +775,7 @@
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("stockDate").value = today;
 
-    initData();
+    initBaseData();
     render();
 
     document.getElementById("resetBtn").addEventListener("click", resetAll);
