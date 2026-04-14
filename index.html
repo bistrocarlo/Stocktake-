@@ -11,26 +11,45 @@
         .category-header { background: linear-gradient(to right, #111827, #1f2937); }
         .product-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         .product-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
-        .sticky-toolbar {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: white;
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            margin-top: -0.5rem;
-        }
-        .sticky-nav {
-            position: sticky;
-            top: 80px;
-            z-index: 40;
-            background: white;
-        }
         .category-section {
-            scroll-margin-top: 140px;
+            scroll-margin-top: 20px;
         }
+        /* Floating action panel */
+        .floating-actions {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+        .floating-actions button {
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            background: #1f2937;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .floating-actions button:hover {
+            transform: scale(1.08);
+            background: #111827;
+        }
+        .floating-actions .print { background: #059669; }
+        .floating-actions .preview { background: #1f2937; }
+        .floating-actions .reset { background: #dc2626; }
+        .floating-actions .export { background: #2563eb; }
+        .floating-actions .top { background: #4b5563; }
         @media print {
-            .no-print { display: none !important; }
+            .floating-actions, .no-print { display: none !important; }
             .category-header { background: #111827 !important; color: white !important; -webkit-print-color-adjust: exact; }
             .product-card { border: 1px solid #ddd !important; box-shadow: none !important; break-inside: avoid; }
         }
@@ -77,31 +96,8 @@
             </div>
         </div>
 
-        <!-- STICKY TOOLBAR (no alerts on auto-save) -->
-        <div class="sticky-toolbar no-print">
-            <div class="flex flex-wrap gap-3 mb-3">
-                <button onclick="resetAll()" class="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
-                    🗑️ Reset All
-                </button>
-                <button onclick="showPreview()" class="flex-1 sm:flex-none bg-zinc-800 hover:bg-black text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
-                    📄 Preview
-                </button>
-                <button onclick="printPDF()" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
-                    🖨️ Print PDF
-                </button>
-                <button onclick="exportCSV()" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2">
-                    📊 Export CSV
-                </button>
-            </div>
-            <div class="flex flex-wrap gap-3 mb-3">
-                <button onclick="saveToLocal()" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-2xl font-medium">💾 Save Now</button>
-                <button onclick="loadFromLocal()" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-2xl font-medium">📂 Load Saved</button>
-                <button onclick="clearAllData()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-2xl font-medium">Clear All Data</button>
-            </div>
-        </div>
-
         <!-- Live Counter + Search -->
-        <div class="mb-8 no-print flex flex-col sm:flex-row gap-4 items-center mt-4">
+        <div class="mb-8 no-print flex flex-col sm:flex-row gap-4 items-center">
             <div id="liveCounter" class="bg-white px-6 py-3 rounded-3xl font-semibold text-lg border border-gray-200 flex-1 text-center sm:text-left">
                 0 items with stock > 0
             </div>
@@ -110,8 +106,8 @@
                    class="flex-1 px-6 py-4 bg-white border border-gray-200 rounded-3xl text-lg focus:outline-none focus:border-zinc-400">
         </div>
 
-        <!-- STICKY CATEGORY NAVIGATION -->
-        <div id="categoryNav" class="sticky-nav flex flex-wrap gap-2 mb-10 no-print bg-white p-4 rounded-3xl shadow-sm"></div>
+        <!-- Category Navigation (static, no sticky) -->
+        <div id="categoryNav" class="flex flex-wrap gap-2 mb-10 no-print bg-white p-4 rounded-3xl shadow-sm"></div>
 
         <!-- Summary Preview -->
         <div id="summaryPreview" class="hidden bg-white rounded-3xl shadow-sm p-8 mb-10">
@@ -125,6 +121,15 @@
         <div class="text-center text-gray-500 text-sm mt-16 no-print">
             Auto-saves silently • Green Beans included • "buckets" unit available
         </div>
+    </div>
+
+    <!-- Floating Action Panel -->
+    <div class="floating-actions no-print">
+        <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="top" title="Back to top">⬆️</button>
+        <button onclick="resetAll()" class="reset" title="Reset all quantities">🗑️</button>
+        <button onclick="showPreview()" class="preview" title="Preview summary">📄</button>
+        <button onclick="exportCSV()" class="export" title="Export CSV">📊</button>
+        <button onclick="printPDF()" class="print" title="Print PDF">🖨️</button>
     </div>
 
 <script>
@@ -154,17 +159,9 @@ let searchTimeout = null;
 // ==================== LOCALSTORAGE ====================
 const STORAGE_KEY = "tml_stocktake_data";
 
-// Silent save – no alert
 function saveToLocal() {
     const data = { stockData, miscProducts, date: document.getElementById("stockDate").value, staff: document.getElementById("staffName").value };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    // No alert
-}
-
-// Manual save with alert
-function manualSave() {
-    saveToLocal();
-    alert("✅ Stock data saved to browser");
 }
 
 function loadFromLocal() {
@@ -186,10 +183,9 @@ function clearAllData() {
     location.reload();
 }
 
-// Auto-save (silent) called on every change
 function autoSave() {
     saveToLocal();
-    updateLiveCounter(); // just refresh counter, no alert
+    updateLiveCounter();
 }
 
 // ==================== RENDER ====================
@@ -294,14 +290,14 @@ function setQuantity(product, value) {
     const max = product === "Sausages" ? 500 : 50;
     if (!stockData[product]) stockData[product] = { qty: 0, unit: "each" };
     stockData[product].qty = Math.max(0, Math.min(max, val));
-    autoSave(); // silent
+    autoSave();
     updateLiveCounter();
 }
 
 function changeUnit(product, unit) {
     if (!stockData[product]) stockData[product] = { qty: 0, unit: "each" };
     stockData[product].unit = unit;
-    autoSave(); // silent
+    autoSave();
 }
 
 function updateLiveCounter() {
@@ -427,7 +423,7 @@ baseCategories.forEach(cat => {
 
 render();
 
-// Load saved data silently (no confirm popup on load)
+// Auto-load saved data silently
 const savedData = localStorage.getItem(STORAGE_KEY);
 if (savedData) {
     try {
@@ -438,26 +434,23 @@ if (savedData) {
         if (data.staff) document.getElementById("staffName").value = data.staff;
         render();
         updateLiveCounter();
-        // No alert on auto-load
     } catch(e) {}
 }
 
-// Override manual save button
-document.querySelector("button[onclick='saveToLocal()']")?.setAttribute("onclick", "manualSave()");
-window.manualSave = manualSave;
-window.saveToLocal = saveToLocal;
-window.loadFromLocal = loadFromLocal;
-window.clearAllData = clearAllData;
+// Expose global functions
 window.resetAll = resetAll;
 window.showPreview = showPreview;
 window.printPDF = printPDF;
 window.exportCSV = exportCSV;
-window.addMiscProduct = addMiscProduct;
-window.deleteMiscProduct = deleteMiscProduct;
 window.changeSausages = changeSausages;
 window.setQuantity = setQuantity;
 window.changeUnit = changeUnit;
 window.debouncedFilter = debouncedFilter;
+window.deleteMiscProduct = deleteMiscProduct;
+window.addMiscProduct = addMiscProduct;
+window.loadFromLocal = loadFromLocal;
+window.clearAllData = clearAllData;
+window.saveToLocal = saveToLocal;
 </script>
 </body>
 </html>
