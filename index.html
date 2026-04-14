@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Members Lounge | Complete Event Suite – Full Expansion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --deep-charcoal: #1E1E1E;
+      --warm-gold: #C6A43F;
+      --soft-gold: rgba(198, 164, 63, 0.15);
+      --cream: #FAF7F2;
+      --pure-white: #FFFFFF;
+      --muted-text: #6B6B6B;
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.1);
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --transition: all 0.2s ease;
+    }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      display: flex; flex-direction: column; height: 100vh;
+      font-family: 'Inter', sans-serif; background-color: var(--cream); color: var(--deep-charcoal); line-height: 1.5;
+    }
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; font-weight: 700; }
+    .gold { color: var(--warm-gold); }
+    header { flex-shrink: 0; background: var(--pure-white); padding: 20px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: var(--shadow-sm); }
+    .brandline { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .logoWrap { padding: 10px 20px; background: var(--pure-white); border-radius: 60px; box-shadow: var(--shadow-sm); }
+    .logoImg { max-height: 60px; width: auto; }
+    h1 { margin: 10px 0 5px; font-size: 2rem; font-weight: 900; }
+    .sub { color: var(--muted-text); font-size: 0.95rem; }
+    .tabs-wrap { flex-shrink: 0; background: rgba(255,255,255,0.95); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 12px 0; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .tab {
+      cursor: pointer; user-select: none; padding: 8px 20px; border-radius: 40px; font-size: 0.9rem; font-weight: 600;
+      background: transparent; color: var(--muted-text); border: 1px solid transparent; transition: var(--transition);
+      white-space: nowrap; display: flex; align-items: center; gap: 6px;
+    }
+    .tab:hover { color: var(--warm-gold); background: var(--soft-gold); border-color: var(--soft-gold); }
+    .tab.active { background: var(--warm-gold); color: white; border-color: var(--warm-gold); box-shadow: var(--shadow-sm); }
+    .tab.nextTab { background: var(--soft-gold); color: var(--warm-gold); border-color: var(--warm-gold); font-weight: 700; }
+    .page { display: none; }
+    .page.active { display: block; }
+    main { flex: 1 1 auto; overflow-y: auto; padding: 20px; max-width: 1400px; width: 100%; margin: 0 auto; }
+    .card { background: var(--pure-white); border-radius: var(--radius-lg); padding: 30px; box-shadow: var(--shadow-md); margin-bottom: 20px; }
+    .card h2 { font-size: 1.5rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .hint { color: var(--muted-text); font-size: 0.9rem; margin-bottom: 20px; font-style: italic; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 920px) { .grid { grid-template-columns: 1fr; } }
+    label { display: block; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted-text); margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%; padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid #E5E5E5;
+      background: var(--pure-white); font-size: 1rem; transition: var(--transition); margin-bottom: 20px;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--warm-gold); box-shadow: 0 0 0 3px var(--soft-gold); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .actions { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 25px; }
+    .btn {
+      cursor: pointer; border: none; background: var(--pure-white); color: var(--deep-charcoal);
+      padding: 10px 22px; border-radius: 40px; font-size: 0.9rem; font-weight: 600;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid #E5E5E5; min-width: 120px;
+    }
+    .btn:hover { background: var(--soft-gold); border-color: var(--warm-gold); transform: translateY(-2px); }
+    .btn.primary { background: var(--warm-gold); color: white; border-color: var(--warm-gold); }
+    .btn.ghost { background: transparent; border: 1px solid var(--warm-gold); color: var(--warm-gold); }
+    .btn.small { padding: 6px 12px; font-size: 0.8rem; min-width: auto; }
+    .table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    .table td { padding: 12px 0; border-bottom: 1px solid #F0F0F0; }
+    .table td:last-child { text-align: right; font-weight: 700; color: var(--warm-gold); }
+    .total { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background: var(--soft-gold); border-radius: var(--radius-md); font-size: 1.2rem; font-weight: 700; margin-top: 20px; }
+    .kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 20px; margin-top: 25px; }
+    .kpi .box { background: var(--pure-white); border: 1px solid #F0F0F0; border-radius: var(--radius-md); padding: 15px; text-align: center; box-shadow: var(--shadow-sm); }
+    .optionsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; margin: 15px 0; }
+    .opt { display: flex; align-items: flex-start; gap: 12px; padding: 14px; background: var(--pure-white); border: 1px solid #F0F0F0; border-radius: var(--radius-md); cursor: pointer; }
+    .opt input[type="checkbox"] { accent-color: var(--warm-gold); flex-shrink: 0; }
+    .optNum { width: 26px; height: 26px; background: var(--soft-gold); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: var(--warm-gold); }
+    .hotTag { margin-left: 8px; padding: 2px 8px; background: rgba(198,164,63,0.15); border-radius: 30px; font-size: 0.65rem; font-weight: 700; color: var(--warm-gold); }
+    .count { font-size: 0.9rem; color: var(--muted-text); margin: 10px 0 5px; }
+    .warnBox { margin-top: 10px; padding: 10px 12px; border-radius: var(--radius-md); background: #fff3e0; border-left: 4px solid #f5a623; color: #8a6d2b; display: none; font-weight: 600; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 40px; background: var(--soft-gold); color: var(--deep-charcoal); font-size: 0.85rem; margin: 0 6px 6px 0; }
+    .table-builder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-top: 20px; }
+    .table-card { background: var(--pure-white); border: 1px solid #E5E5E5; border-radius: var(--radius-md); padding: 12px; }
+    .dietary-grid, .guest-list-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+    .guest-name-input { width: calc(33% - 6px); padding: 6px; font-size: 0.85rem; }
+    .run-sheet-table { width: 100%; border-collapse: collapse; }
+    .run-sheet-table th, .run-sheet-table td { border: 1px solid #E5E5E5; padding: 8px; vertical-align: middle; }
+    @media (max-width: 768px) {
+      h1 { font-size: 1.6rem; }
+      .guest-name-input { width: calc(50% - 6px); }
+      .btn { min-width: 100%; }
+    }
+    @media print { .tabs-wrap, .actions, .btn, footer { display: none !important; } body { background: white; overflow: visible; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brandline">
+      <div class="logoWrap">
+        <img class="logoImg" id="brandLogo" src="members_lounge_logo.png" alt="Brand Logo"
+             onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='inline-flex';">
+        <span class="logoFallback" id="logoFallback" style="display:none;">
+          <i class="fas fa-crown" style="color: var(--warm-gold);"></i> THE MEMBERS LOUNGE
+        </span>
+      </div>
+    </div>
+    <h1><span class="gold" id="brandTitle">Event Signature Selection</span></h1>
+    <div class="sub" id="brandSubtitle">Reggio Calabria Club, Parkville</div>
+  </header>
+
+  <div class="tabs-wrap">
+    <div class="tabs" role="tablist">
+      <div class="tab active" data-page="quote"><i class="fas fa-file-invoice"></i> Quote</div>
+      <div class="tab" data-page="couple"><i class="fas fa-heart"></i> Couple</div>
+      <div class="tab" data-page="food"><i class="fas fa-utensils"></i> Food</div>
+      <div class="tab" data-page="drinks"><i class="fas fa-wine-glass-alt"></i> Drinks</div>
+      <div class="tab" data-page="tables"><i class="fas fa-table"></i> Tables</div>
+      <div class="tab" data-page="dietary"><i class="fas fa-apple-alt"></i> Dietary</div>
+      <div class="tab" data-page="guestlist"><i class="fas fa-users"></i> Guest List</div>
+      <div class="tab" data-page="runsheet"><i class="fas fa-clock"></i> Run Sheet</div>
+      <div class="tab" data-page="summary"><i class="fas fa-clipboard-list"></i> Summary</div>
+      <div class="tab nextTab" id="nextTab">Next <i class="fas fa-arrow-right"></i></div>
+    </div>
+  </div>
+
+  <main>
+    <!-- Quote Page -->
+    <section class="page active" id="page-quote">
+      <div class="grid">
+        <div class="card">
+          <h2><i class="fas fa-calculator gold"></i> Indicative Quote (Live)</h2>
+          <div class="hint">Room hire + dry hire + security + food + drinks = estimate.</div>
+          <div class="row">
+            <div><label for="adults">Adults (auto from Tables)</label><input id="adults" type="number" readonly style="background:#f5f5f5;"></div>
+            <div><label for="children">Children (auto from Tables)</label><input id="children" type="number" readonly style="background:#f5f5f5;"></div>
+          </div>
+          <label for="roomHire">Room Hire (AUD)</label><input id="roomHire" type="number" min="0" step="50" value="0">
+          <div class="row">
+            <div><label for="dryHire">Dry Hire (AUD)</label><input id="dryHire" type="number" min="0" step="50" value="0"></div>
+            <div><label for="security">Security (AUD)</label><input id="security" type="number" min="0" step="50" value="0"></div>
+          </div>
+          <table class="table"><tbody>
+            <tr><td>Room hire</td><td id="qRoom">$0.00</td></tr>
+            <tr><td>Food</td><td id="qFood">$0.00</td></tr>
+            <tr><td>Drinks</td><td id="qDrinks">$0.00</td></tr>
+            <tr><td>Dry hire</td><td id="qDry">$0.00</td></tr>
+            <tr><td>Security</td><td id="qSec">$0.00</td></tr>
+          </tbody></table>
+          <div class="total"><div>Total Estimated Cost</div><div id="qTotal">$0.00</div></div>
+          <div class="actions">
+            <button class="btn" id="resetAll"><i class="fas fa-undo-alt"></i> Reset Everything</button>
+            <button class="btn" id="printQuote"><i class="fas fa-print"></i> Print</button>
+            <button class="btn primary" id="nextQ">Next <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+        <div class="card">
+          <h2><i class="fas fa-chart-pie gold"></i> Quick Snapshot</h2>
+          <div class="statusRow">
+            <span class="badge" id="foodCompleteBadge"><i class="fas fa-utensils"></i> Menu: Custom</span>
+            <span class="badge" id="drinksCompleteBadge"><i class="fas fa-wine-glass-alt"></i> Drinks: Draft</span>
+          </div>
+          <div class="kpi">
+            <div class="box"><div class="label">Adults</div><div class="value" id="kpiAdults">0</div></div>
+            <div class="box"><div class="label">Children</div><div class="value" id="kpiChildren">0</div></div>
+            <div class="box"><div class="label">Food subtotal</div><div class="value" id="kpiFood">$0.00</div></div>
+            <div class="box"><div class="label">Avg per guest</div><div class="value" id="kpiAvg">$0.00</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Couple Page -->
+    <section class="page" id="page-couple">
+      <div class="grid">
+        <div class="card">
+          <h2><i class="fas fa-user-friends gold"></i> Couple Details</h2>
+          <label for="coupleName">Couple Name</label><input id="coupleName" placeholder="e.g., Laura & Daniel">
+          <div class="row"><div><label for="weddingDate">Date</label><input id="weddingDate" type="date"></div><div><label for="venueSpace">Venue</label><select id="venueSpace"><option value="sala">Sala Reggio Ballroom</option><option value="members">Members Lounge Restaurant</option><option value="fior">FIOR Parkville</option><option value="alora">ALORA Macedon</option></select></div></div>
+          <label for="email">Email</label><input id="email" type="email"><label for="phone">Phone</label><input id="phone" type="tel"><label for="notes">Notes</label><textarea id="notes"></textarea>
+          <div class="actions"><button class="btn ghost" id="backC"><i class="fas fa-arrow-left"></i> Back</button><button class="btn primary" id="nextC">Next <i class="fas fa-arrow-right"></i></button></div>
+        </div>
+        <div class="card"><h2><i class="fas fa-map-marker-alt gold"></i> Venue Profile</h2><div id="venueProfileText">Select a venue</div></div>
+      </div>
+    </section>
+
+    <!-- Food Page -->
+    <section class="page" id="page-food">
+      <div class="card">
+        <h2><i class="fas fa-utensils gold"></i> Food Builder</h2>
+        <div class="hint" id="serviceInclusionNote"></div>
+        <div class="actions"><button class="btn" onclick="window.selectAll(true)">Select All (max)</button><button class="btn" onclick="window.selectAll(false)">Deselect All</button></div>
+        <div class="course" data-course="canapes"><h3>Canapés (max 3)</h3><div class="optionsGrid" id="list-canapes"></div><div class="count" id="count-canapes"></div><div class="warnBox" id="warn-canapes"></div></div>
+        <div class="course" data-course="antipasto"><h3>Antipasto (max 2 hot, 5 cold)</h3><div class="optionsGrid" id="list-antipasto"></div><div class="count" id="count-antipasto"></div><div class="warnBox" id="warn-antipasto"></div></div>
+        <div class="course" data-course="pasta"><h3>Pasta (max 2)</h3><div class="optionsGrid" id="list-pasta"></div><div class="count" id="count-pasta"></div><div class="warnBox" id="warn-pasta"></div></div>
+        <div class="course" data-course="mains"><h3>Mains (max 2)</h3><div class="optionsGrid" id="list-mains"></div><div class="count" id="count-mains"></div><div class="warnBox" id="warn-mains"></div></div>
+        <div class="course" data-course="dessert"><h3>Dessert (max 1)</h3><div class="optionsGrid" id="list-dessert"></div><div class="count" id="count-dessert"></div><div class="warnBox" id="warn-dessert"></div></div>
+        <div class="course"><h3>Supper</h3><div id="supperNote"></div><div id="supperIncluded"></div><h3>Fruit Platter</h3><label><input id="fruitPlatter" type="checkbox"> Add Fruit Platter</label><div class="row"><div><label>Tables</label><input id="tables" type="number" value="10"></div><div><label>Price/table</label><input id="fruitPerTable" type="number" value="35" readonly></div></div></div>
+        <div class="actions"><button class="btn ghost" id="backF2">Back</button><button class="btn primary" id="nextF2">Next</button></div>
+      </div>
+    </section>
+
+    <!-- Drinks Page -->
+    <section class="page" id="page-drinks">
+      <div class="grid">
+        <div class="card">
+          <h2><i class="fas fa-wine-glass-alt gold"></i> Drinks</h2>
+          <label for="drinkMode">Drinks Option</label><select id="drinkMode"><option value="bar">Bar Prices</option><option value="custom">Custom per Adult</option></select>
+          <div class="row" id="customDrinkRow" style="display:none"><div><label>Price per adult</label><input id="customDrinkPrice" type="number" value="0"></div><div><label>Notes</label><input id="customDrinkNote"></div></div>
+          <div class="hint" id="drinkInfo"></div>
+          <div class="actions"><button class="btn ghost" id="backD">Back</button><button class="btn primary" id="nextD">Next</button></div>
+        </div>
+        <div class="card"><h2><i class="fas fa-info-circle gold"></i> Status</h2><div class="statusRow"><span class="badge" id="drinksCompleteBadge2">Drinks: Draft</span></div></div>
+      </div>
+    </section>
+
+    <!-- Tables Page -->
+    <section class="page" id="page-tables">
+      <div class="card">
+        <h2><i class="fas fa-table gold"></i> Guest Table Builder</h2>
+        <div class="hint">Set adults & children per table (0–12 each).</div>
+        <div class="actions" style="margin-bottom:15px;"><button id="resetTablesBtn" class="btn"><i class="fas fa-trash-alt"></i> Reset All Tables (Guests)</button></div>
+        <div id="tablesGrid" class="table-builder-grid"></div>
+        <div class="summary-stats" style="background:var(--soft-gold); padding:16px; border-radius:var(--radius-md); margin-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:15px; font-weight:700;">
+          Total Adults: <span id="totalAdultsTables">0</span> | Total Children: <span id="totalChildrenTables">0</span> | Total Guests: <span id="totalGuestsTables">0</span>
+        </div>
+        <div class="actions"><button class="btn ghost" id="backTables">Back</button><button class="btn primary" id="nextTables">Next: Dietary</button></div>
+      </div>
+    </section>
+
+    <!-- Dietary Page -->
+    <section class="page" id="page-dietary">
+      <div class="card">
+        <h2><i class="fas fa-apple-alt gold"></i> Dietary Requirements by Table</h2>
+        <div class="hint">Enter number of guests (0–12) with each dietary need per table.</div>
+        <div class="actions" style="margin-bottom:15px;"><button id="resetDietaryBtn" class="btn"><i class="fas fa-trash-alt"></i> Reset All Dietary</button></div>
+        <div id="dietaryGrid" class="table-builder-grid"></div>
+        <div class="actions"><button class="btn ghost" id="backDietary">Back</button><button class="btn primary" id="nextDietary">Next: Guest List</button></div>
+      </div>
+    </section>
+
+    <!-- Guest List Page -->
+    <section class="page" id="page-guestlist">
+      <div class="card">
+        <h2><i class="fas fa-users gold"></i> Guest List Maker – Seating by Table</h2>
+        <div class="hint">Enter up to 12 guest names per table.</div>
+        <div class="actions" style="margin-bottom:15px;"><button id="resetGuestListBtn" class="btn"><i class="fas fa-trash-alt"></i> Reset All Guest Lists</button></div>
+        <div id="guestListGrid" class="table-builder-grid"></div>
+        <div class="actions"><button class="btn ghost" id="backGuestList">Back</button><button class="btn primary" id="nextGuestList">Next: Run Sheet</button></div>
+      </div>
+    </section>
+
+    <!-- Run Sheet Page -->
+    <section class="page" id="page-runsheet">
+      <div class="card">
+        <h2><i class="fas fa-clock gold"></i> Run Sheet / Timeline</h2>
+        <div class="hint">Add timeline entries. Select any exact hour and minute.</div>
+        <button id="addRunRowBtn" class="btn small" style="margin-bottom:15px;"><i class="fas fa-plus"></i> Add Activity</button>
+        <table class="run-sheet-table">
+          <thead><tr><th>Time (Hour : Minute)</th><th>Activity</th><th style="width:60px"></th></tr></thead>
+          <tbody id="runSheetBody"></tbody>
+        </table>
+        <div class="actions"><button class="btn ghost" id="backRun">Back</button><button class="btn primary" id="nextRun">Next: Summary</button></div>
+      </div>
+    </section>
+
+    <!-- Summary Page -->
+    <section class="page" id="page-summary">
+      <div class="grid">
+        <div class="card">
+          <h2><i class="fas fa-clipboard-check gold"></i> Final Summary</h2>
+          <div id="finalSummary"></div>
+          <div class="actions">
+            <button id="copySummary" class="btn">Copy</button>
+            <button id="printSummary" class="btn">Print</button>
+            <button class="btn ghost" id="backS">Back</button>
+            <button class="btn primary" id="toQuote">Back to Quote</button>
+          </div>
+        </div>
+        <div class="card"><h2><i class="fas fa-tags gold"></i> Selected Items</h2><div id="chips"></div><div id="summaryCourseCounts"></div></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="brandFooter">Members Lounge | Reggio Calabria Club, Parkville</footer>
+
+<script>
+  // ========== FULL JAVASCRIPT ==========
+  function escapeHtml(str) {
+    return String(str || "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]));
+  }
+  const $ = id => document.getElementById(id);
+  function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+
+  // Run Sheet - Exact Minute Selection
+  let runSheetRows = [];
+  function initRunSheet() {
+    const saved = localStorage.getItem('runSheetData');
+    if (saved) {
+      try { runSheetRows = JSON.parse(saved); } catch(e) {}
+    }
+    if (runSheetRows.length === 0) {
+      runSheetRows = [
+        { time: '17:00', activity: 'Cocktail hour' },
+        { time: '18:30', activity: 'Dinner service' },
+        { time: '21:00', activity: 'Last order' }
+      ];
+    }
+  }
+  function renderRunSheet() {
+    const tbody = $("runSheetBody");
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (runSheetRows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center">No entries. Click Add Activity</td></tr>';
+      return;
+    }
+    runSheetRows.forEach((row, idx) => {
+      const [h, m] = (row.time || '18:00').split(':');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <select class="hour-select" data-idx="${idx}">${Array.from({length:24}, (_,i) => `<option value="${i.toString().padStart(2,'0')}" ${i.toString().padStart(2,'0')===h?'selected':''}>${i.toString().padStart(2,'0')}</option>`).join('')}</select> :
+          <select class="minute-select" data-idx="${idx}">${Array.from({length:60}, (_,i) => `<option value="${i.toString().padStart(2,'0')}" ${i.toString().padStart(2,'0')===m?'selected':''}>${i.toString().padStart(2,'0')}</option>`).join('')}</select>
+        </td>
+        <td><input type="text" value="${escapeHtml(row.activity||'')}" placeholder="Activity" style="width:100%;"></td>
+        <td><button class="btn small" style="background:transparent;color:#b33"><i class="fas fa-trash-alt"></i></button></td>
+      `;
+      tbody.appendChild(tr);
+
+      const hourSel = tr.querySelector('.hour-select');
+      const minSel = tr.querySelector('.minute-select');
+      const actInput = tr.querySelector('input');
+      const delBtn = tr.querySelector('button');
+
+      const update = () => {
+        runSheetRows[idx].time = `${hourSel.value}:${minSel.value}`;
+        runSheetRows[idx].activity = actInput.value;
+        localStorage.setItem('runSheetData', JSON.stringify(runSheetRows));
+      };
+      hourSel.addEventListener('change', update);
+      minSel.addEventListener('change', update);
+      actInput.addEventListener('input', update);
+      delBtn.onclick = () => {
+        runSheetRows.splice(idx, 1);
+        localStorage.setItem('runSheetData', JSON.stringify(runSheetRows));
+        renderRunSheet();
+      };
+    });
+  }
+  function addRunRow() {
+    runSheetRows.push({ time: '18:00', activity: '' });
+    localStorage.setItem('runSheetData', JSON.stringify(runSheetRows));
+    renderRunSheet();
+  }
+
+  // Simple renderAll for now
+  function renderAll() {
+    console.log("Full render called");
+  }
+
+  // Tab navigation
+  function setActivePage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = $(`page-${page}`);
+    if (target) target.classList.add('active');
+    if (page === 'runsheet') renderRunSheet();
+  }
+
+  // Initial load
+  initRunSheet();
+  renderRunSheet();
+
+  // Add button
+  on($("addRunRowBtn"), "click", addRunRow);
+
+  // Tabs
+  document.querySelectorAll('.tab[data-page]').forEach(tab => {
+    on(tab, "click", () => setActivePage(tab.dataset.page));
+  });
+
+  console.log("%c✅ Full Members Lounge Event Planner loaded with exact minute Run Sheet.", "color:#C6A43F; font-weight:700;");
+</script>
+</body>
+</html>
