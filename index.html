@@ -314,18 +314,35 @@
         ] }
     ];
 
-    // ----- SUPPLIER LIST (you can edit this array) -----
-    let supplierList = [
+    // ----- YOUR SUPPLIER LIST (updated) -----
+    const supplierList = [
         "Select supplier",
-        "PFD Food Services",
-        "Coles Wholesale",
-        "Harris Farm",
-        "Wine Collective",
-        "Bottlemart",
-        "Mario's Fine Meats",
-        "Gourmet Bakery Supply",
-        "Gelato Importers",
-        "Clean & Safe Supplies"
+        "Nino & Joe's Meats Pty Ltd",
+        "Aquanas",
+        "Alpine Ice Cream",
+        "MT Ferraro",
+        "Piccolo Lusi / Arancini Art",
+        "Cannoleria",
+        "United Food Services",
+        "Superchem",
+        "Kyneton Estate Olive Oil",
+        "Gervasi Supermarket",
+        "Ferraro Wholesale Merchants",
+        "BAS Foods",
+        "Bon Foods",
+        "ALDI",
+        "Cedar Hospitality Supplies",
+        "Coles",
+        "Terry's tortes & treats",
+        "Liquorland",
+        "Dan Murphy's",
+        "Como Bakery",
+        "That's Amore Cheese",
+        "Alba Cheese",
+        "Campania Alimentari",
+        "Cookers Trust",
+        "Top Shelf Liquor",
+        "Nonna J's Bakery"
     ];
 
     // Unit options
@@ -362,7 +379,6 @@
         if (isNaN(val)) val = 0;
         val = Math.min(100, Math.max(0, val));
         stockData[product].qty = val;
-        // re-render only that product's input? we'll just re-render whole UI for simplicity
         render();
     }
 
@@ -373,7 +389,7 @@
 
     function changeCategorySupplier(catName, supplier) {
         categorySupplier[catName] = supplier;
-        render(); // to update select display
+        render();
     }
 
     // Render full UI
@@ -484,7 +500,6 @@
             try {
                 const obj = JSON.parse(saved);
                 if (obj.stockData) {
-                    // merge into existing structure
                     for (let prod in obj.stockData) {
                         if (stockData[prod]) {
                             stockData[prod] = obj.stockData[prod];
@@ -516,8 +531,7 @@
 
     // Generate report grouped by supplier
     function getSupplierGroupedReport() {
-        // Build map: supplier -> array of { category, product, qty, unit }
-        let supplierMap = new Map(); // key = supplier name, value = array
+        let supplierMap = new Map();
         for (let cat of categories) {
             const supplier = categorySupplier[cat.name];
             if (!supplier || supplier === "Select supplier") continue;
@@ -535,7 +549,7 @@
                 }
             }
         }
-        // Also include items where supplier is "Select supplier" as "Unassigned"
+        // Unassigned
         let unassigned = [];
         for (let cat of categories) {
             const supplier = categorySupplier[cat.name];
