@@ -268,6 +268,26 @@
             flex: 2;
             min-width: 200px;
         }
+        .summary-preview {
+            background: #fff;
+            border-radius: 28px;
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            display: none;
+        }
+        .summary-preview.show {
+            display: block;
+        }
+        .summary-preview pre {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 20px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+        }
         .footer-note {
             text-align: center;
             font-size: 0.75rem;
@@ -287,7 +307,7 @@
                 padding: 0;
                 margin: 0;
             }
-            .toolbar, .info-bar button, .footer-note, .stock-control select, .stock-control .qty-stepper button, .category-nav, .add-item-area, .delete-item {
+            .toolbar, .info-bar button, .footer-note, .stock-control select, .stock-control .qty-stepper button, .category-nav, .add-item-area, .delete-item, .summary-preview {
                 display: none !important;
             }
             .product-card {
@@ -365,15 +385,17 @@
 
     <div class="toolbar">
         <button id="resetBtn" class="warning">🗑️ Reset all to zero</button>
-        <button id="printPdfBtn" class="print-btn">🖨️ Print Stock Take (PDF)</button>
+        <button id="previewBtn">📄 Preview Summary</button>
+        <button id="printPdfBtn" class="print-btn">🖨️ Print PDF (Save/Send)</button>
     </div>
 
     <div id="categoryNav" class="category-nav"></div>
+    <div id="summaryPreview" class="summary-preview"></div>
     <div id="categoriesContainer"></div>
     <div class="footer-note">
         ✅ Sausages quantity up to 500 (stepper) · all others 0–50 dropdown<br>
         ✅ Click category tabs to jump · Add missing items in "➕ Miscellaneous"<br>
-        ✅ Select your name & date, then print PDF
+        ✅ Select your name & date, then click "Preview Summary" to see report, then Print PDF to save/send
     </div>
 </div>
 
@@ -458,11 +480,9 @@
         "jars", "tins", "drums", "loaves", "punnets", "bunches", "litres"
     ];
 
-    // Data structure: stockData[product] = { qty, unit }
     let stockData = {};
-    let miscProducts = []; // array of product names in Miscellaneous
+    let miscProducts = [];
 
-    // Helper: initialize stock data from base categories
     function initBaseData() {
         for (let cat of baseCategories) {
             for (let prod of cat.products) {
@@ -473,7 +493,6 @@
         }
     }
 
-    // Add a new product to Miscellaneous (if not already there)
     function addMiscProduct(productName) {
         if (!productName.trim()) return;
         if (miscProducts.includes(productName)) {
@@ -485,7 +504,6 @@
         render();
     }
 
-    // Delete a product from Miscellaneous
     function deleteMiscProduct(productName) {
         miscProducts = miscProducts.filter(p => p !== productName);
         delete stockData[productName];
@@ -543,14 +561,12 @@
         }
     }
 
-    // Render all categories + miscellaneous section
     function render() {
         const container = document.getElementById("categoriesContainer");
         const navContainer = document.getElementById("categoryNav");
         if (!container) return;
         container.innerHTML = "";
         
-        // Build nav links
         navContainer.innerHTML = "";
         const allCategoryNames = [...baseCategories.map(c => c.name), "➕ Miscellaneous"];
         allCategoryNames.forEach(catName => {
@@ -565,7 +581,6 @@
             navContainer.appendChild(link);
         });
 
-        // Render base categories
         for (let cat of baseCategories) {
             const catId = cat.name.replace(/\s/g, '');
             const catDiv = document.createElement("div");
@@ -611,7 +626,7 @@
             container.appendChild(catDiv);
         }
 
-        // Render Miscellaneous section
+        // Miscellaneous section
         const miscId = "Miscellaneous";
         const miscDiv = document.createElement("div");
         miscDiv.className = "category";
@@ -658,7 +673,6 @@
         }
         miscDiv.appendChild(miscGrid);
         
-        // Add new item form
         const addArea = document.createElement("div");
         addArea.className = "add-item-area";
         const newItemInput = document.createElement("input");
@@ -741,6 +755,19 @@
         return report;
     }
 
+    function showPreview() {
+        const info = validateAndGetInfo();
+        if (!info) {
+            alert("Please select both the stock take date and your name before previewing.");
+            return;
+        }
+        const reportText = getFullStockTakeReport(info);
+        const previewDiv = document.getElementById("summaryPreview");
+        previewDiv.innerHTML = `<h3 style="margin-top:0;">📋 Stock Take Summary</h3><pre>${reportText}</pre>`;
+        previewDiv.classList.add("show");
+        previewDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+
     function printPDF() {
         const info = validateAndGetInfo();
         if (!info) {
@@ -779,6 +806,7 @@
     render();
 
     document.getElementById("resetBtn").addEventListener("click", resetAll);
+    document.getElementById("previewBtn").addEventListener("click", showPreview);
     document.getElementById("printPdfBtn").addEventListener("click", printPDF);
 </script>
 </body>
