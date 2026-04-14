@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Members Lounge – Supplier Stock Take (per product)</title>
+    <title>Members Lounge – Stock Take & Order</title>
     <style>
         * {
             box-sizing: border-box;
@@ -28,6 +28,26 @@
             margin-bottom: 2rem;
             border-left: 4px solid #8bc34a;
             padding-left: 1rem;
+        }
+        .date-bar {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 28px;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .date-bar label {
+            font-weight: 600;
+        }
+        .date-bar input {
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
         }
         .toolbar {
             display: flex;
@@ -57,25 +77,12 @@
         button.warning {
             background: #d9534f;
         }
-        button.supplier-report {
-            background: #2c6e2f;
+        button.print-btn {
+            background: #0b5e7e;
         }
         button:hover {
             opacity: 0.85;
             transform: scale(0.97);
-        }
-        .export-area {
-            background: #e9ecef;
-            padding: 12px 20px;
-            border-radius: 20px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            white-space: pre-wrap;
-            margin-top: 2rem;
-            display: none;
-        }
-        .export-area.show {
-            display: block;
         }
         .category {
             background: white;
@@ -122,13 +129,39 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        .stock-control select {
+        .stock-control select, .stock-control input {
             padding: 7px 10px;
             border-radius: 40px;
             border: 1px solid #ccc;
             background: white;
             font-size: 0.8rem;
             min-width: 80px;
+        }
+        .qty-stepper {
+            display: flex;
+            align-items: center;
+            background: #f1f3f0;
+            border-radius: 40px;
+            border: 1px solid #cfd9cc;
+        }
+        .qty-stepper button {
+            background: #e0e6db;
+            border: none;
+            color: #1f3b22;
+            font-size: 1.2rem;
+            font-weight: bold;
+            width: 32px;
+            padding: 4px 0;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+        .qty-stepper input {
+            width: 70px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            padding: 8px 0;
         }
         .footer-note {
             text-align: center;
@@ -138,41 +171,80 @@
             border-top: 1px solid #d4dfcc;
             padding-top: 1.5rem;
         }
-        @media (max-width: 700px) {
-            .product-card {
-                flex-direction: column;
-                align-items: stretch;
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
             }
-            .stock-control {
-                justify-content: space-between;
+            .toolbar, .date-bar button, .footer-note, .stock-control select, .stock-control .qty-stepper button, .supplier-select {
+                display: none !important;
+            }
+            .product-card {
+                break-inside: avoid;
+                border: 1px solid #ccc;
+                margin-bottom: 5px;
+            }
+            .category-header {
+                background: #e9f0e3;
+                print-color-adjust: exact;
+            }
+            .container {
+                max-width: 100%;
+                padding: 10px;
+            }
+            .stock-control input, .stock-control select {
+                border: none;
+                background: transparent;
+                font-weight: normal;
+            }
+            .qty-stepper input {
+                border: none;
+                background: transparent;
+            }
+            .qty-stepper {
+                border: none;
+                background: transparent;
+            }
+            button {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>🍽️ Members Lounge – Stock Take</h1>
-    <div class="sub">Sunday night after service · assign supplier & remaining stock for EACH product</div>
+    <h1>🍽️ Members Lounge – Stock Take & Order</h1>
+    <div class="sub">Sunday night after service · assign supplier & remaining stock</div>
+
+    <!-- Date picker - mandatory -->
+    <div class="date-bar">
+        <label>📅 Order date (must be filled):</label>
+        <input type="date" id="orderDate" value="">
+        <button id="validateDateBtn" class="secondary">✅ Set date</button>
+        <span id="dateWarning" style="color: red; font-size: 0.8rem;"></span>
+    </div>
 
     <div class="toolbar">
         <button id="saveBtn">💾 Save to browser</button>
         <button id="loadBtn">📂 Load last session</button>
         <button id="resetBtn" class="warning">🗑️ Reset all to zero</button>
-        <button id="exportBySupplierBtn" class="supplier-report">📋 Consolidated order by supplier</button>
-        <button id="exportFullBtn" class="secondary">📄 Full inventory report</button>
+        <button id="printPdfBtn" class="print-btn">🖨️ Print PDF (Order by Supplier)</button>
     </div>
 
     <div id="categoriesContainer"></div>
-    <div id="exportArea" class="export-area"></div>
     <div class="footer-note">
-        ✅ Each product has its own supplier & unit & quantity (0–50 dropdown)<br>
-        ✅ Consolidated report groups items by supplier – only products with quantity > 0 appear
+        ✅ Each product has its own supplier & unit & quantity<br>
+        ✅ Sausages quantity goes up to 500 (special stepper)<br>
+        ✅ Supplier list is alphabetical<br>
+        ✅ Set the date first, then print PDF – only items with quantity > 0 appear in the order
     </div>
 </div>
 
 <script>
     // --------------------------------------------------------------
-    // PRODUCT DATABASE with NEW CATEGORIES (Meats, Seafood, Dairy, Bakery,
+    // PRODUCT DATABASE with categories (Meats, Seafood, Dairy, Bakery,
     // Dry Goods, Soft Drinks, Beer & Cider, Wines, Spirits, Dessert)
     // --------------------------------------------------------------
     const categories = [
@@ -188,10 +260,9 @@
             "Coles Milk (3L)", "Cannoli Cream (2.5kg)"
         ] },
         { name: "🥖 Bakery", products: [
-            "Bread Rolls", "Sliced Bread", "Bruschetta Bread", "Panini", "Tsoureki Easter Loaf",
-            "Como Bakery (generic)", "Nonna J's Bakery (generic)"
+            "Bread Rolls", "Sliced Bread", "Bruschetta Bread", "Panini", "Tsoureki Easter Loaf"
         ] },
-        { name: "📦 Dry Goods (produce, pantry, cleaning, etc.)", products: [
+        { name: "📦 Dry Goods", products: [
             "Napoli Cut Tray 2kg", "Pasta (15kg box)", "Olives (bucket)", "Napoli Sauce (box of 6)",
             "Olive Oil (20L drum)", "Chili Flakes", "Oregano", "Red Wine Vinegar (5L)",
             "Breadcrumbs (5kg bag)", "Artichokes", "Capsicums (tin)", "Beans", "Salt", "Ragu Red Wine",
@@ -251,9 +322,8 @@
         ] }
     ];
 
-    // ----- SUPPLIER LIST (your full list) -----
-    const supplierList = [
-        "Select supplier",
+    // ----- SUPPLIER LIST (alphabetical order) -----
+    const supplierListRaw = [
         "Nino & Joe's Meats Pty Ltd",
         "Aquanas",
         "Alpine Ice Cream",
@@ -281,6 +351,8 @@
         "Top Shelf Liquor",
         "Nonna J's Bakery"
     ];
+    // Sort alphabetically
+    const supplierList = ["Select supplier", ...supplierListRaw.sort((a,b) => a.localeCompare(b))];
 
     // Unit options
     const unitOptions = [
@@ -306,11 +378,12 @@
         }
     }
 
-    // Helper: set quantity (0-50)
+    // Helper: set quantity for normal products (0-50) and special for sausages (0-500)
     function setQuantity(product, newVal) {
         let val = parseInt(newVal, 10);
         if (isNaN(val)) val = 0;
-        val = Math.min(50, Math.max(0, val));
+        let max = (product === "Sausages") ? 500 : 50;
+        val = Math.min(max, Math.max(0, val));
         stockData[product].qty = val;
         render();
     }
@@ -325,17 +398,42 @@
         render();
     }
 
-    // Generate dropdown options 0..50
-    function quantityDropdown(currentQty) {
-        const select = document.createElement("select");
-        for (let i = 0; i <= 50; i++) {
-            const opt = document.createElement("option");
-            opt.value = i;
-            opt.textContent = i;
-            if (currentQty === i) opt.selected = true;
-            select.appendChild(opt);
+    // Special quantity control for Sausages (stepper up to 500)
+    function createQuantityControl(product, currentQty) {
+        if (product === "Sausages") {
+            const container = document.createElement("div");
+            container.className = "qty-stepper";
+            const minusBtn = document.createElement("button");
+            minusBtn.textContent = "−";
+            const input = document.createElement("input");
+            input.type = "number";
+            input.value = currentQty;
+            input.min = 0;
+            input.max = 500;
+            input.step = 10;
+            const plusBtn = document.createElement("button");
+            plusBtn.textContent = "+";
+            minusBtn.onclick = () => setQuantity(product, currentQty - 10);
+            plusBtn.onclick = () => setQuantity(product, currentQty + 10);
+            input.onchange = (e) => setQuantity(product, e.target.value);
+            container.appendChild(minusBtn);
+            container.appendChild(input);
+            container.appendChild(plusBtn);
+            return container;
+        } else {
+            const select = document.createElement("select");
+            for (let i = 0; i <= 50; i++) {
+                const opt = document.createElement("option");
+                opt.value = i;
+                opt.textContent = i;
+                if (currentQty === i) opt.selected = true;
+                select.appendChild(opt);
+            }
+            select.addEventListener("change", (function(p) {
+                return function(e) { setQuantity(p, e.target.value); };
+            })(product));
+            return select;
         }
-        return select;
     }
 
     // Render full UI
@@ -365,11 +463,8 @@
                 const controlDiv = document.createElement("div");
                 controlDiv.className = "stock-control";
                 
-                // Quantity dropdown
-                const qtySelect = quantityDropdown(data.qty);
-                qtySelect.addEventListener("change", (function(p) {
-                    return function(e) { setQuantity(p, e.target.value); };
-                })(prod));
+                // Quantity control (special for sausages)
+                const qtyControl = createQuantityControl(prod, data.qty);
                 
                 // Unit select
                 const unitSelect = document.createElement("select");
@@ -397,7 +492,7 @@
                     return function(e) { changeSupplier(p, e.target.value); };
                 })(prod));
                 
-                controlDiv.appendChild(qtySelect);
+                controlDiv.appendChild(qtyControl);
                 controlDiv.appendChild(unitSelect);
                 controlDiv.appendChild(supSelect);
                 card.appendChild(nameSpan);
@@ -441,9 +536,30 @@
         alert("All quantities set to zero.");
     }
 
+    // Get selected date, validate
+    let selectedDate = "";
+    function getSelectedDate() {
+        const dateInput = document.getElementById("orderDate");
+        if (!dateInput.value) {
+            document.getElementById("dateWarning").innerText = "⚠️ Please set the order date first!";
+            return null;
+        }
+        document.getElementById("dateWarning").innerText = "";
+        return dateInput.value;
+    }
+    function setDate() {
+        const dateInput = document.getElementById("orderDate");
+        if (dateInput.value) {
+            selectedDate = dateInput.value;
+            document.getElementById("dateWarning").innerText = "✅ Date set: " + selectedDate;
+        } else {
+            document.getElementById("dateWarning").innerText = "❌ Please pick a date";
+        }
+    }
+
     // Consolidated report grouped by supplier (only items with qty > 0)
     function getSupplierConsolidatedReport() {
-        let supplierMap = new Map(); // supplier -> array of { category, product, qty, unit }
+        let supplierMap = new Map();
         for (let cat of categories) {
             for (let prod of cat.products) {
                 const data = stockData[prod];
@@ -459,7 +575,7 @@
                 }
             }
         }
-        // Unassigned items (supplier = "Select supplier")
+        // Unassigned items
         let unassigned = [];
         for (let cat of categories) {
             for (let prod of cat.products) {
@@ -474,11 +590,12 @@
                 }
             }
         }
-        let report = "📦 MEMBERS LOUNGE – CONSOLIDATED ORDER BY SUPPLIER\n";
-        report += "================================================\n\n";
+        const dateStr = selectedDate || "DATE NOT SET";
+        let report = `📦 MEMBERS LOUNGE – CONSOLIDATED ORDER BY SUPPLIER\n`;
+        report += `Order Date: ${dateStr}\n`;
+        report += `================================================\n\n`;
         for (let [supplier, items] of supplierMap.entries()) {
             report += `🔹 SUPPLIER: ${supplier}\n`;
-            // Group items within supplier by category for readability
             let catGroups = new Map();
             for (let it of items) {
                 if (!catGroups.has(it.category)) catGroups.set(it.category, []);
@@ -511,56 +628,52 @@
         return report;
     }
 
-    function getFullInventoryReport() {
-        let report = "📋 MEMBERS LOUNGE – FULL STOCK TAKE (all items)\n";
-        report += "================================================\n\n";
-        for (let cat of categories) {
-            report += `📁 ${cat.name}\n`;
-            for (let prod of cat.products) {
-                const data = stockData[prod];
-                report += `   • ${prod} : ${data.qty} ${data.unit}  [Supplier: ${data.supplier}]\n`;
-            }
-            report += "\n";
+    // Print PDF using browser's print dialog (with print styles)
+    function printPDF() {
+        const dateOk = getSelectedDate();
+        if (!dateOk) {
+            alert("Please set the order date before printing.");
+            return;
         }
-        report += `Generated: ${new Date().toLocaleString()}\n`;
-        return report;
-    }
-
-    function showExportBySupplier() {
-        const report = getSupplierConsolidatedReport();
-        const exportDiv = document.getElementById("exportArea");
-        exportDiv.textContent = report;
-        exportDiv.classList.add("show");
-        navigator.clipboard.writeText(report).then(() => {
-            const btn = document.getElementById("exportBySupplierBtn");
-            const orig = btn.textContent;
-            btn.textContent = "✅ Copied!";
-            setTimeout(() => btn.textContent = orig, 1500);
-        }).catch(() => alert("Report ready – copy manually"));
-    }
-
-    function showFullExport() {
-        const report = getFullInventoryReport();
-        const exportDiv = document.getElementById("exportArea");
-        exportDiv.textContent = report;
-        exportDiv.classList.add("show");
-        navigator.clipboard.writeText(report).then(() => {
-            const btn = document.getElementById("exportFullBtn");
-            const orig = btn.textContent;
-            btn.textContent = "✅ Copied!";
-            setTimeout(() => btn.textContent = orig, 1500);
-        }).catch(() => alert("Report ready – copy manually"));
+        const reportText = getSupplierConsolidatedReport();
+        // Create a temporary div for printing
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Members Lounge Order - ${selectedDate}</title>
+                <style>
+                    body { font-family: system-ui, 'Segoe UI', Roboto, sans-serif; margin: 40px; }
+                    h1 { color: #2c3e2f; }
+                    pre { font-family: monospace; white-space: pre-wrap; font-size: 12pt; }
+                    .report { margin-top: 20px; }
+                </style>
+            </head>
+            <body>
+                <h1>🍽️ Members Lounge – Stock Order</h1>
+                <pre class="report">${reportText}</pre>
+                <p><em>Printed on ${new Date().toLocaleString()}</em></p>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
     }
 
     // Initialization
     initData();
     render();
 
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("orderDate").value = today;
+    selectedDate = today;
+
+    document.getElementById("validateDateBtn").addEventListener("click", setDate);
     document.getElementById("saveBtn").addEventListener("click", saveToLocal);
     document.getElementById("loadBtn").addEventListener("click", loadFromLocal);
     document.getElementById("resetBtn").addEventListener("click", resetAll);
-    document.getElementById("exportBySupplierBtn").addEventListener("click", showExportBySupplier);
-    document.getElementById("exportFullBtn").addEventListener("click", showFullExport);
+    document.getElementById("printPdfBtn").addEventListener("click", printPDF);
 </script>
 </body>
 </html>
