@@ -12,7 +12,6 @@
         .product-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         .product-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
         .category-section { scroll-margin-top: 20px; }
-        /* Floating action panel */
         .floating-actions {
             position: fixed;
             bottom: 24px;
@@ -47,20 +46,39 @@
             .floating-actions, .no-print { display: none !important; }
             .category-header { background: #111827 !important; color: white !important; -webkit-print-color-adjust: exact; }
             .product-card { border: 1px solid #ddd !important; box-shadow: none !important; break-inside: avoid; }
+            .club-details { background: #f9f9f9; border-bottom: 1px solid #ccc; }
+        }
+        .print-iframe {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 0;
+            visibility: hidden;
         }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- Header -->
+        <!-- Header with Logo and Club Details (from PDF) -->
         <div class="bg-white rounded-3xl shadow-sm overflow-hidden mb-8 no-print">
-            <div class="bg-zinc-950 text-white px-8 py-10 flex items-center gap-6">
-                <div class="w-16 h-16 bg-white text-zinc-950 rounded-2xl flex items-center justify-center text-4xl font-bold">TML</div>
-                <div>
-                    <h1 class="text-3xl font-bold tracking-tight">The Members Lounge</h1>
-                    <p class="text-zinc-400 mt-1">Professional Stock Take System</p>
+            <div class="bg-zinc-950 text-white px-8 py-8 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 bg-white text-zinc-950 rounded-2xl flex items-center justify-center text-3xl font-bold">TML</div>
+                    <div>
+                        <h1 class="text-3xl font-bold tracking-tight">themembers|lounge.com.au</h1>
+                        <p class="text-zinc-400 mt-1">Professional Stock Take System</p>
+                    </div>
                 </div>
+                <div class="text-right text-sm text-zinc-300">
+                    <div>Reggio Calabria Club</div>
+                    <div>476 Brunswick Road, Parkville 3052</div>
+                    <div>P: 03 8560 0556</div>
+                </div>
+            </div>
+            <div class="bg-gray-100 px-8 py-3 flex flex-wrap justify-between text-sm text-gray-700 border-t border-gray-200">
+                <div>Whitehorse Club: 298-336 Burwood Hwy, Burwood East 3151 | P: 03 9887 9968</div>
+                <div>Booking Enquiries: 0403 827 887</div>
             </div>
         </div>
 
@@ -124,8 +142,11 @@
         <button onclick="resetAll()" class="reset" title="Reset all quantities">🗑️</button>
         <button onclick="showPreview()" class="preview" title="Preview summary">📄</button>
         <button onclick="exportCSV()" class="export" title="Export CSV">📊</button>
-        <button onclick="printPDF()" class="print" title="Print PDF">🖨️</button>
+        <button onclick="printStockTake()" class="print" title="Print PDF">🖨️</button>
     </div>
+
+    <!-- Hidden iframe for printing -->
+    <iframe id="printIframe" class="print-iframe"></iframe>
 
 <script>
 // ==================== DATA ====================
@@ -362,13 +383,71 @@ function showPreview() {
     document.getElementById("summaryPreview").scrollIntoView({ behavior: "smooth" });
 }
 
-function printPDF() {
+function printStockTake() {
     const info = validateAndGetInfo();
     if (!info) return;
-    const win = window.open('', '_blank');
-    win.document.write(`<html><head><title>Stock Take ${info.date}</title><style>body{font-family:monospace;margin:40px;line-height:1.5;}h1{border-bottom:3px solid black;padding-bottom:10px;}</style></head><body><h1>The Members Lounge – Stock Take</h1><pre>${getFullStockTakeReport(info)}</pre></body></html>`);
-    win.document.close();
-    setTimeout(() => win.print(), 600);
+    
+    const reportText = getFullStockTakeReport(info);
+    const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Stock Take - ${info.date}</title>
+            <style>
+                body {
+                    font-family: monospace;
+                    margin: 40px;
+                    line-height: 1.5;
+                    font-size: 12pt;
+                }
+                h1 {
+                    border-bottom: 3px solid black;
+                    padding-bottom: 10px;
+                }
+                pre {
+                    white-space: pre-wrap;
+                    font-family: monospace;
+                }
+                .footer {
+                    margin-top: 40px;
+                    font-size: 9pt;
+                    color: #666;
+                }
+                .club-info {
+                    margin-bottom: 20px;
+                    font-size: 10pt;
+                    color: #444;
+                    border-bottom: 1px solid #ccc;
+                    padding-bottom: 8px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="club-info">
+                <strong>themembers|lounge.com.au</strong><br>
+                Reggio Calabria Club: 476 Brunswick Road, Parkville 3052 | P: 03 8560 0556<br>
+                Whitehorse Club: 298-336 Burwood Highway, Burwood East 3151 | P: 03 9887 9968<br>
+                Booking Enquiries: 0403 827 887
+            </div>
+            <h1>The Members Lounge – Stock Take</h1>
+            <pre>${reportText}</pre>
+            <div class="footer">Printed from The Members Lounge stock take system</div>
+        </body>
+        </html>
+    `;
+    
+    const iframe = document.getElementById('printIframe');
+    iframe.srcdoc = htmlContent;
+    iframe.onload = function() {
+        setTimeout(() => {
+            try {
+                iframe.contentWindow.print();
+            } catch(e) {
+                alert("Print failed. You can use the Preview button and then print from your browser.");
+            }
+        }, 500);
+    };
 }
 
 function exportCSV() {
@@ -412,18 +491,6 @@ if (savedData) {
         updateLiveCounter();
     } catch(e) {}
 }
-
-// Expose global functions for buttons
-window.resetAll = resetAll;
-window.showPreview = showPreview;
-window.printPDF = printPDF;
-window.exportCSV = exportCSV;
-window.changeSausages = changeSausages;
-window.setQuantity = setQuantity;
-window.changeUnit = changeUnit;
-window.debouncedFilter = debouncedFilter;
-window.deleteMiscProduct = deleteMiscProduct;
-window.addMiscProduct = addMiscProduct;
 </script>
 </body>
 </html>
