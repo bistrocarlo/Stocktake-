@@ -55,16 +55,21 @@
             border: 0;
             visibility: hidden;
         }
+        .logo-image {
+            max-height: 70px;
+            width: auto;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- Header with Logo and Club Details (from PDF) -->
+        <!-- Header with Logo and Club Details (no booking enquiries, no Burwood) -->
         <div class="bg-white rounded-3xl shadow-sm overflow-hidden mb-8 no-print">
-            <div class="bg-zinc-950 text-white px-8 py-8 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+            <div class="bg-zinc-950 text-white px-8 py-6 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
                 <div class="flex items-center gap-5">
-                    <div class="w-16 h-16 bg-white text-zinc-950 rounded-2xl flex items-center justify-center text-3xl font-bold">TML</div>
+                    <!-- Logo image – replace src with your actual logo -->
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23ffffff'/%3E%3Ctext x='50' y='67' font-size='40' text-anchor='middle' fill='%23000000' font-family='monospace'%3ETML%3C/text%3E%3C/svg%3E" alt="The Members Lounge Logo" class="logo-image">
                     <div>
                         <h1 class="text-3xl font-bold tracking-tight">themembers|lounge.com.au</h1>
                         <p class="text-zinc-400 mt-1">Professional Stock Take System</p>
@@ -76,9 +81,10 @@
                     <div>P: 03 8560 0556</div>
                 </div>
             </div>
-            <div class="bg-gray-100 px-8 py-3 flex flex-wrap justify-between text-sm text-gray-700 border-t border-gray-200">
-                <div>Whitehorse Club: 298-336 Burwood Hwy, Burwood East 3151 | P: 03 9887 9968</div>
-                <div>Booking Enquiries: 0403 827 887</div>
+            <!-- Footer bar: only website and club name (no booking enquiries) -->
+            <div class="bg-gray-100 px-8 py-3 flex justify-between text-sm text-gray-700 border-t border-gray-200">
+                <div>Reggio Calabria Club</div>
+                <div>themembers|lounge.com.au</div>
             </div>
         </div>
 
@@ -426,9 +432,7 @@ function printStockTake() {
         <body>
             <div class="club-info">
                 <strong>themembers|lounge.com.au</strong><br>
-                Reggio Calabria Club: 476 Brunswick Road, Parkville 3052 | P: 03 8560 0556<br>
-                Whitehorse Club: 298-336 Burwood Highway, Burwood East 3151 | P: 03 9887 9968<br>
-                Booking Enquiries: 0403 827 887
+                Reggio Calabria Club: 476 Brunswick Road, Parkville 3052 | P: 03 8560 0556
             </div>
             <h1>The Members Lounge – Stock Take</h1>
             <pre>${reportText}</pre>
