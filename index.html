@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Members Lounge – Stock Take & Order</title>
+    <title>The Members Lounge – Stock Take</title>
     <style>
         * {
             box-sizing: border-box;
             font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
         }
         body {
-            background: #f4f7f2;
+            background: #f0f0f0;
             margin: 0;
             padding: 20px;
         }
@@ -18,30 +18,63 @@
             max-width: 1400px;
             margin: 0 auto;
         }
-        h1 {
-            font-size: 1.8rem;
-            margin: 0 0 0.25rem 0;
-            color: #2c3e2f;
+        /* Logo & header area – black/white/red */
+        .logo-header {
+            background: #111;
+            border-radius: 28px 28px 0 0;
+            padding: 20px 28px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            border-bottom: 4px solid #cc0000;
         }
-        .sub {
-            color: #4a5b4e;
-            margin-bottom: 2rem;
-            border-left: 4px solid #8bc34a;
-            padding-left: 1rem;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon {
+            background: #cc0000;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+        }
+        .logo-text {
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .logo-text span {
+            color: #cc0000;
+        }
+        .tagline {
+            color: #aaa;
+            font-size: 0.8rem;
+            margin-top: 4px;
         }
         .date-bar {
             background: white;
-            padding: 16px 20px;
-            border-radius: 28px;
-            margin-bottom: 2rem;
+            padding: 16px 24px;
+            margin-top: 0;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 20px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid #cc0000;
         }
         .date-bar label {
             font-weight: 600;
+            color: #111;
         }
         .date-bar input {
             padding: 8px 12px;
@@ -53,15 +86,15 @@
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 2rem;
+            margin: 20px 0;
             background: white;
-            padding: 16px 20px;
+            padding: 16px 24px;
             border-radius: 28px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
             align-items: center;
         }
         button {
-            background: #2c3e2f;
+            background: #111;
             border: none;
             color: white;
             padding: 8px 18px;
@@ -72,13 +105,13 @@
             font-size: 0.9rem;
         }
         button.secondary {
-            background: #6c757d;
+            background: #444;
         }
         button.warning {
-            background: #d9534f;
+            background: #cc0000;
         }
         button.print-btn {
-            background: #0b5e7e;
+            background: #cc0000;
         }
         button:hover {
             opacity: 0.85;
@@ -90,14 +123,15 @@
             margin-bottom: 2rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             overflow: hidden;
+            border: 1px solid #ddd;
         }
         .category-header {
-            background: #e9f0e3;
+            background: #111;
+            color: white;
             padding: 14px 24px;
             font-size: 1.3rem;
             font-weight: 600;
-            color: #1f3b22;
-            border-bottom: 1px solid #cddfc0;
+            border-bottom: 2px solid #cc0000;
         }
         .product-grid {
             display: grid;
@@ -171,14 +205,14 @@
             border-top: 1px solid #d4dfcc;
             padding-top: 1.5rem;
         }
-        /* Print styles */
+        /* Print styles – keep branding */
         @media print {
             body {
                 background: white;
                 padding: 0;
                 margin: 0;
             }
-            .toolbar, .date-bar button, .footer-note, .stock-control select, .stock-control .qty-stepper button, .supplier-select {
+            .toolbar, .date-bar button, .footer-note, .stock-control select, .stock-control .qty-stepper button {
                 display: none !important;
             }
             .product-card {
@@ -187,7 +221,12 @@
                 margin-bottom: 5px;
             }
             .category-header {
-                background: #e9f0e3;
+                background: #111;
+                color: white;
+                print-color-adjust: exact;
+            }
+            .logo-header {
+                background: #111;
                 print-color-adjust: exact;
             }
             .container {
@@ -215,37 +254,43 @@
 </head>
 <body>
 <div class="container">
-    <h1>🍽️ Members Lounge – Stock Take & Order</h1>
-    <div class="sub">Sunday night after service · assign supplier & remaining stock</div>
+    <!-- Logo header – black/white/red -->
+    <div class="logo-header">
+        <div class="logo">
+            <div class="logo-icon">TML</div>
+            <div>
+                <div class="logo-text">The Members <span>Lounge</span></div>
+                <div class="tagline">Stock Take & Inventory</div>
+            </div>
+        </div>
+        <div style="color: #cc0000; font-weight: bold;">🍷 Sunday Night Service</div>
+    </div>
 
     <!-- Date picker - mandatory -->
     <div class="date-bar">
-        <label>📅 Order date (must be filled):</label>
-        <input type="date" id="orderDate" value="">
+        <label>📅 Stock take date:</label>
+        <input type="date" id="stockDate" value="">
         <button id="validateDateBtn" class="secondary">✅ Set date</button>
-        <span id="dateWarning" style="color: red; font-size: 0.8rem;"></span>
+        <span id="dateWarning" style="color: #cc0000; font-size: 0.8rem;"></span>
     </div>
 
     <div class="toolbar">
         <button id="saveBtn">💾 Save to browser</button>
         <button id="loadBtn">📂 Load last session</button>
         <button id="resetBtn" class="warning">🗑️ Reset all to zero</button>
-        <button id="printPdfBtn" class="print-btn">🖨️ Print PDF (Order by Supplier)</button>
+        <button id="printPdfBtn" class="print-btn">🖨️ Print Stock Take (PDF)</button>
     </div>
 
     <div id="categoriesContainer"></div>
     <div class="footer-note">
-        ✅ Each product has its own supplier & unit & quantity<br>
-        ✅ Sausages quantity goes up to 500 (special stepper)<br>
-        ✅ Supplier list is alphabetical<br>
-        ✅ Set the date first, then print PDF – only items with quantity > 0 appear in the order
+        ✅ Sausages quantity up to 500 (stepper) · all others 0–50 dropdown<br>
+        ✅ Set the date first, then print PDF – full stock take report with date
     </div>
 </div>
 
 <script>
     // --------------------------------------------------------------
-    // PRODUCT DATABASE with categories (Meats, Seafood, Dairy, Bakery,
-    // Dry Goods, Soft Drinks, Beer & Cider, Wines, Spirits, Dessert)
+    // PRODUCT DATABASE (categories, no suppliers)
     // --------------------------------------------------------------
     const categories = [
         { name: "🥩 Meats", products: [
@@ -322,38 +367,6 @@
         ] }
     ];
 
-    // ----- SUPPLIER LIST (alphabetical order) -----
-    const supplierListRaw = [
-        "Nino & Joe's Meats Pty Ltd",
-        "Aquanas",
-        "Alpine Ice Cream",
-        "MT Ferraro",
-        "Piccolo Lusi / Arancini Art",
-        "Cannoleria",
-        "United Food Services",
-        "Superchem",
-        "Kyneton Estate Olive Oil",
-        "Gervasi Supermarket",
-        "Ferraro Wholesale Merchants",
-        "BAS Foods",
-        "Bon Foods",
-        "ALDI",
-        "Cedar Hospitality Supplies",
-        "Coles",
-        "Terry's tortes & treats",
-        "Liquorland",
-        "Dan Murphy's",
-        "Como Bakery",
-        "That's Amore Cheese",
-        "Alba Cheese",
-        "Campania Alimentari",
-        "Cookers Trust",
-        "Top Shelf Liquor",
-        "Nonna J's Bakery"
-    ];
-    // Sort alphabetically
-    const supplierList = ["Select supplier", ...supplierListRaw.sort((a,b) => a.localeCompare(b))];
-
     // Unit options
     const unitOptions = [
         "grams (g)", "kilograms (kg)", "boxes", "bottles", "packets", "bags", 
@@ -361,18 +374,18 @@
         "jars", "tins", "drums", "loaves", "punnets", "bunches", "litres"
     ];
 
-    // Data structures: each product has { qty, unit, supplier }
+    // Data structures: each product has { qty, unit }
     let stockData = {};
 
     // Storage key
-    const STORAGE_KEY = "members_lounge_stock_supplier_per_product";
+    const STORAGE_KEY = "members_lounge_stock_take";
 
     // Initialize data
     function initData() {
         for (let cat of categories) {
             for (let prod of cat.products) {
                 if (!stockData[prod]) {
-                    stockData[prod] = { qty: 0, unit: "each", supplier: "Select supplier" };
+                    stockData[prod] = { qty: 0, unit: "each" };
                 }
             }
         }
@@ -390,11 +403,6 @@
 
     function changeUnit(product, newUnit) {
         stockData[product].unit = newUnit;
-        render();
-    }
-
-    function changeSupplier(product, newSupplier) {
-        stockData[product].supplier = newSupplier;
         render();
     }
 
@@ -479,22 +487,8 @@
                     return function(e) { changeUnit(p, e.target.value); };
                 })(prod));
                 
-                // Supplier select
-                const supSelect = document.createElement("select");
-                supplierList.forEach(sup => {
-                    const opt = document.createElement("option");
-                    opt.value = sup;
-                    opt.textContent = sup;
-                    if (data.supplier === sup) opt.selected = true;
-                    supSelect.appendChild(opt);
-                });
-                supSelect.addEventListener("change", (function(p) {
-                    return function(e) { changeSupplier(p, e.target.value); };
-                })(prod));
-                
                 controlDiv.appendChild(qtyControl);
                 controlDiv.appendChild(unitSelect);
-                controlDiv.appendChild(supSelect);
                 card.appendChild(nameSpan);
                 card.appendChild(controlDiv);
                 grid.appendChild(card);
@@ -507,7 +501,7 @@
     // Save to localStorage
     function saveToLocal() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(stockData));
-        alert("Stock & supplier assignments saved!");
+        alert("Stock take saved to browser!");
     }
 
     function loadFromLocal() {
@@ -521,7 +515,7 @@
                     }
                 }
                 render();
-                alert("Previous session loaded.");
+                alert("Previous stock take loaded.");
             } catch(e) { alert("Error loading data"); }
         } else {
             alert("No saved session found.");
@@ -539,92 +533,39 @@
     // Get selected date, validate
     let selectedDate = "";
     function getSelectedDate() {
-        const dateInput = document.getElementById("orderDate");
+        const dateInput = document.getElementById("stockDate");
         if (!dateInput.value) {
-            document.getElementById("dateWarning").innerText = "⚠️ Please set the order date first!";
+            document.getElementById("dateWarning").innerText = "⚠️ Please set the stock take date first!";
             return null;
         }
         document.getElementById("dateWarning").innerText = "";
         return dateInput.value;
     }
     function setDate() {
-        const dateInput = document.getElementById("orderDate");
+        const dateInput = document.getElementById("stockDate");
         if (dateInput.value) {
             selectedDate = dateInput.value;
-            document.getElementById("dateWarning").innerText = "✅ Date set: " + selectedDate;
+            document.getElementById("dateWarning").innerHTML = "✅ Date set: " + selectedDate;
         } else {
-            document.getElementById("dateWarning").innerText = "❌ Please pick a date";
+            document.getElementById("dateWarning").innerHTML = "❌ Please pick a date";
         }
     }
 
-    // Consolidated report grouped by supplier (only items with qty > 0)
-    function getSupplierConsolidatedReport() {
-        let supplierMap = new Map();
-        for (let cat of categories) {
-            for (let prod of cat.products) {
-                const data = stockData[prod];
-                if (data && data.qty > 0 && data.supplier && data.supplier !== "Select supplier") {
-                    const supplier = data.supplier;
-                    if (!supplierMap.has(supplier)) supplierMap.set(supplier, []);
-                    supplierMap.get(supplier).push({
-                        category: cat.name,
-                        product: prod,
-                        qty: data.qty,
-                        unit: data.unit
-                    });
-                }
-            }
-        }
-        // Unassigned items
-        let unassigned = [];
-        for (let cat of categories) {
-            for (let prod of cat.products) {
-                const data = stockData[prod];
-                if (data && data.qty > 0 && (!data.supplier || data.supplier === "Select supplier")) {
-                    unassigned.push({
-                        category: cat.name,
-                        product: prod,
-                        qty: data.qty,
-                        unit: data.unit
-                    });
-                }
-            }
-        }
+    // Full stock take report (all products with qty and unit)
+    function getFullStockTakeReport() {
         const dateStr = selectedDate || "DATE NOT SET";
-        let report = `📦 MEMBERS LOUNGE – CONSOLIDATED ORDER BY SUPPLIER\n`;
-        report += `Order Date: ${dateStr}\n`;
-        report += `================================================\n\n`;
-        for (let [supplier, items] of supplierMap.entries()) {
-            report += `🔹 SUPPLIER: ${supplier}\n`;
-            let catGroups = new Map();
-            for (let it of items) {
-                if (!catGroups.has(it.category)) catGroups.set(it.category, []);
-                catGroups.get(it.category).push(it);
-            }
-            for (let [catName, catItems] of catGroups.entries()) {
-                report += `   📁 ${catName}\n`;
-                for (let it of catItems) {
-                    report += `      • ${it.product} : ${it.qty} ${it.unit}\n`;
-                }
+        let report = `THE MEMBERS LOUNGE – STOCK TAKE REPORT\n`;
+        report += `Date: ${dateStr}\n`;
+        report += `=========================================\n\n`;
+        for (let cat of categories) {
+            report += `📁 ${cat.name}\n`;
+            for (let prod of cat.products) {
+                const data = stockData[prod];
+                report += `   • ${prod}: ${data.qty} ${data.unit}\n`;
             }
             report += "\n";
         }
-        if (unassigned.length > 0) {
-            report += `⚠️ UNASSIGNED (no supplier selected)\n`;
-            let catGroups = new Map();
-            for (let it of unassigned) {
-                if (!catGroups.has(it.category)) catGroups.set(it.category, []);
-                catGroups.get(it.category).push(it);
-            }
-            for (let [catName, catItems] of catGroups.entries()) {
-                report += `   📁 ${catName}\n`;
-                for (let it of catItems) {
-                    report += `      • ${it.product} : ${it.qty} ${it.unit}\n`;
-                }
-            }
-            report += "\n";
-        }
-        report += `Generated: ${new Date().toLocaleString()}\n`;
+        report += `Report generated: ${new Date().toLocaleString()}\n`;
         return report;
     }
 
@@ -632,27 +573,29 @@
     function printPDF() {
         const dateOk = getSelectedDate();
         if (!dateOk) {
-            alert("Please set the order date before printing.");
+            alert("Please set the stock take date before printing.");
             return;
         }
-        const reportText = getSupplierConsolidatedReport();
-        // Create a temporary div for printing
+        const reportText = getFullStockTakeReport();
         const printWindow = window.open('', '_blank');
         printWindow.document.write(`
             <html>
             <head>
-                <title>Members Lounge Order - ${selectedDate}</title>
+                <title>Members Lounge Stock Take - ${selectedDate}</title>
                 <style>
                     body { font-family: system-ui, 'Segoe UI', Roboto, sans-serif; margin: 40px; }
-                    h1 { color: #2c3e2f; }
-                    pre { font-family: monospace; white-space: pre-wrap; font-size: 12pt; }
-                    .report { margin-top: 20px; }
+                    h1 { color: #111; border-left: 6px solid #cc0000; padding-left: 20px; }
+                    pre { font-family: monospace; white-space: pre-wrap; font-size: 11pt; background: #f9f9f9; padding: 20px; border-radius: 12px; }
+                    .header { margin-bottom: 30px; }
+                    .footer { margin-top: 40px; font-size: 9pt; color: #666; }
                 </style>
             </head>
             <body>
-                <h1>🍽️ Members Lounge – Stock Order</h1>
-                <pre class="report">${reportText}</pre>
-                <p><em>Printed on ${new Date().toLocaleString()}</em></p>
+                <div class="header">
+                    <h1>The Members Lounge – Stock Take</h1>
+                </div>
+                <pre>${reportText}</pre>
+                <div class="footer">Printed from The Members Lounge stock take system</div>
             </body>
             </html>
         `);
@@ -666,8 +609,9 @@
 
     // Set default date to today
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById("orderDate").value = today;
+    document.getElementById("stockDate").value = today;
     selectedDate = today;
+    document.getElementById("dateWarning").innerHTML = "✅ Date set: " + today;
 
     document.getElementById("validateDateBtn").addEventListener("click", setDate);
     document.getElementById("saveBtn").addEventListener("click", saveToLocal);
