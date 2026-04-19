@@ -48,13 +48,6 @@
             .product-card { border: 1px solid #ddd !important; box-shadow: none !important; break-inside: avoid; }
             .club-details { background: #f9f9f9; border-bottom: 1px solid #ccc; }
         }
-        .print-iframe {
-            position: absolute;
-            width: 0;
-            height: 0;
-            border: 0;
-            visibility: hidden;
-        }
         .logo-image {
             max-height: 70px;
             width: auto;
@@ -64,11 +57,10 @@
 <body class="bg-gray-100 min-h-screen pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- Header with Logo and Club Details (no booking enquiries, no Burwood) -->
+        <!-- Header with Logo and Club Details -->
         <div class="bg-white rounded-3xl shadow-sm overflow-hidden mb-8 no-print">
             <div class="bg-zinc-950 text-white px-8 py-6 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
                 <div class="flex items-center gap-5">
-                    <!-- Logo image – replace src with your actual logo -->
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23ffffff'/%3E%3Ctext x='50' y='67' font-size='40' text-anchor='middle' fill='%23000000' font-family='monospace'%3ETML%3C/text%3E%3C/svg%3E" alt="The Members Lounge Logo" class="logo-image">
                     <div>
                         <h1 class="text-3xl font-bold tracking-tight">themembers|lounge.com.au</h1>
@@ -81,7 +73,6 @@
                     <div>P: 03 8560 0556</div>
                 </div>
             </div>
-            <!-- Footer bar: only website and club name (no booking enquiries) -->
             <div class="bg-gray-100 px-8 py-3 flex justify-between text-sm text-gray-700 border-t border-gray-200">
                 <div>Reggio Calabria Club</div>
                 <div>themembers|lounge.com.au</div>
@@ -151,9 +142,6 @@
         <button onclick="printStockTake()" class="print" title="Print PDF">🖨️</button>
     </div>
 
-    <!-- Hidden iframe for printing -->
-    <iframe id="printIframe" class="print-iframe"></iframe>
-
 <script>
 // ==================== DATA ====================
 const baseCategories = [ 
@@ -178,7 +166,7 @@ let stockData = {};
 let miscProducts = [];
 let searchTimeout = null;
 
-// ==================== LOCALSTORAGE (silent) ====================
+// ==================== LOCALSTORAGE ====================
 const STORAGE_KEY = "tml_stocktake_data";
 
 function saveToLocal() {
@@ -202,7 +190,6 @@ function render() {
 
     const allCats = [...baseCategories, { name: "➕ Miscellaneous", products: miscProducts }];
 
-    // Navigation
     allCats.forEach(cat => {
         const id = cat.name.replace(/[^a-zA-Z0-9]/g, '');
         const btn = document.createElement("a");
@@ -389,12 +376,20 @@ function showPreview() {
     document.getElementById("summaryPreview").scrollIntoView({ behavior: "smooth" });
 }
 
+// ==================== FIXED PRINT FUNCTION ====================
 function printStockTake() {
     const info = validateAndGetInfo();
     if (!info) return;
     
     const reportText = getFullStockTakeReport(info);
-    const htmlContent = `
+    // Open a new blank window
+    const printWindow = window.open('', '_blank', 'width=800,height=600,toolbar=yes,scrollbars=yes');
+    if (!printWindow) {
+        alert("Please allow pop-ups for this site to print directly.");
+        return;
+    }
+    
+    printWindow.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
@@ -402,7 +397,7 @@ function printStockTake() {
             <title>Stock Take - ${info.date}</title>
             <style>
                 body {
-                    font-family: monospace;
+                    font-family: 'Courier New', monospace;
                     margin: 40px;
                     line-height: 1.5;
                     font-size: 12pt;
@@ -414,6 +409,7 @@ function printStockTake() {
                 pre {
                     white-space: pre-wrap;
                     font-family: monospace;
+                    font-size: 11pt;
                 }
                 .footer {
                     margin-top: 40px;
@@ -427,6 +423,9 @@ function printStockTake() {
                     border-bottom: 1px solid #ccc;
                     padding-bottom: 8px;
                 }
+                @media print {
+                    body { margin: 0.5in; }
+                }
             </style>
         </head>
         <body>
@@ -435,23 +434,18 @@ function printStockTake() {
                 Reggio Calabria Club: 476 Brunswick Road, Parkville 3052 | P: 03 8560 0556
             </div>
             <h1>The Members Lounge – Stock Take</h1>
-            <pre>${reportText}</pre>
+            <pre>${reportText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
             <div class="footer">Printed from The Members Lounge stock take system</div>
+            <script>
+                window.onload = function() {
+                    window.print();
+                    window.onafterprint = function() { window.close(); };
+                };
+            <\/script>
         </body>
         </html>
-    `;
-    
-    const iframe = document.getElementById('printIframe');
-    iframe.srcdoc = htmlContent;
-    iframe.onload = function() {
-        setTimeout(() => {
-            try {
-                iframe.contentWindow.print();
-            } catch(e) {
-                alert("Print failed. You can use the Preview button and then print from your browser.");
-            }
-        }, 500);
-    };
+    `);
+    printWindow.document.close();
 }
 
 function exportCSV() {
@@ -482,7 +476,7 @@ baseCategories.forEach(cat => {
 
 render();
 
-// Auto-load saved data silently
+// Auto-load saved data
 const savedData = localStorage.getItem(STORAGE_KEY);
 if (savedData) {
     try {
